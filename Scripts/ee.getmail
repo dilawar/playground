@@ -1,0 +1,16 @@
+[retriever]
+type = SimpleIMAPRetriever
+server = sandesh.ee.iitb.ac.in
+username = 
+password = 
+
+[destination]
+type = MultiDestination
+destinations = (
+    "~/Mail/EE/ee_backup.mbox",
+    "~/Mail/EE/"
+    )
+
+[options]
+verbose = 2
+read_all = False
