@@ -1,0 +1,17 @@
+[retriever]
+type = SimpleIMAPRetriever
+server = imap.iitb.ac.in
+username = dilawars
+password = %brahmamshmi
+
+[destination]
+type = MultiDestination
+destinations = (
+    "~/Mail/GPO/gpo_backup.mbox",
+    "~/Mail/GPO/"
+    )
+
+[options]
+verbose = 2
+read_all = False
+message_log = ~/.getmail/gpo.log
