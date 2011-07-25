@@ -1,0 +1,8 @@
+## This file contains options to be passed gv-interface such that dot tool can
+## consume this file and create what you want. Just uncomment the option line and
+## specify a valid value. If the value is not valid your output file will be
+## corrupt.
+
+### name ===== 
+### name is the name of the structure you want in your output file.
+#name

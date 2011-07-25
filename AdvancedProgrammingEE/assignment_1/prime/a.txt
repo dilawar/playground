@@ -1,0 +1,18 @@
+Entering the main()
+
+No of args are: 5
+From main() - Option --algorithm with value 'b'
+
+From main() - Option --number with value '577787715728104248'
+Number is :577787715728104248	
+
+ Class PrimeNumber:: Entering default constructor...
+ Entering CollectStats constructor...
+Number is :577787715728104248
+ Algorithm b is specified.
+
+Floor of square root of num is :760123487
+
+==========
+Factors are :
+	1	2	3	31

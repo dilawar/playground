@@ -1,0 +1,32 @@
+===================
+WHAT IS THIS PROGRAM?
+
+This Makefile project is made as a solution to assignment 01 given in 'Advanced
+Computing for Electrical Engineers' course taken at Indian Institute of
+Technology Bombay by this human in Autumn 2010. 
+
+It does two things.
+
+1. It generates text file which can be consumed by the 'dot tool' to generate graphs
+	 corresponding to the 'quick find' algorithm.( "Quick Find algorithm is not
+	 implemented in this version.  
+  
+Both of these algorithms are discussed in the class as well as in the book.
+
+===================
+HOW TO COMPILE THIS PROGRAM
+
+Extract the files and go to cpp-interface directory.
+		make all
+This should build the application.
+		
+Run Following
+		gv-interface -f <file name>
+
+<file-name> should be written in two column format without any non-zero or
+non-negative entries. However, the application search for the integars only
+
+This program is incomplete. But it will produce <file name>.dot file in this
+directory. U can run dot tool on it.
+
+

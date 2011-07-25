@@ -1,0 +1,27 @@
+// Automatically created by gv-interface v0.1.
+// To be used by dot file.
+// Report all Bugs to dilawar.in@gmail.com. Or you may like to kill few of them.
+
+digraph diaG01
+{
+	subgraph subG1{
+		// Node are the followings.
+		1;
+		9;
+		4;
+		2;
+		3;
+		8;
+		6;
+		7;
+		9;
+		E;
+	// Here are our cute couples. 
+
+		9 -> 9;
+}
+	// Here are our cute couples. 
+
+		9 -> E;
+}
+

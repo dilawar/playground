@@ -1,0 +1,6 @@
+Implementation of Reduced Order binary decision diagrams using Knuth Graphbase.
+In example directory, we have created some examples. We have used noweb literate
+programming tool for our programs. Knuth has used cweb. May be we'l also learn
+cweb.
+
+

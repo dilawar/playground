@@ -1,0 +1,286 @@
+\documentclass[10pt,sans,serif,trans]{beamer}
+\usepackage{beamerthemeshadow}
+\usepackage{color}
+% \usepackage{fontenc}
+\usepackage{tkz-berge}
+\usepackage{graphicx}
+\usepackage{amsmath}
+% \usepackage{biblatex}
+% \usepackage{tikz}
+\usepackage{tkz-graph}
+% \usetheme{Berlin}
+% \usecolortheme{dolphin}
+% \setbeamerfont{size=\large}
+\title{Graphs and Linear Systems in Laplacian Matrices}
+\author{Dilawar Singh\\ \tiny{Version 0.8}}
+\date{Nov 19, 2010}
+\institute[EE, IIT Bombay]{Department of Electrical Engineering \\  Indian
+Institute of Technology Bombay}
+% \titlegraphic{\includegraphics[width=.5 true in]{ob}}
+\begin{document}
+\begin{frame}
+\maketitle
+\end{frame}
+%%% Slide 0 %%%%%%%%%%
+\section{Introduction}
+\subsection{Laplacian Matrix and Graph}
+\subsection{Properties of Laplacian}
+\begin{frame}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%5
+\begin{frame}
+  An old Chinese philosopher never said, ``\emph{Words about graph worth a
+thousand pictures.}''
+\par
+\begin{flushright}
+\textit{The English Langugae}, William Safire
+\end{flushright}
+\end{frame}
+%%%%% slide 1 %%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Outline}
+\begin{itemize}
+\item I review some of the works done in establishing connections between
+algorithms, spectral graph theory, functional analysis, and numerical linear
+algrabra.\footnote{\tiny \textit{Daniel A Spielman}; Proceedings of ICM
+Hyderabad 2010}
+\item We will consider solving systems of linear equations in the
+Laplacian Matrices of graph. Amazingly, these algorithms only uses primitive graph theory,
+including low-steching spanning tree.
+% the following algorithm is invented by
+% solving a sequence of of linear equations in a Laplacian Matrix.
+\item Using the above approach, a new way of computing an
+\textit{approximtely} maximum \textit{s-t} flow in a capacitated, undirected
+graph is discovered. This nearly linear time algorithm and is claimed to be
+the fastest \footnote{\tiny \textit{Paul Cristino, Jonathan A. Kelner,
+Aleksander Madry, Daniel Speilman}; Electical Flows, Laplacian Systems, and
+Faster Approximation of Maximum Flow in Undirected Graphs, arXiv 2010}.
+\end{itemize}
+\end{frame}
+
+%%%%%% slide 2 %%%%%%%%%%%%%
+\begin{frame}
+  \frametitle{Graphs and Laplacian Matrix}
+\begin{definition}
+\begin{itemize}
+  \item Consider a weighted, undirected, simple graph $G$ given by a triple
+$(V,E,w)$,
+% where $V$ is a set of \textit{vertices}, $E$ is the set of
+% \textif{edges}, and $w$ is a weight function that assign a \textbf{positive
+% weight} to every edge.
+\item  The Laplacian Matrix $L$ of a graph is naturally defined by the
+quadratic form it induce. For a vector  $x \in \Re^{V}$, the Laplacian
+quadratic form of $G$ is $x^TLx=\sum_{(u,v)\in E} w_{u,v}(x(u) -
+x(v)^2)$.\footnote{If $w$ represents conductance in corresponding electrical network and $x$ is any
+potential vector then $x^TLx$ is the total power consumed in network.}
+\item Thus $L$ provides a measure of \textit{smoothness} of $x$ over the
+edges of $G$. More the $x$ jumps, larger the quadratic form.
+\end{itemize}
+\end{definition}
+\end{frame}
+%%%%%%%%%%%%%% slide 3 %%%%%%%%%%%%%%5
+\begin{frame}
+\frametitle{Laplacian continued ...}
+\begin{itemize}
+\item  Laplacian also have a simple description as a matrix. Define the
+weighted degree of a vertex $u$ by $d(u) = \sum_{v \in V}w_{u,v}.$
+\item  Now define $D$ to be a diagonal matrix whose diagonal contains $d$, and
+define the weighted adjacency matrix of $G$ by \\
+$A(u,v) =
+\begin{cases}
+  w_{u,v} & \textit{if} (u,v) \in E \\
+  0  & otherwise
+\end{cases}
+$
+\end{itemize}
+% \begin{tikzpicture}
+%    \Vertex{a}
+% \end{tikzpicture}
+\begin{tikzpicture}
+  \tikzset{node distance = 2cm}
+\Vertex {a}
+\NOEA (a){b}
+\SOEA (a){c}
+\EA (b){d}
+\EA (c){e}
+\SetUpEdge[lw = 0.5pt,
+          color = red]
+\tikzset{LabelStyle/.style = {fill=white, sloped}}
+\Edge[label=$1$](a)(b)
+\Edge[label=$1$](a)(c)
+\Edge[label=$1$](b)(d)
+\Edge[label=$2$](c)(e)
+\Edge[label=$1$](d)(e)
+\Edge[label=$1$](b)(e)
+% \end{tikzpicture}
+% %% Here goes its equivalent matrix.
+\hspace*{5cm}
+% \vspace{0cm}
+% \begin{tikzpicture}
+% \vspace*{-5cm}
+%  \[
+$\left(
+    \begin{array}{c c c c c}
+        2 & -1 & 0 & 0 & -1\\
+        -1 & 3 & -1 & -1 & 0\\
+        0  & -1 & 2 & -1 & 0\\
+        0 & -1 & -1 & 4 & -2\\
+        -1 & 0 & 0 & -2 & 3\\
+% % % % %    2 & -1 & 0 & 0 & -1
+    \end{array}
+    \right )$
+%    \]
+% \vspace*{-5cm}
+\end{tikzpicture}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+  \frametitle{Properties of Laplacian Matrix}
+\begin{itemize}
+  \item They are symetric, have zero row-sums, and have non-positive
+off-diagonal entries.
+  \item \textbf{Positive semi-definite}. Every eigenvalue is non-negative.
+  \item \textbf{Connectivity}. Let $0 \leq \lambda_1 \leq
+\lambda_2 .... \leq \lambda_n$ be the eigenvalues. Then $\lambda_2 = 0$ iff $G$
+is connected.
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Some definitions}
+% % % \begin{itemize}
+\begin{block}{Definition}
+  Given a set of vertices $S \subset V$, define the boundary of $S$, written $\beta(S)$ to be
+the set of edges in $V$ with exactly one vertex in $S$
+\end{block}
+\begin{itemize}
+   \item It is of great interest in computer science to minimize or maximize the $\beta(S)$. 
+\end{itemize}
+
+\begin{block}{Conductance of a graph}
+%    \begin{equation}
+   Let $\phi(S) \stackrel{def}{=} \frac{w|\beta(S)|}{\min(|d(S)|, |d(V-S)|)}$, where $d(S)$ is the
+sum of the weighted degree of the vertices in $S$ then conductance of graph $G$, $\
+\stackrel{def}{=} {\min}_{S \subset V} \phi(S) $
+%    \end{equation}
+\end{block}
+
+\begin{block}{Iso-perimeter Number}
+   Let $i(S) \stackrel{def}{=} \frac{|\beta(S)|}{\min(|(S)|, |(V-S)|)}$, then iso-perimeter
+number of $G$,  $i_G \stackrel{def}{=} \min_{s \subset G} i(S)$.
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%% Slide 6 %%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Overview : Application of Laplacian}
+\begin{itemize}
+\item \color{red}Regression on Graphs\color{black}. A function $f$ is given on a subset of vertices
+of $G$, calculate $f$ over remaining vertices.
+\item \color{red}Spectral Graph Theory\color{black}.  Study eigenvalues and their relation with
+graphs.
+\item \color{red}Interior Point Method \color{black} and Maximum Flow Problem. \textbf{If one solves
+these linear program using interior point methods then most of time interior point method spend
+solving system of linear equations that can be reduced to reduced restricted Laplacian
+Systems}.\footnote{Daniel P. Spielman and Shang Hua Tang, Smoothed analysis of termination of
+linear programming algorithms, Mathematical Programming, B, 2003. to appear}
+%   \item Resistor Networks. Measurement of effective resistance between two vertices.
+  \item \color{red}Partial Differential Equations. \color{black}Laplacian Matrix of path graph
+naturally arises when one study the modes of vibration of a string. FEM to solve Laplace's equations
+using a triangulation with no obtuse angle. \footnote{Gilbert Strang, Introduction to Applied
+Mathematics, 1986}
+  \item Many of these problems requires \textbf{solution of linear equations in
+Laplacian Matrix, or their restrictions.}
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%% slide 7 %%%%%%%%%%%%%%%%%%
+\begin{frame}
+  \frametitle{Solving Linear Equations in Laplacian}
+\begin{itemize}
+  \item There are two major approach. Variant of Guassian elimination or
+\textbf{Direct Methods} and \textbf{Iterative Methods}.
+\item Iterative methods such as Conjugate Gradient Methods multiplies matrix $A$ by some vector $x$
+at each iteration. The number of iterations depends on the eigenvalue of $A$. Condition number
+\footnote{Ratio of largest to smallest eigenvalue}.
+\item \color{red}Preconditioned Iterative Methods \color{black} Can one find a matrix $B$ such that
+$BA$ will have the same solution but have smaller condition number? We can!
+\item $B$ is known as pre-conditioner.They have been proved incredibly useful in practice.
+\footnote{Gerard Meurant, Computer Solution of Large Linear Systems, North Holland}
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Preconditioned Iterative Methods}
+   \begin{itemize}
+      \item When $A$ and $B$ are Laplacian Matrix of connected graph, similar
+analysis holds.\footnote{precondition number is now the ratio of largest to smallest
+non-zero eigenvalue}
+\item Relative condition number of $AB_+$ written $\kappa(A, B)$ in this case measure how well those
+graphs approximate each other. $B_+$ is Moore-Penrose pseudo-inverse of B.
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+
+\begin{frame}{Approximation by Sparse Graph}
+\begin{block}{Sparsification}
+   Sparsification is the process of approximating a given graph $G$ by a sparse graph $H$. $H$ is
+said to be an $\alpha$-approximation of $G$ if $\kappa_f(L_G, L_H) \leq 1 + \alpha$, where $L_G$
+and $L_H$ are Laplacian matrix of $G$ and $H$.
+\end{block}
+ 
+\begin{itemize}
+   \item $G$ and $H$ are similar in many ways. They have similar eigenvalues and the effective
+resistance between every pair of nodes in \textit{approximately} the same.
+
+\item It replaces the problem of solving system in dense matrix to a problem of solving in a sparse
+matrix.\textbf{ Conjugate Gradient Methods are faster on sparse Matrix.}
+
+\item If we can find $H$ with $O(n)$ zero entries then solve system in $L_G$ by using a
+preconditioned Conjugate Gradient with $L_H$ as preconditioner, and solving the system in $L_H$ by
+Conjugate Gradient.
+
+\item Each solve in $H$ takes $O(n^2)$, and for $\epsilon$ accuracy, PCG will take
+$\log{\epsilon^{-1}}$. Total complexity would be $O((m + n^2)\log{\epsilon^{-1}})$. 
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%5
+\begin{frame}{More on Sparcification}
+   \begin{itemize}
+      \item Does such good specifier exists?
+      \item Benezur and Karger seems to have developed very similar. \footnote{Spileman,
+Proceedings of ICM 2010}.
+   \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Subgraph Preconditioner and Support theory}
+   \begin{itemize}
+      \item Vaidya's idea of precondition Laplacian matrices by the matrix of its own subgraph. The
+tools used to analyse them are known as support theory.
+\item Vaidya did not publish his results. He build a software to sell. His student used his work in
+his dissertation.
+\item Laplacian of maximum spanning tree is used as preconditioner. Lower bounds were not proved. A
+bit inefficient.
+\item \color{red}Low stretch Spanning Tree\color{black}.
+\item A few edges may be added to maximum spanning tree to be used as preconditioner.
+\item Good preconditioner exists \footnote{Kolla et all, CoRR 99} but the challenge was to construct
+them quickly.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Results till date}
+\begin{itemize}
+\item Koutis, Miller and Peng \footnote{\url{http://arxiv.org/abs/1003.2958v1}} made tremendous
+progress on this problem, they produces ultra-sparsifiers that lead to an algorithm for solving
+linear systems in Laplacian that takes time $O(m\log^2{n}(\log{\log{n}})^2 \log{\epsilon^{-1}})$.
+\item \color{red}This is much faster than any algorithm known to date!!\color{black}
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%55
+
+%%%%%% Bibliography %%%%%%%%%%%%%%%%%%
+% \bibliography{paper_review}
+% \bibliographystyle{plain}
+\end{document}

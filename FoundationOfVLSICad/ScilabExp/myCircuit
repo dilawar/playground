@@ -1,0 +1,17 @@
+# Dilawar - dilawar@ee.iitb.ac.in
+# September 18, 2010.
+# This is my circuit.
+# This is net-list of my circuit. It should be read as spice net-list unless
+# otherwise stated explicitly e.g. IXX means current source, VXX is voltage
+# source, RXX is resistance and so on.
+#
+# Only difference here is that we do not allow lower-case letters for circuit
+# element names.
+# n0 is always the ground node.
+IB n3 n0 1;
+VA n1 n0 5;
+RA n1 n0 0.2;
+RB n1 n2 0.1;
+RC n2 n0 0.2;
+RC n2 n3 0.1;
+VB n3 n0 10;

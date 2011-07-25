@@ -1,0 +1,450 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage[margin=25mm]{geometry}
+\usepackage{listings}
+%opening
+\title{A Tutorial\\
+Advanced Computing for Electrical Engineers }
+% \author{Sachin Patkar}
+
+\begin{document}
+\maketitle
+
+\paragraph{Q.1.}
+Given a set $S = {(x_i, y_i)|1 <= i <= n}$ of intervals.
+Prove or disprove whether the following algorithm finds
+maximum cardinality collection of non-overlapping intervals.
+\begin{itemize}
+   \item Repeat until S is empty.
+  \item Select the interval I that overlaps the least number of other intervals.
+  \item Add I to the initial solution set A.
+ \item Remove all intervals from S that overlap with I.
+\end{itemize}
+
+\paragraph{Q.2.} Each of $n$ given events takes one unit of time. Event $i$
+yields a profit of $g_i$ dollars $(g_i > 0)$ if started at or before a specified
+time $t_i$. Design a greedy algorithm to find a schedule that maximizes the
+profit.
+
+\paragraph{Q.3.} Consider the Change Problem.
+We want minimum cardinality collection of coins required to make change an
+amount $L < 100$. The denominations of coins are 1, 5, 10, 20, 25, 50. Assume
+that you have an unlimited number of coins of each type. Formally prove or
+disprove that the greedy algorithm (that takes as many coins as possible from
+the highest denominations) correctly solves the Change
+Problem.
+
+\paragraph{Q.4.} Given a set $\{ x_1, x_2, ..., x_n \}$ of points on the real
+line, determine the smallest
+set of unit-length closed intervals (e.g. the interval $[1.25,2.25]$ includes
+all $x_i$ such that
+$1.25 \leq x_i \leq 2.25$ that contains all of the points.
+Give the most efficient algorithm you can to solve this problem, prove it is
+correct and analyze the time complexity.
+
+\paragraph{Q.5.} For $i=1,...,n,$ job $i$ is specified by an earliest start time
+$s_i$, and a processing time $p_i$.
+We consider a preemptive scheduling wherein
+a job's execution can be suspended at any time and later resumed.
+Objective is to find a schedule that minimizes
+$\sum_{j=1,...,n} C_j$ where $C_j$ is the time
+when job $j$ is completed.
+Design a greedy algorithm that computes an optimal preemptive schedule.
+
+\paragraph{Q.6}. Design a dynamic programming (bottom-up) approach to calculate
+${n \choose k}$, using the recurrence relationship ${n \choose k} = {(n-1)
+\choose k} + {(n-1) \choose (k-1)}$ .
+
+\paragraph{Q.7}. For the $i^{th}$ activity $(s_i, f_i, g_i)$ is specified.
+Here $s_i$ is the start time of activity $i$, $f_i$ is the finish time of
+activity $i$,
+and $g_i \geq 0$ is the profit we get if we schedule activity $i$.
+We say $i$ and $j$ are compatible if the corresponding courses don't overlap.
+A (feasible) schedule is a set $S$ of compatible activities.
+The profit of a schedule $S$ is $P(S)$ is the sum of the profit of the
+activities selected in the schedule $S$.
+We want an algorithm for finding a schedule that maximizes profit. (Note that we
+are assuming, without loss of generality, that $s_i < f_i$ for every activity
+$i$).
+
+\paragraph{Q.8}. Design a dynamic programming algorithm for longest increasing
+subsequence problem
+(ie. to find a longest subsequence of a given sequence of numbers, whose members
+are strictly increasing). Assume that all the numbers are distinct.
+
+\paragraph{Q.9}. Design a dynamic programming algorithm that determines the
+length of a longest palindrome substring of a string A.
+
+\paragraph{Q.10}. Design a dynamic programming algorithm for optimal coin change
+problem.
+
+\paragraph{Q.11}. Design a dynamic programming algorithm for 0-1 knapsack
+problem.
+
+\paragraph{Q.12}
+Describe in brief interrupt handling of I/O operations.
+
+\paragraph{Q.13}
+Explain why the scheduling algorithm that favors processes which have used
+less processor time in the recent past, favors I/O-bound processes.
+Is it extremely harsh with CPU-bound processes (do such processes starve of CPU
+attention) ?
+
+\paragraph{Q.14}
+What would happen if you executed the following piece of code:
+\begin{lstlisting}[language = c, frame = single]
+main()
+{
+  for(;;)
+  fork();
+}
+   
+\end{lstlisting}
+
+\paragraph{Q.15}
+Describe the simplified three state process model.
+
+\paragraph{Q.16}
+What is the relationship between threads and processes?
+
+\paragraph{Q.17}
+Comment on advantages and disadvantages of user-level threads.
+
+\paragraph{Q.18}
+What happens during Context switch between two threads of execution\\
+\textbf{Answer:}\\
+context swith (roughly) does the following :
+\begin{itemize}
+\item Saves registers on the stack so as to be able to let the calling C
+function resume work on CPU when its thread gets scheduled again
+\item saves the stack pointer in the current thread's control block
+\item restores the stack pointer from the control block of the thread selected
+for scheduling
+\item restores the registers of the to-be-scheduled thread from its stack
+\item resumes execution in the userspace of the scheduled thread.
+ 
+\end{itemize}
+
+\paragraph{Q.19}
+Describe page-based virtual memory.
+\\
+\textbf{Answer}\\
+The program is given the illusion of running in it's own address space.
+CPU instructions execute the program, which will perform memory requests to
+virtual addresses. These are converted to physical addresses by looking up in
+the Page Table, (more specifically the Translation Lookaside Buffer (TLB)), then
+the physical memory is accessed.
+\\
+The TLB is the fast hardware implementation of a page table lookup. It contains
+recently used page table entries, which allow a really quick mapping between
+virtual pages and physical frames. In the event that the TLB doesn't contain the
+virtual address requested, a page fault is triggered. The operating system is
+called to find the approriate mapping from the page table, stored in RAM, and
+load it into the the TLB as appropriate. (in MIPS... Pentium architectures have
+some dedicated hardware for pagetables, and therefore some hardware support for
+tlb refill).
+
+\paragraph{Q.20}
+What are temporal locality and spatial locality?
+
+\paragraph{Q.21}
+Why is it generally correct to favour I/O bound processes over CPU-bound
+processes?
+
+\paragraph{Q.22}
+What is the difference between preemptive scheduling and non-preemptive
+scheduling? What is the issue with the latter?
+
+\paragraph{Q.23}
+What are the three main purposes of an operating system?
+\\
+\textbf{Answer}\\
+\begin{itemize}
+   \item To provide an environment for a computer user to execute programs
+on computer hardware in a convenient and efficient manner.
+ \item To allocate the separate resources of the computer as needed to
+solve the problem given. The allocation process should be as fair
+and efficient as possible.
+ \item As a control program it serves two major functions: (1) supervision
+of the execution of user programs to prevent errors and improper
+use of the computer, and (2) management of the operation and
+control of I/O devices.
+ 
+\end{itemize}
+
+\paragraph{Q.24}
+What are the main differences between operating systems for mainframe
+computers and personal computers?\\
+\textbf{Answer:} Generally, operating systems for batch systems have simpler
+requirements than for personal computers. Batch systems do not have
+to be concerned with interacting with a user as much as a personal
+computer. As a result, an operating system for a PC must be concerned
+with response time for an interactive user. Batch systems do not have
+such requirements. A pure batch system also may have not to handle
+time sharing, whereas an operating system must switch rapidly between
+different jobs.
+
+\paragraph{Q.25}
+List the four steps that are necessary to run a program on a completely
+dedicated machine.\\
+\textbf{Answer:}
+\begin{enumerate}
+\item  Reserve machine time.
+\item Manually load program into memory.
+\item Load starting address and begin execution.
+\item Monitor and control execution of program from console.
+ 
+\end{enumerate}
+
+\paragraph{Q.26}
+We have stressed the need for an operating system to make efficient use
+of the computing hardware. When is it appropriate for the operating
+system to forsake this principle and to “waste” resources? Why is such
+a system not really wasteful? \\
+\textbf{Answer:} Single-user systems should maximize use of the system for
+the user. A GUI might “waste” CPU cycles, but it optimizes the user’s
+interaction with the system.
+
+\paragraph{Q.27}
+Consider the various definitions of operating system. Consider whether
+the operating system should include applications such as Web browsers
+and mail programs. Argue both that it should and that it should not, and
+support your answer\\.
+\textbf{Answer:} Point. Applications such as web browsers and email tools are
+performing an increasingly important role in modern desktop computer
+systems. To fulfill this role, they should be incorporated as part of the
+operating system. By doing so, they can provide better performance
+and better integration with the rest of the system. In addition, these
+important applications can have the same look-and-feel as the operating
+system software. Counterpoint. The fundamental role of the operating system is
+to manage system resources such as the CPU, memory, I/O devices, etc. In ad-
+dition, it’s role is to run software applications such as web browsers and
+email applications. By incorporating such applications into the operating
+system, we burden the operating system with additional functionality.
+Such a burden may result in the operating system performing a less-than-
+satisfactory job at managing system resources. In addition, we increase
+the size of the operating system thereby increasing the likelihood of
+system crashes and security violations.
+
+\paragraph{Q.28}
+How does the distinction between kernel mode and user mode function
+as a rudimentary form of protection (security) system?\\
+\textbf{Answer:} The distinction
+between kernel mode and user mode pro-
+vides a rudimentary form of protection in the following manner. Certain
+instructions could be executed only when the CPU is in kernel mode.
+Similarly, hardware devices could be accessed only when the program
+is executing in kernel mode. Control over when interrupts could be en-
+abled or disabled is also possible only when the CPU is in kernel mode.
+Consequently, the CPU has very limited capability when executing in
+user mode, thereby enforcing protection of critical resources.
+
+\paragraph{Q.29}
+Which of the following instructions should be privileged?
+\begin{enumerate}
+\item Set value of timer.
+\item Read the clock.
+\item Clear memory.
+\item Issue a trap instruction.
+\item Turn off interrupts.
+\item Modify entries in device-status table.
+\item Switch from user to kernel mode.
+\item Access I/O device.
+ 
+\end{enumerate}
+
+\paragraph{Q.30}
+Some early computers protected the operating system by placing it in
+a memory partition that could not be modified by either the user job
+or the operating system itself. Describe two difficulties that you think
+could arise with such a scheme.
+
+
+\paragraph{Q.31}
+What is the purpose of system calls?
+
+\paragraph{Q.32}
+What are the five major activities of an operating system in regard to
+process management?\\
+\textbf{Answer:}
+\begin{enumerate}
+   \item The creation and deletion of both user and system processes
+\item The suspension and resumption of processes
+\item The provision of mechanisms for process synchronization
+\item The provision of mechanisms for process communication
+\item The provision of mechanisms for deadlock handling
+ 
+\end{enumerate}
+
+\paragraph{Q.33}
+What are the three major activities of an operating system in regard to
+memory management? \\
+\textbf{Answer}
+\begin{enumerate}
+   \item  Keep track of which parts of memory are currently being used
+and by whom.
+\item Decide which processes are to be loaded into memory when mem-
+ory space becomes available.
+\item Allocate and deallocate memory space as needed.
+\end{enumerate}
+
+\paragraph{Q.34}
+What system calls have to be executed by a command interpreter or shell
+in order to start a new process?
+
+\paragraph{Q.35}
+What is the purpose of system programs? \\
+\textbf{Answer:} System programs can be thought of as bundles of useful
+system calls. They provide basic functionality to users so that users do
+not need to write their own programs to solve common problems.
+
+\paragraph{Q.36}
+List five services provided by an operating system. Explain how each
+provides convenience to the users. Explain also in which cases it would
+be impossible for user-level programs to provide these services.\\
+\textbf{Answer:}
+\begin{enumerate}
+   \item  Program execution. The operating system loads the contents (or
+sections) of a file into memory and begins its execution. A user-
+level program could not be trusted to properly allocate CPU time.
+
+\item I/O operations. Disks, tapes, serial lines, and other devices must
+be communicated with at a very low level. The user need only
+specify the device and the operation to perform on it, while the
+system converts that request into device- or controller-specific
+commands. User-level programs cannot be trusted to access only
+devices they should have access to and to access them only when
+they are otherwise unused.
+
+\item File-system manipulation. There are many details in file creation,
+deletion, allocation, and naming that users should not have to perform.
+Blocks of disk space are used by files and must be tracked.
+Deleting a file requires removing the name file information and
+freeing the allocated blocks. Protections must also be checked to
+assure proper file access. User programs could neither ensure ad-
+herence to protection methods nor be trusted to allocate only free
+blocks and deallocate blocks on file deletion.
+
+\item Communications. Message passing between systems requires
+messages to be turned into packets of information, sent to the net-
+work controller, transmitted across a communications medium,
+and reassembled by the destination system. Packet ordering and
+data correction must take place. Again, user programs might not
+coordinate access to the network device, or they might receive
+packets destined for other processes.
+
+\item Error detection. Error detection occurs at both the hardware and
+software levels. At the hardware level, all data transfers must be
+inspected to ensure that data have not been corrupted in transit.
+All data on media must be checked to be sure they have not
+changed since they were written to the media. At the software
+level, media must be checked for data consistency; for instance,
+whether the number of allocated and unallocated blocks of storage
+match the total number on the device. There, errors are frequently
+process-independent (for instance, the corruption of data on a
+disk), so there must be a global program (the operating system)
+that handles all types of errors. Also, by having errors processed
+by the operating system, processes need not contain code to catch
+and correct all the errors possible on a system.
+
+\end{enumerate}
+
+
+\paragraph{Q.37}
+Why do some systems store the operating system in firmware, and others
+on disk?
+
+\paragraph{Q.38}
+How could a system be designed to allow a choice of operating systems
+to boot from? What would the bootstrap program need to do? \\
+\textbf{Answer:} Consider a system that would like to run both Windows
+XP and three different distributions of Linux (e.g., RedHat, Debian, and
+Mandrake). Each operating system will be stored on disk. During system
+boot-up, a special program (which we will call the boot manager) will
+determine which operating system to boot into. This means that rather
+initially booting to an operating system, the boot manager will first run
+during system startup. It is this boot manager that is responsible for
+determining which system to boot into. Typically boot managers must
+be stored at certain locations of the hard disk to be recognized during
+system startup. Boot managers often provide the user with a selection of
+systems to boot into; boot managers are also typically designed to boot
+into a default operating system if no choice is selected by the user.
+
+\paragraph{Q.39}
+The Sun UltraSPARC processor has multiple register sets. Describe the
+actions of a context switch if the new context is already loaded into
+one of the register sets. What else must happen if the new context is in
+memory rather than in a register set and all the register sets are in use?\\
+\textbf{Answer:} The CPU current-register-set pointer is changed to point to the
+set containing the new context, which takes very little time. If the context
+is in memory, one of the contexts in a register set must be chosen and be
+moved to memory, and the new context must be loaded from memory into the set.
+This process takes a little more time than on systems with
+one set of registers, depending on how a replacement victim is selected.
+
+\paragraph{Q.40}
+When a process creates a new process using the \texttt{fork()} operation,
+which of the following state is shared between the parent process and the child
+process?
+\begin{enumerate}
+   \item  Stack
+ \item Heap
+\item Shared memory segments
+ 
+\end{enumerate}
+
+
+\paragraph{Q.41}
+Provide two programming examples in which multithreading provides
+better performance than a single-threaded solution.
+\\
+\textbf{Answer:}
+\begin{enumerate}
+   \item A Web server that services each request in a separate
+thread.
+\item (A parallelized application such as matrix multiplication where (different
+parts of the matrix may be worked on in parallel.
+\item An (interactive GUI program such as a debugger where a thread is used (to
+monitor user input, another thread represents the running (application, and a
+third thread monitors performance
+\end{enumerate}
+
+\paragraph{Q.42}
+What are two differences between user-level threads and kernel-level
+threads? Under what circumstances is one type better than the other?
+
+\paragraph{Q.43}
+What resources are used when a thread is created? How do they differQ:
+from those used when a process is created?\\
+\textbf{Answer:} Because a thread is smaller than a process, thread creation
+typically uses fewer resources than process creation. Creating a process
+requires allocating a process control block (PCB), a rather large data
+structure. The PCB includes a memory map, list of open files, and environment
+variables. Allocating and managing the memory map is typically
+the most time-consuming activity. Creating either a user or kernel thread
+involves allocating a small data structure to hold a register set, stack, and
+priority.
+
+\paragraph{Q.44}
+Define the difference between preemptive and nonpreemptive scheduling
+
+\paragraph{Q.45}
+Argue that disabling interrupts frequently could
+affect the system’s clock. How such effects
+could be minimized ? \\
+\textbf{Answer:} The system clock is updated at every clock interrupt. If
+interrupts were disabled —particularly for a long period of time - it is
+possible the system clock could easily lose the correct time. The system clock
+is also used for scheduling purposes. For example, the time
+quantum for a process is expressed as a number of clock ticks. At every
+clock interrupt, the scheduler determines if the time quantum for the
+currently running process has expired. If clock interrupts were disabled,
+the scheduler could not accurately assign time quantum. This effect can
+be minimized by disabling clock interrupts for only very short periods.
+
+\paragraph{Q.46}
+Give the reasons why Solaris, Windows XP, and Linux implement multiple locking
+mechanisms. Describe the circumstances under which they
+use spinlocks, mutexes, semaphores.
+In each case, explain why the mechanism is needed.
+\end{document}

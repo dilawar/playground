@@ -1,0 +1,20 @@
+===================
+WHAT IS THIS PROGRAM?
+
+This Makefile project is made as a solution to assignment 01 given in 'Advanced
+Computing for Electrical Engineers' course taken at Indian Institute of
+Technology Bombay by this human in Autumn 2010. 
+
+It does two things.
+
+1. It generates text file which can be consumed by the 'dot tool' to generate graphs
+	 corresponding to the 'quick find' algorithm. 
+2. It generates text file which can be consumed by the 'dot tool' to generate
+	 graphs corresponding to the 'quick union' algorithm.
+  
+Both of these algorithms are discussed in the class as well as in the book.
+
+===================
+HOW TO COMPILE THIS PROGRAM
+
+

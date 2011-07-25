@@ -1,0 +1,28 @@
+This project is hosted on https://ee717-iitb.googlecode.com/svn/trunk/A5-1
+
+========================================
+
+Here how it goes,
+
+STEP 1 :
+	make all
+
+STEP 2 :
+	./lfsr --key "10101010100100101010101001001011001000101"
+			or
+	./lfsr --key "1010101011"
+
+After --key (i.e. 64 bit secret key) you need to specify the value in binary.
+You can leave some of the digit unspecified. It'll take them as 0.
+
+Use " " to give key value. Its like string.
+
+Public key is specified within code. You have no control over it.
+
+It will ask you for register polynomials and its clock it. This process can be
+lengthy. My apologies!
+
+--
+Dilawar Singh
+10407007
+dilawar@ee.iitb.ac.in 

@@ -1,0 +1,162 @@
+// Automatically created by gv-interface v0.1.
+// To be used by dot file.
+// Report all Bugs to dilawar.in@gmail.com. Or you may like to kill few of them.
+
+digraph diaG01
+{
+	subgraph subG1{
+		// Node are the followings.
+		1;
+		9;
+		4;
+		2;
+		3;
+		8;
+		6;
+		7;
+		11;
+		12;
+	// Here are our cute couples. 
+
+		1 -> 9;
+	}
+	subgraph subG2{
+		// Node are the followings.
+		1;
+		9;
+		4;
+		2;
+		3;
+		8;
+		6;
+		7;
+		11;
+		12;
+	// Here are our cute couples. 
+
+		1 -> 9;
+		1 -> 4;
+	}
+	subgraph subG3{
+		// Node are the followings.
+		1;
+		9;
+		4;
+		2;
+		3;
+		8;
+		6;
+		7;
+		11;
+		12;
+	// Here are our cute couples. 
+
+		1 -> 9;
+		1 -> 4;
+	}
+	subgraph subG4{
+		// Node are the followings.
+		1;
+		9;
+		4;
+		2;
+		3;
+		8;
+		6;
+		7;
+		11;
+		12;
+	// Here are our cute couples. 
+
+		1 -> 9;
+		1 -> 4;
+	}
+	subgraph subG5{
+		// Node are the followings.
+		1;
+		9;
+		4;
+		2;
+		3;
+		8;
+		6;
+		7;
+		11;
+		12;
+	// Here are our cute couples. 
+
+		1 -> 9;
+		4 -> 2;
+	}
+	subgraph subG6{
+		// Node are the followings.
+		1;
+		9;
+		4;
+		2;
+		3;
+		8;
+		6;
+		7;
+		11;
+		12;
+	// Here are our cute couples. 
+
+		1 -> 9;
+		4 -> 2;
+	}
+	subgraph subG7{
+		// Node are the followings.
+		1;
+		9;
+		4;
+		2;
+		3;
+		8;
+		6;
+		7;
+		11;
+		12;
+	// Here are our cute couples. 
+
+		1 -> 9;
+		4 -> 2;
+		4 -> 6;
+	}
+	subgraph subG8{
+		// Node are the followings.
+		1;
+		9;
+		4;
+		2;
+		3;
+		8;
+		6;
+		7;
+		11;
+		12;
+	// Here are our cute couples. 
+
+		4 -> 2;
+		4 -> 3;
+		4 -> 7;
+	}
+	subgraph subG9{
+		// Node are the followings.
+		1;
+		9;
+		4;
+		2;
+		3;
+		8;
+		6;
+		7;
+		11;
+		12;
+	// Here are our cute couples. 
+
+		4 -> 2;
+		4 -> 3;
+		4 -> 7;
+	}
+}

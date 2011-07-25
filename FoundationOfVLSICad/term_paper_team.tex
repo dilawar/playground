@@ -1,0 +1,166 @@
+\documentclass[10pt,sans,serif,trans]{beamer}
+\usepackage{beamerthemeshadow}
+\usepackage{fontenc}
+\usepackage{tkz-berge}
+\usepackage{graphicx}
+\title{Van-Ginneken's dynamic programming for Buffer Insertion Problem}
+% \\ \& \\Graphs and Laplacian Systems}
+\institute[EE, IIT Bombay]{Department of Electrical Engineering \\  Indian
+Institute of Technology Bombay}
+\author{
+Aayush Rathi \\
+Ankit Mehta \\
+Dilawar Singh}
+\date{\today}
+\begin{document}
+\begin{frame}
+   \maketitle
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Abstact}
+   \begin{itemize}
+      \item An algorithm for choosing locations for buffer insertion such that Elmore delay (delay
+is through RC Network) \footnote{For tree structured networks, find the delay through each segment
+as the R (electrical resistance) times the downstream C (electrical capacitance). Sum the delays
+from the root to the sink.}is minimum.
+\item For given required arrival times at the sinks of the wiring tree, the departure time at the
+source is scheduled as late as possible.
+\item Basic Idea: Using DFS on the wiring tree, construct a set of time-capacitance pairs
+corresponding to different choices.
+\end{itemize}
+
+\begin{columns}[t]
+\begin{column}[T]{5cm}
+\begin{figure}[h]
+\centering
+\includegraphics[height=3cm, width = 4cm]{./images/tree.jpeg} 
+\caption{RC Tree Network with discrete elements.}
+\end{figure}
+\end{column}
+\begin{column}[T]{5cm}
+\begin{figure}[h]
+\centering
+\includegraphics[width=4cm, height=2cm]{./images/s_tree.jpeg}
+\caption{A steiner tree. A source and two sink}
+\end{figure}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Need for buffer insertion}
+ \begin{itemize}
+ \item Buffer insertion and Interconnect Topology optimizations have an important role for Timing
+optimizations of VLSI circuits.
+    \item With gate delay decreasing with each new technology node, delay in the charging and
+discharging of wire capacitance has started to dominate.
+\item Buffering decreases the growth of delay with the length of the wire from quadratic to linear
+ \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+\begin{frame}{Statement of the Problem}
+%    \begin{definition}
+\begin{block}{Problem}
+      On the given wiring tree, there are certain legal positions for buffer insertion. Defer the
+required departure time at the $source$, $T_{source}$, to as late as possible, \\
+\begin{equation}
+T_{source} = min_i(T_i-D_i)    
+\end{equation}
+	where $T_i$ = required arrival time of signal at each sink and $D_i$ = delay between the source
+of the signal and the sink $i$.
+\end{block}
+\begin{figure}[h]
+\centering
+\includegraphics[height=3cm, width = 4cm]{./images/tree.jpeg} 
+\caption{RC Tree Network with discrete elements.}
+\end{figure}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+\begin{frame}{Delay Calculation}
+\begin{columns}[t] % contents are top vertically aligned
+\begin{column}[T]{7cm} % each column can also be its own environment
+\begin{itemize}
+  \item \color{red}Exact delay is difficult since it requires calculation will require solving
+system of differential equations. \color{black}
+    \item However, it is possible to derive easily computed estimate of delay.
+     \item Capacitance of surrounding wires is modeled as extra contribution to ground capacitance.
+   
+ \end{itemize}
+\end{column}
+
+\begin{column}[T]{5 cm}
+\begin{figure}[h]
+\centering
+\includegraphics[height=3cm, width = 4cm]{./images/tree.jpeg}
+\caption{RC Tree Network with discrete elements.}
+\end{figure}
+\end{column}
+\end{columns}
+\begin{itemize}
+   \item Root of the tree is source of the signal and leaves are the sinks.
+ \item Thc wiring tree are modeled by a tree of distributed RC sections.
+\item For tree structured networks, find the delay through each segment
+as the R (electrical resistance) times the downstream C (electrical capacitance). Sum the delays
+from the root to the sink.
+ 
+\end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Van Ginnekan Algorithm}
+\begin{itemize}
+   \item The input is a wiring tree with estimated parasitics and a set of possible
+buffer locations, fanout capacitive loadings and required arrival times. 
+\item The wire parasitics in turn are dependent on the wire-lengths which are
+assumed to be pre-specified. 
+\item The problem is to decide buffers locations at the pre-specified positions such that the
+required time at the root is maximized. 
+\item \textbf{Traverses the wiring tree topologically from primary outputs to primary inputs. At
+each possible buffer location, it evaluates the possibility of adding a buffer and its
+effect on the required time and capacitive loading at that node.}
+\item This is followed by local pruning of the generated solutions. The pruning
+criteria removes those solutions from the set of potential solutions
+which have another solution with better values of both required time.
+ \footnote{Buffer Placement in Distributed RC-tree Networks for Minimal Elmore Delay, Lukas P.P.P.
+van Ginncken}  
+ \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Van Ginnekan Algorithm}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=\textwidth]{./images/diag1.jpg}
+\end{figure}
+\end{frame}
+\begin{frame}{Van Ginnekan Algorithm}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=\textwidth]{./images/diag2.jpg}
+\end{figure}
+Pick Solution with largest slack. Follow arrow to get the solutions.
+\end{frame}
+%%%%%%%%%%%%%5
+\begin{frame}{Challenges}
+   \begin{itemize}
+      \item It was assumed that wire-lengths of individual segments in the wiring tree are known
+a-priori through some estimation engine. 
+\item Estimating wirelengths especially in a traditional top down design ﬂow is extremely hard and
+error prone. This makes estimation of delay and capacitive loading of
+the individual wire segments extremely difﬁcult. 
+\item Even if the wire-length estimates are accurate, the fabrication variability/uncertainty
+makes accurate estimation of wire parasitics an intractable problem. The traditional
+deterministic approach possesses serious disadvantages.
+\item Van Ginneken’s algorithm is optimal only under the condition that at most one
+buffer may be placed on each wire. This constraint will severely restrict the solution space when
+multiple buffers are required to effectively drive wires with large lumped RCs.\footnote{Wire
+Segmenting for Improved Buffer Insertion, Charles Alpert and Anirudh Devgan, DAC, 97}
+\item People have shown better algorithms
+using probabilistic models.\footnote{A Probabilistic Approach to Buffer Insertion, Vishal Khandelwal
+et. all, ICCAD 03}
+\end{itemize}
+\end{frame}
+
+\end{document}
