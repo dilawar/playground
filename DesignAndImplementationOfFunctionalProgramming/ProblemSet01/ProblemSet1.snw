@@ -1,0 +1,196 @@
+\documentclass{article} \usepackage{noweb}
+\usepackage{amsmath,amssymbs,amsthm} \title{Problem Set 01}
+\author{Dilawar Singh \\ \texttt{dilawar@ee.iitb.ac.in}} \date{\today}
+\begin{document} \maketitle
+
+\subsection{Import}
+<<Import Modules>>=
+module Main where
+import Prelude
+
+@
+\subsection{Problem 01}
+
+\paragraph{Statement}
+
+Define a function isPrime which accepts a number n, and  returns  True
+if n is prime and False otherwise.
+
+\par
+
+The easiest way to test the primality of a number is to  test  whether
+it has any  factor.   This  is  usally  done  by  dividing  the  given
+number by the smallest prime number i.e. 2 first.  If this divides the
+number, we declare that the given number is not prime, else we  repeat
+the process with next prime number. 
+
+
+However this approach requires that we must  have  a  table  of  prime
+numbers. It is not possible to use this approach if such table is not
+available. To overcome this difficuly, one can choose to simply divide
+the given number by integers starting with 2 till one finds a factor.
+It has been proven that for a number $N$, one need not test beyond the
+integer $\ceil{\sqrt{N}}$. 
+
+Let us produce a list of numbers from 2 to $\ceil{$\sqrt{N}}$ (both
+inclusive). Function \texttt{mkList} takes an integer and returns a
+list of integers. Note that, we are passing n (type Integer) to a function
+\texttt{sqrt} which only works on reals. It is customary to convert it
+to real before passing it to function \texttt{sqrt}. We have used
+\texttt{fromInteger} for this purpose.
+
+After creating an list of such numbers, we need to test whether any
+element of this list divided the given number $N$. Function
+[[isAnyFactor]] is written to determine this. It invokes another
+function [[isFactor]] which determine whether two numbers are coprime
+to each other of not. If they are coprime i.e. one does not divide
+other then it return False, else it returns True. Using [[isFactor]]
+recursively, we built a list of Boolean values. If all of the elements
+of this list are False, then we clain that there is no number between
+1 and $\sqrt{N}$ which divides the number $N$, thus, the number is
+obviously prime.
+
+One surely can do some tricks. Such as by looking at the last digit,
+we can discard all the even numbers and multiple of 5 etc.
+
+<<Problem 01>>=
+{- We need to make a list of integers from 2 to square root of N -}
+
+mkList :: Integer -> [Integer]
+mkList n = [2..k] 
+    where k = toInteger (ceiling $ sqrt $ fromIntegral n )
+
+{- Check if a number divides another number. -}
+isFactor :: Integer -> Integer -> Bool
+isFactor m n | mod m n == 0 = True
+             | otherwise = False
+
+--myMap :: (Integer -> Integer -> Bool) ->  [Integer] -> [Bool]
+--myMap f  [] = []
+--myMap f  (x:xs) = f x : myMap f xs
+
+{- This function returns array of Bool indicating if the element from
+the list created by mkList is a factor of the given number or not. -}
+
+isAnyFactor :: Integer -> [Integer] -> [Bool]
+isAnyFactor _ [] = [False]
+isAnyFactor z (x:xs) = isFactor z x : isAnyFactor z xs
+
+
+{- Now test for primality. If a given number is prime, then all of the
+elements in the list returned ny isAnyFactor must be False -}
+isPrime :: Integer -> Bool
+isPrime n = not $ or $ isAnyFactor n (mkList n)
+
+@
+
+\subsubsection{Problem 2}
+\paragraph{Statement}
+A  perfect  number  is  one  whose  factors  add  up  to  itself.
+For example 6 and 28 are the  first two perfect numbers.  Write a function
+isPerfect that returns True if the input number n is a perfect  number
+and False otherwise.
+
+\par
+
+<<Problem 02>>=
+
+@
+3. Write a  function powerFactor which takes two arguments  a and b and
+returns the largest n such that
+
+      a  =  b  ^  n  *  k  if  a  ≥  b  b  =  a  ^  n  *  k  otherwise
+
+<<Problem 03>>=
+
+@
+4.  Simpson’s rule is an accurate  method  of  numerical  integration.
+Using Simpson’s rule, the integral of a function f  between  a  and  b
+is approximated as
+
+  h/3* [y_0 + 4*y_1 + 2*y_2 + 4*y_3 + 2*y_4 +...  + 4*y_{n-1}  +  y_n]
+
+   where h = (b−a)/n, for some even integer  n,  and  y_k  =  f(a+kh).
+(Increasing  n  increases  the   accuracy   of   the   approximation.)
+
+Define a procedure simpson that takes as arguments f, a, b, and n  and
+returns the value of the  integral, computed using Simpson’s Rule. Use
+your procedure to integrate cube between 0 and 1 (with n = 100  and  n
+= 1000).
+
+
+<<Problem 04>>=
+
+@
+
+5.  Represent a fraction as (Float, Float), and define  the  following
+functions:
+
+ (a) makeFraction a b which returns (x,y) such that x/y  is  a  proper
+fraction equivalent to a / b. For eg, make fraction 10 4 should return
+(5,2).
+
+ (b) numer f and denom f which return the numerator and denominator of
+f.
+
+ (c) sum f1 f2 which returns f1+f2.
+
+ (d) equal f1 f2 which returns True if  f1==f2  and  False  otherwise.
+
+
+<<Problem 05>>=
+
+@
+6. Define a function numReverse  n which returns a number whose digits
+are the in the reverse order of the  digits  in  n.   numReverse  1234
+should   return   4321,   numReverse    120    should    return    21.
+
+
+<<Problem 06>>=
+
+@
+7.  Write a function hasSolution a b  c  which  returns  True  if  the
+diophantine equation ax + by = c has solutions for integer values of x
+and y. Hint : What condition should  c satisfy with respect to a and b
+for a solution to exist?
+
+<<Problem 07>>=
+
+@
+8.  The zero of a function f(x) is a value x_0 such that x_0 = f  (x_0
+). If x_n is the current approximation of the zero of a function, then
+a better  approximation x_{n+1} is  given by:
+
+               x_{n+1}  = x_n −  f (x_n)/f' (x_n )
+
+Use this fact to define a function approxSqrt n  eps  that  finds  the
+square root of a number n.  It stops when one approximation is  within
+eps of the next.
+
+<<Problem 08>>=
+
+@
+9.  Write a function phi  n  representing  Euler’s  totient  function.
+
+In mathematical notation, phi(m) is defined as the number of  positive
+integers r(1 <= r <= m) that are coprime to m.  Example: m = 10 has  r
+= 1,3,7,9.  Thus phi(10) = 4.
+<<Problem 09>>=
+
+@
+
+<<*>>= 
+<<Import Modules>> 
+<<Problem 01>> 
+<<Problem 02>> 
+<<Problem 03>>
+<<Problem 04>> 
+<<Problem 05>> 
+<<Problem 06>> 
+<<Problem 07>> 
+<<Problem 08>>
+<<Problem 09>>
+
+@ 
+
+\end{document}
