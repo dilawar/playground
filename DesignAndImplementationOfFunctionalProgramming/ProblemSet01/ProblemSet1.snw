@@ -247,13 +247,40 @@ of magnitude bigger than the other one.
 <<Problem 03>>=
 
 -- Pick a choice
-powerFactor :: Integer -> Integer ->  Bool
-powerFactor a b | a > b = powerFactor b a
-              | (logBase a b) > 100 = powerFact1 a b
-              | otherwise = powerFact2 a b
+powerFactor :: Integer -> Integer ->  Int
+powerFactor a b | b == 0 = error "Divide by zero."
+                | b == 1 
+                    = error "You freaking kidding me! Divisor is 1."
+                | a == 0 = error "-Nan"
+                | b > a = powerFactor b a
+                | floor (logBase (fromInteger b) (fromInteger a)) >
+                10 = powerFact1 a b [0..]
+                | otherwise = powerFact2 a b 
 
-powerFact1 :: Integer -> Integer -> Bool
-powerFact1 ::
+{- It is important that in 'otherwise' guard, we put (x-1) rather that
+head(xs) - 1. Why? -}
+
+powerFact1 :: Integer -> Integer -> [Int] -> Int
+powerFact1 a b (x:xs)| (mod a (b^x) == 0) && (div a (b^x) /= 0)= powerFact1 a b xs
+                     | otherwise = x - 1
+
+powerFact2 :: Integer -> Integer -> Int
+powerFact2 a b = getPosition . recurseOverList a b $ makeList a b
+
+makeList :: Integer -> Integer -> [Int]
+makeList m n = [1..p] where
+    p = floor (logBase (fromInteger n) (fromInteger m))
+
+recurseOverList :: Integer -> Integer -> [Int]  -> [Bool]
+recurseOverList m n [] = []
+recurseOverList m n (x:xs) | (mod m (n^x) == 0) && (div m (n^x) /= 0) =
+                           True : recurseOverList m n xs
+                           | otherwise = False : recurseOverList m n
+                           xs
+getPosition :: [Bool] -> Int
+getPosition [] = 0
+getPosition (x:xs) | x == True = 1 + getPosition xs
+                     | otherwise = 0
 
 @
 \subsection{Problem 4}
@@ -276,38 +303,38 @@ your procedure to integrate cube between 0 and 1 (with n = 100  and  n
 \par
 
 <<Problem 04>>=
-simpson :: (Float-> Float) -> Float -> Float -> Integer -> Float
-simpson f a b n | mod n 2 == 1 = goodSimpson f a b (n+1)
-                | a < b = error "Limit values are insane!"
-                | n <= 0 = error "n should be a positive integer."
-                | otherwise = goodSimpson f a b n
-
-goodSimpson :: (Float -> Float) -> Float -> Float -> Integer -> Float
-goodSimpson f a b n = (h/3) * (sum arraySimpson) 
-    where h = (b - a) / (fromIntegral n)
-          arraySimpson = makeArraySimpson f a b n h
-
-makeArraySimpson :: (Float -> Float) -> Float -> Float -> Integer -> Float -> [Float]
-makeArraySimpson f a b n h 
-    = let
-        first = f a
-        last = f b
-        oddArray = mkOArray [1..n`div`2] where
-            mkOArray :: [Integer] -> [Float]
-            mkOArray [] = []
-            mkOArray (x:xs) = (f (a+(2*x-1)*h)) : mkOArray xs
-
-        evenArray = mkEArray [1..n`div`2-1] where
-            mkEArray :: [Integer] -> [Float]
-            mkEArray [] = []
-            mkEArray (x:xs) = (f (a+2.0*x*h)) : mkEArray xs 
-    in 
-        concat [oddArray, evenArray]
-            
-cube :: (Float -> Float)
-cube x = sqrt x
-
-testSimpson = simpson cube 1.2 2.3 1000
+--simpson :: (Float-> Float) -> Float -> Float -> Integer -> Float
+--simpson f a b n | mod n 2 == 1 = goodSimpson f a b (n+1)
+--                | a < b = error "Limit values are insane!"
+--                | n <= 0 = error "n should be a positive integer."
+--                | otherwise = goodSimpson f a b n
+--
+--goodSimpson :: (Float -> Float) -> Float -> Float -> Integer -> Float
+--goodSimpson f a b n = (h/3) * (sum arraySimpson) 
+--    where h = (b - a) / (fromIntegral n)
+--          arraySimpson = makeArraySimpson f a b n h
+--
+--makeArraySimpson :: (Float -> Float) -> Float -> Float -> Integer -> Float -> [Float]
+--makeArraySimpson f a b n h 
+--    = let
+--        first = f a
+--        last = f b
+--        oddArray = mkOArray [1..n`div`2] where
+--            mkOArray :: [Integer] -> [Float]
+--            mkOArray [] = []
+--            mkOArray (x:xs) = (f (a+(2*x-1)*h)) : mkOArray xs
+--
+--        evenArray = mkEArray [1..n`div`2-1] where
+--            mkEArray :: [Integer] -> [Float]
+--            mkEArray [] = []
+--            mkEArray (x:xs) = (f (a+2.0*x*h)) : mkEArray xs 
+--    in 
+--        concat [oddArray, evenArray]
+--            
+--cube :: (Float -> Float)
+--cube x = sqrt x
+--
+--testSimpson = simpson cube 1.2 2.3 1000
 @
 
 5.  Represent a fraction as (Float, Float), and define  the  following
