@@ -30,28 +30,35 @@ numbers. It is not possible to use this approach if such table is not
 available. To overcome this difficuly, one can choose to simply divide
 the given number by integers starting with 2 till one finds a factor.
 It has been proven that for a number $N$, one need not test beyond the
-integer $\lceil \sqrt{N} \rceil$. 
+integer $\lfloor \sqrt{N} \rfloor$ (Why?). 
 
-Let us produce a list of numbers from 2 to $\lceil \sqrt{N} \rceil$ (both
-inclusive). Function \texttt{mkList} takes an integer and returns a
-list of integers. Note that, we are passing n (type Integer) to a function
-\texttt{sqrt} which only works on reals. It is customary to convert it
-to real before passing it to function \texttt{sqrt}. We have used
+
+Let us produce a list\footnote{Think of a list a dictionary with keys
+and corresponding elements in it.} of numbers from 2 to $\lfloor
+\sqrt{N} \rfloor$ (both inclusive). Function \texttt{mkList} takes an
+integer and returns a list of integers. Note that, in function
+[[mkList]], we are passing n (with type \texttt{Integer}) to a
+function \texttt{sqrt} which only works on Reals. Since, [[sqrt]] is
+only defined for reals, it is customary to convert its argument to a
+real before passing it to function \texttt{sqrt}. We have used
 \texttt{fromInteger} for this purpose.
 
-After creating an list of such numbers, we need to test whether any
-element of this list divided the given number $N$. Function
-[[isAnyFactor]] is written to determine this. It invokes another
-function [[isFactor]] which determine whether two numbers are coprime
-to each other of not. If they are coprime i.e. one does not divide
-other then it return False, else it returns True. Using [[isFactor]]
-recursively, we built a list of Boolean values. If all of the elements
-of this list are False, then we clain that there is no number between
-1 and $\sqrt{N}$ which divides the number $N$, thus, the number is
-obviously prime.
+
+After creating a such a list, we need to test whether any element of
+this list divides the given number $N$. Function [[isAnyFactor]] is
+written to determine this. One can see that it uses another function
+[[isFactor]] which tests if two numbers are coprime \footnote{Two
+numbers are coprime if and only if they do not have any commonn
+factor.} or not. If they are coprime then it return \texttt{False},
+else it returns \texttt{True}. In function [[isFactor]], we built a
+    list of Boolean values using [[isFactor]] recursively. Now, it
+    follows that if all elements of this list are \texttt{False}, then
+    there is no number between 1 and $\sqrt{N}$ which divides the
+    number $N$, or, \textbf{the number is prime}.
+
 
 One surely can do some tricks. Such as by looking at the last digit,
-we can discard all the even numbers and multiple of 5 etc.
+we can discard all even numbers and multiple of 5 etc.
 
 <<Problem 01>>=
 {- We need to make a list of integers from 2 to square root of N -}
@@ -91,6 +98,14 @@ For example 6 and 28 are the  first two perfect numbers.  Write a function
 isPerfect that returns True if the input number n is a perfect  number
 and False otherwise. 
 
+\paragraph{Discussion}
+    
+    Oddly, here we consider 1 as a factor of a number $N$. Why would one
+    do that is beyond the level of intellect of this writer. May be the
+    urge to define a new fascinating number was very strong among
+    Mathematician.
+
+
 First we write a function [[getFactors]]. This function will return
 all of factors including 1. Then the testing is trivial. We note that
 it is enough to test whether any number between 1 and $N/2$ is a
@@ -98,9 +113,11 @@ factor of $N$. We collect then in a list and check if the [[sum]] of
 this list is equal to the $N$. If yes, then the number is perfect,
 otherwise, it is not-perfect I guess.
 
+
 \paragraph{Note}
-This algorith should not be run on large numbers
-even if your computer run faster than Chacha Chaudhary's brain.
+This algorithm should not be run on large numbers
+even if your computer run faster than Chacha Chaudhary's brain. This
+implementation is naive.
 
 
 <<Problem 02>>=
@@ -136,43 +153,105 @@ a  =  b^n  *  k \quad  if \quad a \geq  b \\
 b  =  a^n  *  k \quad otherwise 
 \end{equation*}
 
-\pargraph{Solution}
+\pargraph{Discussion}
 It says that find  $n$ such that $a^n$ divides $b$ if $ a \geq
 b$ otherwise swap $a$ and $b$ and find such $n$ again. 
 
-We start from a simple observation that if for any $n$, $a^n$ does not
+We start from a piece of information that if for any $n$, $a^n$ does not
 divide $b$ then no power of $a$ higher than $n$ will do so. We give a
 formal proof for this.
 
 \begin{proof} 
 If for some $m > 0$, $a^m$ does not divide $b$ then the theorem says
-that there exists no $n \geq 1$ such that $a^{m+n}$ divides $b$.
-Since $a^m$ divided $b$, we can write
+that there exists no $n \geq 1$ such that $a^{m+n}$ divides $b$. We
+will assume otherwise and show that there is a contradition. Since
+contradition of a \textbf{false} statement is believed to be
+\textbf{true}, we will conclude other proof.
+
+It is known that $a^m$ does not divide $b$ so we can write it in
+following way using Chinese remainder theorem.
 \begin{equation*}
 b = n_1 a^m + r_1, \quad where \quad 0 < r_1 < a^m 
 \end{equation*}
-Now assume that $a^{m+n}$ divides $b$. Then,
+
+Now we write our assumption that $a^{m+n}$ divides $b$. Using the
+Chinese remainder theorem, we write
 \begin{equation*}
 b = n_2 a^{m+n} 
 \end{equation*}
-Combining both of these results, we get
+
+Above relations implies that
 \begin{equation*}
 n_1 a^m + r_1 = n_2 a^{m+n} \\
-a^m (n_1 - n_2 a^n ) = r_1 \implies 0 < a^n n_2 - n_1 < 1 \\
+\implies a^m (n_1 - n_2 a^n ) = r_1 \\
+\implies 0 < n_2 a^n - n_1 < 1
 \end{equation*}
-which is not possible since $a^n n_2 - n_1$ is an integer and thus can
-have its value between 0 and 1. 
+
+which is impossible since $n_2 a^n - n_1$ is an integer and thus it can
+never have its value between 0 and 1. This contradiction concludes our
+proof.
 \end{proof}
 
-Now the implementation of this problem. From above proof we have to
-find a lowest power of $a$ which divied $b$ and we will keep
-increamenting $a^n$ till we get a situation when $a^n$ does not divide
-b. If $b \geq a$ then we can swap $a$ and $b$ and use the same
-algorithm.
+Now talk about the algorithm for this problem. From above proof we
+have to find a lowest power of $a$ which divied $b$ i.e. $a^0$ since
+power 0 always divides. Then we will keep increamenting $n$ in $a^n$
+till we get a situation when $a^n$ does not divide b anyfurther.
+Whenever $a^n$ stops dividing $b$ we conclude that $n-1$ is the
+highest power of $a$ which can divide $b$. If $b \geq a$ then we can
+swap $a$ and $b$ and use the same algorithm.
+
+In this algorithm, we test on the values of $n$ starting from $0$.
+Then we keep on increamenting $n$ till we reach our desired result.
+For such a test, \texttt{while} loop in \textbf{c language} are most
+natural although one can use \texttt{for} and \texttt{if-then-else}
+constructs also. I love recursion and Haskell provides an elegent way
+to implement recursion. Usually the recursion is done over a list and
+unless the list is bounded recursion will not terminate. And yes,
+defining infinite list is possible in Haskell.
+
+In this particular problem, one can choose to recurse over an infinite
+list and breaks the recursion when one finds that $a^n$ no longer
+divides $b$. Such a condition is guarenteed to occur and hence one can
+safely assume that the recursion will terminate given that a condition
+(guard) has been implemented to test if such a condition is satisfied.
+This approach is implemented in [[powerFact1]] function.
+
+
+Another approach, which I prefer, is to look out for finite list and
+write a function which recurse over it and keeps the result in a list
+[[resultList]]. When such a recursion is over, one simply reads out
+the desired result or the location of desired result from the
+[[resultList]]. This approach has one weakness. We may get our $n$ in
+the first recursion itself (if $a$ and $b$ are coprime) but our
+algorithm will not stop here. This approach is implemented as
+[[powerFact2]] function.
+
+
+Is there any merit in [[powerFact2]] as than personal whim. There is
+at least one benefit of using [[powerFact]]. If one has to implement
+this algorithm as a VLSI circuit, then one saves some hardware. In
+[[powerFact1]], the extra guard is additonal harware. In
+[[powerFact2]], we may save some hardware at the cost of some extra
+time. So how much time one has to sacrifice?
+
+\paragraph{Timing analysis} We can write $ b = k a^n + r \quad where
+\quad 0 \leq r \le a^n $. If $r =0 $ then $a^n$ divides $b$. This
+implies that $k a^n \leq b \le k a^(n+1) \implies n \le \log_a
+\frac{b}{k} \le n+1 $. If $a^n$ divides $b$ than $ n =
+\log_a\frac{b}{k}$. Thus, $n$ is not a very large number assuming that
+$k=1$ (worst case).
+
+There is strong case for [[powerFact1]] when one number is many order
+of magnitude bigger than the other one.
 
 <<Problem 03>>=
+
+-- Pick a choice
 powerFact :: Int -> Int ->  [Bool]
-powerFact a b | 
+powerFact a b | a > b = powerFact b a
+              | (div a b) > 1000 = powerFact1 a b
+              | otherwise = powerFact2 a b
+
 
 @
 \subsection{Problem 4}
