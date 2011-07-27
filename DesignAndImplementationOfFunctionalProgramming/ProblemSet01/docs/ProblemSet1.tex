@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass{report}% ===> this file was generated automatically by noweave --- better not edit it
 \usepackage{noweb}
 \usepackage{amsmath,amsthm} 
 \title{Problem Set 01}
@@ -7,12 +7,12 @@
 \date{\today}
 \begin{document} \maketitle
 
-\section{Import}
-<<Import Modules>>=
+\subsection{Import}
+\nwfilename{ProblemSet1.snw}\nwbegincode{1}\moddef{Import Modules}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 module Main where
 import Prelude
 
-@
+\nwendcode{}\nwbegindocs{2}\nwdocspar
 \section{Problem 01}
 \paragraph{Statement}
 Define a function isPrime which accepts a number n, and  returns  True
@@ -37,21 +37,21 @@ Let us produce a list\footnote{Think of a list a dictionary with keys
 and corresponding elements in it.} of numbers from 2 to $\lfloor
 \sqrt{N} \rfloor$ (both inclusive). Function \texttt{mkList} takes an
 integer and returns a list of integers. Note that, in function
-[[mkList]], we are passing n (with type \texttt{Integer}) to a
-function \texttt{sqrt} which only works on Reals. Since, [[sqrt]] is
+{\Tt{}mkList\nwendquote}, we are passing n (with type \texttt{Integer}) to a
+function \texttt{sqrt} which only works on Reals. Since, {\Tt{}sqrt\nwendquote} is
 only defined for reals, it is customary to convert its argument to a
 real before passing it to function \texttt{sqrt}. We have used
 \texttt{fromInteger} for this purpose.
 
 
 After creating a such a list, we need to test whether any element of
-this list divides the given number $N$. Function [[isAnyFactor]] is
+this list divides the given number $N$. Function {\Tt{}isAnyFactor\nwendquote} is
 written to determine this. One can see that it uses another function
-[[isFactor]] which tests if two numbers are coprime \footnote{Two
+{\Tt{}isFactor\nwendquote} which tests if two numbers are coprime \footnote{Two
 numbers are coprime if and only if they do not have any commonn
 factor.} or not. If they are coprime then it return \texttt{False},
-else it returns \texttt{True}. In function [[isFactor]], we built a
-    list of Boolean values using [[isFactor]] recursively. Now, it
+else it returns \texttt{True}. In function {\Tt{}isFactor\nwendquote}, we built a
+    list of Boolean values using {\Tt{}isFactor\nwendquote} recursively. Now, it
     follows that if all elements of this list are \texttt{False}, then
     there is no number between 1 and $\sqrt{N}$ which divides the
     number $N$, or, \textbf{the number is prime}.
@@ -60,14 +60,14 @@ else it returns \texttt{True}. In function [[isFactor]], we built a
 One surely can do some tricks. Such as by looking at the last digit,
 we can discard all even numbers and multiple of 5 etc.
 
-<<Problem 01>>=
-{- We need to make a list of integers from 2 to square root of N -}
+\nwenddocs{}\nwbegincode{3}\moddef{Problem 01}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+\{- We need to make a list of integers from 2 to square root of N -\}
 
 mkList :: Integer -> [Integer]
 mkList n = [2..k] 
     where k = toInteger (ceiling $ sqrt $ fromIntegral n )
 
-{- Check if a number divides another number. -}
+\{- Check if a number divides another number. -\}
 isFactor :: Integer -> Integer -> Bool
 isFactor m n | mod m n == 0 = True
              | otherwise = False
@@ -76,20 +76,20 @@ isFactor m n | mod m n == 0 = True
 --myMap f  [] = []
 --myMap f  (x:xs) = f x : myMap f xs
 
-{- This function returns array of Bool indicating if the element from
-the list created by mkList is a factor of the given number or not. -}
+\{- This function returns array of Bool indicating if the element from
+the list created by mkList is a factor of the given number or not. -\}
 
 isAnyFactor :: Integer -> [Integer] -> [Bool]
 isAnyFactor _ [] = [False]
 isAnyFactor z (x:xs) = isFactor z x : isAnyFactor z xs
 
 
-{- Now test for primality. If a given number is prime, then all of the
-elements in the list returned ny isAnyFactor must be False -}
+\{- Now test for primality. If a given number is prime, then all of the
+elements in the list returned ny isAnyFactor must be False -\}
 isPrime :: Integer -> Bool
 isPrime n = not $ or $ isAnyFactor n (mkList n)
 
-@
+\nwendcode{}\nwbegindocs{4}\nwdocspar
 
 \section{Problem 2}
 \paragraph{Statement}
@@ -106,10 +106,10 @@ and False otherwise.
     Mathematician.
 
 
-First we write a function [[getFactors]]. This function will return
+First we write a function {\Tt{}getFactors\nwendquote}. This function will return
 all of factors including 1. Then the testing is trivial. We note that
 it is enough to test whether any number between 1 and $N/2$ is a
-factor of $N$. We collect then in a list and check if the [[sum]] of
+factor of $N$. We collect then in a list and check if the {\Tt{}sum\nwendquote} of
 this list is equal to the $N$. If yes, then the number is perfect,
 otherwise, it is not-perfect I guess.
 
@@ -120,15 +120,15 @@ even if your computer run faster than Chacha Chaudhary's brain. This
 implementation is naive.
 
 
-<<Problem 02>>=
-{- Make a list which contains number from 1 to n/2. All of the factor
-reside in this range only. -}
+\nwenddocs{}\nwbegincode{5}\moddef{Problem 02}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+\{- Make a list which contains number from 1 to n/2. All of the factor
+reside in this range only. -\}
 
 mkListAgain :: Integer -> [Integer]
 mkListAgain n = [1..k]
     where k = floor ((fromIntegral n)/ 2)
 
-{- Construct a list which contains all factors of n. -}
+\{- Construct a list which contains all factors of n. -\}
 allFactors :: Integer -> [Integer] -> [Integer]
 allFactors _ [] = []
 allFactors n (x:xs) | (isFactor n x) == True = x : (allFactors n xs)
@@ -137,12 +137,12 @@ allFactors n (x:xs) | (isFactor n x) == True = x : (allFactors n xs)
 getFactors :: Integer -> [Integer]
 getFactors n = allFactors n $ mkListAgain n
 
-{- Now testing is trivial. -}
+\{- Now testing is trivial. -\}
 isPerfect :: Integer -> Bool
 isPerfect n | sum (getFactors n) == n = True
             | otherwise = False
 
-@
+\nwendcode{}\nwbegindocs{6}\nwdocspar
 \section{Problem 3}
 \paragraph{Statement}
 Write a  function powerFactor which takes two arguments  a and b and
@@ -214,48 +214,46 @@ list and breaks the recursion when one finds that $a^n$ no longer
 divides $b$. Such a condition is guarenteed to occur and hence one can
 safely assume that the recursion will terminate given that a condition
 (guard) has been implemented to test if such a condition is satisfied.
-This approach is implemented in [[powerFact1]] function.
+This approach is implemented in {\Tt{}powerFact1\nwendquote} function.
 
 
 Another approach, which I prefer, is to look out for finite list and
 write a function which recurse over it and keeps the result in a list
-[[resultList]]. When such a recursion is over, one simply reads out
+{\Tt{}resultList\nwendquote}. When such a recursion is over, one simply reads out
 the desired result or the location of desired result from the
-[[resultList]]. This approach has one weakness. We may get our $n$ in
+{\Tt{}resultList\nwendquote}. This approach has one weakness. We may get our $n$ in
 the first recursion itself (if $a$ and $b$ are coprime) but our
 algorithm will not stop here. This approach is implemented as
-[[powerFact2]] function.
+{\Tt{}powerFact2\nwendquote} function.
 
 
-Is there any merit in [[powerFact2]] as than personal whim. There is
-at least one benefit of using [[powerFact]]. If one has to implement
+Is there any merit in {\Tt{}powerFact2\nwendquote} as than personal whim. There is
+at least one benefit of using {\Tt{}powerFact\nwendquote}. If one has to implement
 this algorithm as a VLSI circuit, then one saves some hardware. In
-[[powerFact1]], the extra guard is additonal harware. In
-[[powerFact2]], we may save some hardware at the cost of some extra
+{\Tt{}powerFact1\nwendquote}, the extra guard is additonal harware. In
+{\Tt{}powerFact2\nwendquote}, we may save some hardware at the cost of some extra
 time. So how much time one has to sacrifice?
 
 \paragraph{Timing analysis} We can write $ b = k a^n + r \quad where
 \quad 0 \leq r \le a^n $. If $r =0 $ then $a^n$ divides $b$. This
 implies that $k a^n \leq b \le k a^(n+1) \implies n \le \log_a
-\frac{b}{k} \le n+1 $. If $a^n$ divides $b$ than $ n = \log_a
-\frac{b}{k}$. Thus, $n$ is not a very large number assuming that $k=1$
-(worst case).
+\frac{b}{k} \le n+1 $. If $a^n$ divides $b$ than $ n =
+\log_a\frac{b}{k}$. Thus, $n$ is not a very large number assuming that
+$k=1$ (worst case).
 
-There is strong case for [[powerFact1]] when one number is many order
+There is strong case for {\Tt{}powerFact1\nwendquote} when one number is many order
 of magnitude bigger than the other one.
 
-<<Problem 03>>=
+\nwenddocs{}\nwbegincode{7}\moddef{Problem 03}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 
 -- Pick a choice
-powerFactor :: Integer -> Integer ->  Bool
-powerFactor a b | a > b = powerFactor b a
-              | (logBase a b) > 100 = powerFact1 a b
+powerFact :: Int -> Int ->  [Bool]
+powerFact a b | a > b = powerFact b a
+              | (div a b) > 1000 = powerFact1 a b
               | otherwise = powerFact2 a b
 
-powerFact1 :: Integer -> Integer -> Bool
-powerFact1 ::
 
-@
+\nwendcode{}\nwbegindocs{8}\nwdocspar
 \subsection{Problem 4}
 Simpson’s rule is an accurate  method  of  numerical  integration.
 Using Simpson’s rule, the integral of a function f  between  a  and  b
@@ -275,7 +273,7 @@ your procedure to integrate cube between 0 and 1 (with n = 100  and  n
 
 \par
 
-<<Problem 04>>=
+\nwenddocs{}\nwbegincode{9}\moddef{Problem 04}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 simpson :: (Float-> Float) -> Float -> Float -> Integer -> Float
 simpson f a b n | mod n 2 == 1 = goodSimpson f a b (n+1)
                 | a < b = error "Limit values are insane!"
@@ -308,7 +306,7 @@ cube :: (Float -> Float)
 cube x = sqrt x
 
 testSimpson = simpson cube 1.2 2.3 1000
-@
+\nwendcode{}\nwbegindocs{10}\nwdocspar
 
 5.  Represent a fraction as (Float, Float), and define  the  following
 functions:
@@ -325,25 +323,25 @@ f.
  (d) equal f1 f2 which returns True if  f1==f2  and  False  otherwise.
 
 
-<<Problem 05>>=
+\nwenddocs{}\nwbegincode{11}\moddef{Problem 05}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 
-@
+\nwendcode{}\nwbegindocs{12}\nwdocspar
 6. Define a function numReverse  n which returns a number whose digits
 are the in the reverse order of the  digits  in  n.   numReverse  1234
 should   return   4321,   numReverse    120    should    return    21.
 
 
-<<Problem 06>>=
+\nwenddocs{}\nwbegincode{13}\moddef{Problem 06}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 
-@
+\nwendcode{}\nwbegindocs{14}\nwdocspar
 7.  Write a function hasSolution a b  c  which  returns  True  if  the
 diophantine equation ax + by = c has solutions for integer values of x
 and y. Hint : What condition should  c satisfy with respect to a and b
 for a solution to exist?
 
-<<Problem 07>>=
+\nwenddocs{}\nwbegincode{15}\moddef{Problem 07}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 
-@
+\nwendcode{}\nwbegindocs{16}\nwdocspar
 8.  The zero of a function f(x) is a value x_0 such that x_0 = f  (x_0
 ). If x_n is the current approximation of the zero of a function, then
 a better  approximation x_{n+1} is  given by:
@@ -354,29 +352,30 @@ Use this fact to define a function approxSqrt n  eps  that  finds  the
 square root of a number n.  It stops when one approximation is  within
 eps of the next.
 
-<<Problem 08>>=
+\nwenddocs{}\nwbegincode{17}\moddef{Problem 08}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 
-@
+\nwendcode{}\nwbegindocs{18}\nwdocspar
 9.  Write a function phi  n  representing  Euler’s  totient  function.
 
 In mathematical notation, phi(m) is defined as the number of  positive
 integers r(1 <= r <= m) that are coprime to m.  Example: m = 10 has  r
 = 1,3,7,9.  Thus phi(10) = 4.
-<<Problem 09>>=
+\nwenddocs{}\nwbegincode{19}\moddef{Problem 09}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 
-@
+\nwendcode{}\nwbegindocs{20}\nwdocspar
 
-<<*>>=
-<<Import Modules>> 
-<<Problem 01>> 
-<<Problem 02>> 
-<<Problem 03>> 
-<<Problem 04>> 
-<<Problem 05>> 
-<<Problem 06>> 
-<<Problem 07>> 
-<<Problem 08>> 
-<<Problem 09>> 
-@ 
+\nwenddocs{}\nwbegincode{21}\moddef{*}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+\LA{}Import Modules\RA{} 
+\LA{}Problem 01\RA{} 
+\LA{}Problem 03\RA{}
+\LA{}Problem 04\RA{} 
+\LA{}Problem 05\RA{} 
+\LA{}Problem 06\RA{} 
+\LA{}Problem 07\RA{} 
+\LA{}Problem 08\RA{}
+\LA{}Problem 09\RA{}
+
+\nwendcode{}\nwbegindocs{22}\nwdocspar
 
 \end{document}
+\nwenddocs{}
