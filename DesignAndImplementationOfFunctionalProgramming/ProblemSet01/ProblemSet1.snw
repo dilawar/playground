@@ -1,6 +1,10 @@
-\documentclass{article} \usepackage{noweb}
-\usepackage{amsmath,amssymbs,amsthm} \title{Problem Set 01}
-\author{Dilawar Singh \\ \texttt{dilawar@ee.iitb.ac.in}} \date{\today}
+\documentclass{report}
+\usepackage{noweb}
+\usepackage{amsmath,amsthm} 
+\title{Problem Set 01}
+\author{Dilawar Singh \\ 
+\texttt{dilawar@ee.iitb.ac.in}} 
+\date{\today}
 \begin{document} \maketitle
 
 \subsection{Import}
@@ -9,14 +13,10 @@ module Main where
 import Prelude
 
 @
-\subsection{Problem 01}
-
+\section{Problem 01}
 \paragraph{Statement}
-
 Define a function isPrime which accepts a number n, and  returns  True
 if n is prime and False otherwise.
-
-\par
 
 The easiest way to test the primality of a number is to  test  whether
 it has any  factor.   This  is  usally  done  by  dividing  the  given
@@ -30,9 +30,9 @@ numbers. It is not possible to use this approach if such table is not
 available. To overcome this difficuly, one can choose to simply divide
 the given number by integers starting with 2 till one finds a factor.
 It has been proven that for a number $N$, one need not test beyond the
-integer $\ceil{\sqrt{N}}$. 
+integer $\lceil \sqrt{N} \rceil$. 
 
-Let us produce a list of numbers from 2 to $\ceil{$\sqrt{N}}$ (both
+Let us produce a list of numbers from 2 to $\lceil \sqrt{N} \rceil$ (both
 inclusive). Function \texttt{mkList} takes an integer and returns a
 list of integers. Note that, we are passing n (type Integer) to a function
 \texttt{sqrt} which only works on reals. It is customary to convert it
@@ -84,43 +84,149 @@ isPrime n = not $ or $ isAnyFactor n (mkList n)
 
 @
 
-\subsubsection{Problem 2}
+\section{Problem 2}
 \paragraph{Statement}
 A  perfect  number  is  one  whose  factors  add  up  to  itself.
 For example 6 and 28 are the  first two perfect numbers.  Write a function
 isPerfect that returns True if the input number n is a perfect  number
-and False otherwise.
+and False otherwise. 
 
-\par
+First we write a function [[getFactors]]. This function will return
+all of factors including 1. Then the testing is trivial. We note that
+it is enough to test whether any number between 1 and $N/2$ is a
+factor of $N$. We collect then in a list and check if the [[sum]] of
+this list is equal to the $N$. If yes, then the number is perfect,
+otherwise, it is not-perfect I guess.
+
+\paragraph{Note}
+This algorith should not be run on large numbers
+even if your computer run faster than Chacha Chaudhary's brain.
+
 
 <<Problem 02>>=
+{- Make a list which contains number from 1 to n/2. All of the factor
+reside in this range only. -}
+
+mkListAgain :: Integer -> [Integer]
+mkListAgain n = [1..k]
+    where k = floor ((fromIntegral n)/ 2)
+
+{- Construct a list which contains all factors of n. -}
+allFactors :: Integer -> [Integer] -> [Integer]
+allFactors _ [] = []
+allFactors n (x:xs) | (isFactor n x) == True = x : (allFactors n xs)
+                   | otherwise = allFactors n xs
+
+getFactors :: Integer -> [Integer]
+getFactors n = allFactors n $ mkListAgain n
+
+{- Now testing is trivial. -}
+isPerfect :: Integer -> Bool
+isPerfect n | sum (getFactors n) == n = True
+            | otherwise = False
 
 @
-3. Write a  function powerFactor which takes two arguments  a and b and
+\section{Problem 3}
+\paragraph{Statement}
+Write a  function powerFactor which takes two arguments  a and b and
 returns the largest n such that
 
-      a  =  b  ^  n  *  k  if  a  ≥  b  b  =  a  ^  n  *  k  otherwise
+\begin{equation*}
+a  =  b^n  *  k \quad  if \quad a \geq  b \\ 
+b  =  a^n  *  k \quad otherwise 
+\end{equation*}
+
+\pargraph{Solution}
+It says that find  $n$ such that $a^n$ divides $b$ if $ a \geq
+b$ otherwise swap $a$ and $b$ and find such $n$ again. 
+
+We start from a simple observation that if for any $n$, $a^n$ does not
+divide $b$ then no power of $a$ higher than $n$ will do so. We give a
+formal proof for this.
+
+\begin{proof} 
+If for some $m > 0$, $a^m$ does not divide $b$ then the theorem says
+that there exists no $n \geq 1$ such that $a^{m+n}$ divides $b$.
+Since $a^m$ divided $b$, we can write
+\begin{equation*}
+b = n_1 a^m + r_1, \quad where \quad 0 < r_1 < a^m 
+\end{equation*}
+Now assume that $a^{m+n}$ divides $b$. Then,
+\begin{equation*}
+b = n_2 a^{m+n} 
+\end{equation*}
+Combining both of these results, we get
+\begin{equation*}
+n_1 a^m + r_1 = n_2 a^{m+n} \\
+a^m (n_1 - n_2 a^n ) = r_1 \implies 0 < a^n n_2 - n_1 < 1 \\
+\end{equation*}
+which is not possible since $a^n n_2 - n_1$ is an integer and thus can
+have its value between 0 and 1. 
+\end{proof}
+
+Now the implementation of this problem. From above proof we have to
+find a lowest power of $a$ which divied $b$ and we will keep
+increamenting $a^n$ till we get a situation when $a^n$ does not divide
+b. If $b \geq a$ then we can swap $a$ and $b$ and use the same
+algorithm.
 
 <<Problem 03>>=
+powerFact :: Int -> Int ->  [Bool]
+powerFact a b | 
 
 @
-4.  Simpson’s rule is an accurate  method  of  numerical  integration.
+\subsection{Problem 4}
+Simpson’s rule is an accurate  method  of  numerical  integration.
 Using Simpson’s rule, the integral of a function f  between  a  and  b
 is approximated as
 
-  h/3* [y_0 + 4*y_1 + 2*y_2 + 4*y_3 + 2*y_4 +...  + 4*y_{n-1}  +  y_n]
+  $h/3* [y_0 + 4*y_1 + 2*y_2 + 4*y_3 + 2*y_4 +...  + 4*y_{n-1}  +
+  y_n$
 
-   where h = (b−a)/n, for some even integer  n,  and  y_k  =  f(a+kh).
-(Increasing  n  increases  the   accuracy   of   the   approximation.)
+   where $h = (b−a)/n$, for some even integer  n,  and $y_k  =
+   f(a+kh)$.  (Increasing  n  increases  the   accuracy   of   the
+   approximation.)
 
 Define a procedure simpson that takes as arguments f, a, b, and n  and
 returns the value of the  integral, computed using Simpson’s Rule. Use
 your procedure to integrate cube between 0 and 1 (with n = 100  and  n
 = 1000).
 
+\par
 
 <<Problem 04>>=
+simpson :: (Float-> Float) -> Float -> Float -> Integer -> Float
+simpson f a b n | mod n 2 == 1 = goodSimpson f a b (n+1)
+                | a < b = error "Limit values are insane!"
+                | n <= 0 = error "n should be a positive integer."
+                | otherwise = goodSimpson f a b n
 
+goodSimpson :: (Float -> Float) -> Float -> Float -> Integer -> Float
+goodSimpson f a b n = (h/3) * (sum arraySimpson) 
+    where h = (b - a) / (fromIntegral n)
+          arraySimpson = makeArraySimpson f a b n h
+
+makeArraySimpson :: (Float -> Float) -> Float -> Float -> Integer -> Float -> [Float]
+makeArraySimpson f a b n h 
+    = let
+        first = f a
+        last = f b
+        oddArray = mkOArray [1..n`div`2] where
+            mkOArray :: [Integer] -> [Float]
+            mkOArray [] = []
+            mkOArray (x:xs) = (f (a+(2*x-1)*h)) : mkOArray xs
+
+        evenArray = mkEArray [1..n`div`2-1] where
+            mkEArray :: [Integer] -> [Float]
+            mkEArray [] = []
+            mkEArray (x:xs) = (f (a+2.0*x*h)) : mkEArray xs 
+    in 
+        concat [oddArray, evenArray]
+            
+cube :: (Float -> Float)
+cube x = sqrt x
+
+testSimpson = simpson cube 1.2 2.3 1000
 @
 
 5.  Represent a fraction as (Float, Float), and define  the  following
@@ -182,7 +288,6 @@ integers r(1 <= r <= m) that are coprime to m.  Example: m = 10 has  r
 <<*>>= 
 <<Import Modules>> 
 <<Problem 01>> 
-<<Problem 02>> 
 <<Problem 03>>
 <<Problem 04>> 
 <<Problem 05>> 
