@@ -326,51 +326,58 @@ approximate our function $f(x)$ with a quadratic which  passes
 through points which $f(x)$ takes on these values. By forcing this
 constrains, we get the 'simpson rule'.
 
-One interesting thing about this  approach is that this method is
-inherently parallel i.e. one can calculate area corrosponding to each
-interval in parallel and sum them up to get the results. Also one may
-like to calculate some part of the function more accurately. This
-extensive calculation can be done either by sending the job to more
-able processor or by dividing the job into more number sub-tasks (i.e.
-divide the interval). In any case, this should be done using
-concurrency. On these lines we design our implementation.
+One interesting thing about this algorithm is that it is inherently
+parallel i.e. one can calculate area corrosponding to each
+sub-interval in parallel and sum their results up to get the total
+area. Also one may like to calculate some part of the function more
+accurately - with finer approximation. This extensive calculation can
+be done either by sending the job to more able processor or by
+dividing the job into more number sub-tasks (i.e.  divide the
+sub-interval into finer sub-intervals). In any case, this should be
+done using concurrency. On these lines we design our implementation.
 
 \paragraph{Implementation}
 
+Our tompmost function [[simpson]] takes four arguements, f, a,
+b, n, where f is a function (Float -> Float), a is lower limit of
+integration, b is upper limit, and n is the number of parallel
+computations.
+
+Depending on the value of n, we will break up our interval. In this
+implementation we break the interval into equal interval and each such
+interval is computed in parallel. To compute each sub-interval, we
+write [[simpsonSub]] which requiers limits of integration calculated
+using a, b, and n and even number of intervals for approximation.
 
 <<Problem 04>>=
-simpson :: (Float-> Float) -> Float -> Float -> Integer -> Float
-simpson f a b n | mod n 2 == 1 = goodSimpson f a b (n+1)
-                | a < b = error "Limit values are insane!"
-                | n <= 0 = error "n should be a positive integer."
-                | otherwise = goodSimpson f a b n
+
+-- Test case , not neccessarily same as defined in document. 
+
+simpsonTest :: (Float-> Float) -> Float -> Float -> Integer -> Float
+simpsonTest f a b n 
+    | mod n 2 == 1 = goodSimpson f a b (n+1)
+    | a > b = error "Upper limit is less than the lower limit!"
+    | n <= 0 = error "n should be a positive integer."
+    | otherwise = goodSimpson f a b n
 
 goodSimpson :: (Float -> Float) -> Float -> Float -> Integer -> Float
-goodSimpson f a b n = (h/3) * (sum arraySimpson) 
+goodSimpson f a b n = (h/3) * (sum $ makeArraySimpson f a b [0..n] h)
     where h = (b - a) / (fromIntegral n)
-          arraySimpson = makeArraySimpson f a b n h
 
-makeArraySimpson :: (Float -> Float) -> Float -> Float -> Integer -> Float -> [Float]
-makeArraySimpson f a b n h 
-    = let
-        first = f a
-        last = f b
-        oddArray = mkOArray [1..n`div`2] where
-            mkOArray :: [Integer] -> [Float]
-            mkOArray [] = []
-            mkOArray (x:xs) = (f (a+(2*x-1)*h)) : mkOArray xs
+makeArraySimpson :: (Float -> Float) -> Float -> Float -> [Integer] -> Float -> [Float]
+makeArraySimpson f a b [] _ = []
+makeArraySimpson f a b (x:xs) h 
+    | x == 0 = (f  a) : makeArraySimpson f a b xs h
+    | xs == [] = (f  b) : makeArraySimpson f a b xs h
+    | mod x 2 /= 0 = (4.0 * f(a+(fromIntegral x)*h)) : makeArraySimpson f a b xs h
+    | mod x 2 == 0 = (2.0 * f(a+(fromIntegral x)*h)) : makeArraySimpson f a b xs h
 
-        evenArray = mkEArray [1..n`div`2-1] where
-            mkEArray :: [Integer] -> [Float]
-            mkEArray [] = []
-            mkEArray (x:xs) = (f (a+2.0*x*h)) : mkEArray xs 
-    in 
-        concat [oddArray, evenArray]
-            
+
+
 cube :: (Float -> Float)
-cube x = sqrt x
+cube x = x^2 - 2*x + 1 
 
-testSimpson = simpson cube 1.2 2.3 1000
+testSimpson = simpsonTest cube 0 4 1000
 @
 
 5.  Represent a fraction as (Float, Float), and define  the  following
