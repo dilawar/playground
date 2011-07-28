@@ -1,5 +1,6 @@
 \documentclass{article}
 \usepackage{noweb}
+\usepackage{hyperref}
 \usepackage{amsmath,amsthm} 
 \title{Problem Set 01}
 \author{Dilawar Singh \\ 
@@ -261,9 +262,10 @@ powerFactor a b | b == 0 = error "Divide by zero."
 head(xs) - 1. Why? -}
 
 powerFact1 :: Integer -> Integer -> [Int] -> Int
-powerFact1 a b (x:xs)| (mod a (b^x) == 0) && (div a (b^x) /= 0)= powerFact1 a b xs
+powerFact1 a b (x:xs)| (mod a (b^x) == 0) = powerFact1 a b xs
                      | otherwise = x - 1
 
+{- Here is our lengthy function. -}
 powerFact2 :: Integer -> Integer -> Int
 powerFact2 a b = getPosition . recurseOverList a b $ makeList a b
 
@@ -273,14 +275,16 @@ makeList m n = [1..p] where
 
 recurseOverList :: Integer -> Integer -> [Int]  -> [Bool]
 recurseOverList m n [] = []
-recurseOverList m n (x:xs) | (mod m (n^x) == 0) && (div m (n^x) /= 0) =
-                           True : recurseOverList m n xs
+recurseOverList m n (x:xs) | (mod m (n^x) == 0) = True : recurseOverList m n xs
                            | otherwise = False : recurseOverList m n
                            xs
+
+-- It takes an array of booleans and return the position where
+-- False has occured first time.
 getPosition :: [Bool] -> Int
 getPosition [] = 0
 getPosition (x:xs) | x == True = 1 + getPosition xs
-                     | otherwise = 0
+                   | otherwise = 0
 
 @
 \subsection{Problem 4}
@@ -300,41 +304,73 @@ returns the value of the  integral, computed using Simpson’s Rule. Use
 your procedure to integrate cube between 0 and 1 (with n = 100  and  n
 = 1000).
 
-\par
+\paragraph{Discussion}
+Simpson rule is very accurate yet sufficiently simple  for
+numerical integration
+\footnote{\href{http://www.youtube.com/watch?v=uc4xJsi99bk}{A nice
+tutorial on Simpson Rule.}}. We breaks the region of integration into
+even number of smaller subregion (not neccessarily equal). Then we
+calculate the area of each subregion and adds all them up. The
+function is approximated by a quadratic in each subregion.
+
+Assume that our function $f(x)$ is to be integrated over a range $R = [a,
+b]$. First we divide $R$ into $2m$ number of smaller intervals where $m
+\geq 1$. Usually we chose these intervals to be equal for simplicity.
+Equallity of region is a not a condition enforced by simpson method.
+We can mark these sub-intervals on the x-axis as $a, x_1, x_2 \ldots
+x_{2m-1} , b$.
+
+Consider a interval $x_{even}, x_{odd}, x_{even}$. Surely, our
+function $f(x)$ is defined over them and have some values. We
+approximate our function $f(x)$ with a quadratic which  passes
+through points which $f(x)$ takes on these values. By forcing this
+constrains, we get the 'simpson rule'.
+
+One interesting thing about this  approach is that this method is
+inherently parallel i.e. one can calculate area corrosponding to each
+interval in parallel and sum them up to get the results. Also one may
+like to calculate some part of the function more accurately. This
+extensive calculation can be done either by sending the job to more
+able processor or by dividing the job into more number sub-tasks (i.e.
+divide the interval). In any case, this should be done using
+concurrency. On these lines we design our implementation.
+
+\paragraph{Implementation}
+
 
 <<Problem 04>>=
---simpson :: (Float-> Float) -> Float -> Float -> Integer -> Float
---simpson f a b n | mod n 2 == 1 = goodSimpson f a b (n+1)
---                | a < b = error "Limit values are insane!"
---                | n <= 0 = error "n should be a positive integer."
---                | otherwise = goodSimpson f a b n
---
---goodSimpson :: (Float -> Float) -> Float -> Float -> Integer -> Float
---goodSimpson f a b n = (h/3) * (sum arraySimpson) 
---    where h = (b - a) / (fromIntegral n)
---          arraySimpson = makeArraySimpson f a b n h
---
---makeArraySimpson :: (Float -> Float) -> Float -> Float -> Integer -> Float -> [Float]
---makeArraySimpson f a b n h 
---    = let
---        first = f a
---        last = f b
---        oddArray = mkOArray [1..n`div`2] where
---            mkOArray :: [Integer] -> [Float]
---            mkOArray [] = []
---            mkOArray (x:xs) = (f (a+(2*x-1)*h)) : mkOArray xs
---
---        evenArray = mkEArray [1..n`div`2-1] where
---            mkEArray :: [Integer] -> [Float]
---            mkEArray [] = []
---            mkEArray (x:xs) = (f (a+2.0*x*h)) : mkEArray xs 
---    in 
---        concat [oddArray, evenArray]
---            
---cube :: (Float -> Float)
---cube x = sqrt x
---
---testSimpson = simpson cube 1.2 2.3 1000
+simpson :: (Float-> Float) -> Float -> Float -> Integer -> Float
+simpson f a b n | mod n 2 == 1 = goodSimpson f a b (n+1)
+                | a < b = error "Limit values are insane!"
+                | n <= 0 = error "n should be a positive integer."
+                | otherwise = goodSimpson f a b n
+
+goodSimpson :: (Float -> Float) -> Float -> Float -> Integer -> Float
+goodSimpson f a b n = (h/3) * (sum arraySimpson) 
+    where h = (b - a) / (fromIntegral n)
+          arraySimpson = makeArraySimpson f a b n h
+
+makeArraySimpson :: (Float -> Float) -> Float -> Float -> Integer -> Float -> [Float]
+makeArraySimpson f a b n h 
+    = let
+        first = f a
+        last = f b
+        oddArray = mkOArray [1..n`div`2] where
+            mkOArray :: [Integer] -> [Float]
+            mkOArray [] = []
+            mkOArray (x:xs) = (f (a+(2*x-1)*h)) : mkOArray xs
+
+        evenArray = mkEArray [1..n`div`2-1] where
+            mkEArray :: [Integer] -> [Float]
+            mkEArray [] = []
+            mkEArray (x:xs) = (f (a+2.0*x*h)) : mkEArray xs 
+    in 
+        concat [oddArray, evenArray]
+            
+cube :: (Float -> Float)
+cube x = sqrt x
+
+testSimpson = simpson cube 1.2 2.3 1000
 @
 
 5.  Represent a fraction as (Float, Float), and define  the  following
