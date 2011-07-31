@@ -12,7 +12,21 @@
 <<Import Modules>>=
 module Main where
 import Prelude
+import Control.Parallel
+@
+We need to define some of functions which we will need in the course
+of solving these problems. Since Haskell does not let different kind
+of types to mix with each other, we have to 'coerce' them explicitly.
+[[Prelude]] gives extensive support for this, however, we still need
+to define some function mostly to save typing.
 
+Also some function have been redefined to shorten their names.
+
+<<Define MyFunctions>>=
+intToFloat :: Int -> Float
+intToFloat n = fromInteger . toInteger $ n
+
+fI = fromInteger
 @
 \section{Problem 01}
 \paragraph{Statement}
@@ -343,28 +357,71 @@ b, n, where f is a function (Float -> Float), a is lower limit of
 integration, b is upper limit, and n is the number of parallel
 computations.
 
-Depending on the value of n, we will break up our interval. In this
-implementation we break the interval into equal interval and each such
+We will break up our interval into n sub-interval. In this
+implementation we break the interval into equal parts and each such
 interval is computed in parallel. To compute each sub-interval, we
-write [[simpsonSub]] which requiers limits of integration calculated
-using a, b, and n and even number of intervals for approximation.
+write [[simpsonSub]]. [[simosonSub]] creates a list of n elements and
+map method [[simpson]] on it. One should avoid Weak Head Normal Form.
+
 
 <<Problem 04>>=
+{- 
+    Create a list which contains limit-points (a_i, b_i, n_i) and the
+    number of points for each interval.
+-}
+mkListOfIntervals :: Float -> Float -> Int -> [(Float, Float)]
+mkListOfIntervals a b n = listOfSubIntervals a [1..n]
+                            ((b-a)/(intToFloat n))
 
--- Test case , not neccessarily same as defined in document. 
+{- 
+    'points' are number of points in each subinterval. For example if
+    the subinterval (1,2) is to be broken into 1000 sub-interval  then
+    point value should be 1000. It should be even though we have given
+    a 'error-handling' in topmost function. If 'point' is not an even
+    number  than  we  convert  it  into  the  nearest   even   number.
 
-simpsonTest :: (Float-> Float) -> Float -> Float -> Integer -> Float
-simpsonTest f a b n 
-    | mod n 2 == 1 = goodSimpson f a b (n+1)
+    NOTE : IN THIS IMPLEMENTATION THE POINT VALUE HAS BEEN FIXED TO
+    THE VALUE OF 1000.
+-}
+
+listOfSubIntervals :: Float -> [Int] -> Float -> [(Float, Float)]
+listOfSubIntervals a [] _ = []
+listOfSubIntervals a (x:xs) h
+    | h == 0.00 = error "Interval is zero.!"
+    | otherwise = ( a  + (intToFloat $ (-) x 1)*h , ( a +
+    ((*) (intToFloat x) h))) : listOfSubIntervals a xs h
+
+{- 
+    To avoid Weak Head Normal Form (WHNF) we need to force the 
+    evalution of list. Otherwise lazy-evalution will give us weak
+    head normal form which we do not want.
+-}
+forceList :: [a] -> ()
+forceList [] = ()
+forceList (x:xs) = pseq x forceList xs
+
+{-
+    This is our top-most function. 'n' is number of parallel
+    computation in this function.
+-}
+
+simpson :: (Float-> Float) -> Float -> Float -> Int -> Float
+simpson f a b n 
     | a > b = error "Upper limit is less than the lower limit!"
     | n <= 0 = error "n should be a positive integer."
-    | otherwise = goodSimpson f a b n
+    | otherwise = sum $ callSimpson f (mkListOfIntervals a b n)
 
-goodSimpson :: (Float -> Float) -> Float -> Float -> Integer -> Float
+callSimpson :: (Float -> Float) -> [(Float, Float)] -> [Float]
+callSimpson f [] = []
+callSimpson f (x:xs) = (goodSimpson f (fst x) (snd x) 100) `pseq` 
+                        ((goodSimpson f (fst x) (snd x) 100) : callSimpson f xs)
+
+
+goodSimpson :: (Float -> Float) -> Float -> Float -> Int -> Float
 goodSimpson f a b n = (h/3) * (sum $ makeArraySimpson f a b [0..n] h)
     where h = (b - a) / (fromIntegral n)
 
-makeArraySimpson :: (Float -> Float) -> Float -> Float -> [Integer] -> Float -> [Float]
+makeArraySimpson :: (Float -> Float) -> Float -> Float -> [Int] -> Float -> [Float]
 makeArraySimpson f a b [] _ = []
 makeArraySimpson f a b (x:xs) h 
     | x == 0 = (f  a) : makeArraySimpson f a b xs h
@@ -372,12 +429,10 @@ makeArraySimpson f a b (x:xs) h
     | mod x 2 /= 0 = (4.0 * f(a+(fromIntegral x)*h)) : makeArraySimpson f a b xs h
     | mod x 2 == 0 = (2.0 * f(a+(fromIntegral x)*h)) : makeArraySimpson f a b xs h
 
-
-
 cube :: (Float -> Float)
 cube x = x^2 - 2*x + 1 
 
-testSimpson = simpsonTest cube 0 4 1000
+testSimpson = simpson cube 0 4 1000
 @
 
 5.  Represent a fraction as (Float, Float), and define  the  following
@@ -438,6 +493,7 @@ integers r(1 <= r <= m) that are coprime to m.  Example: m = 10 has  r
 
 <<*>>=
 <<Import Modules>> 
+<<Define MyFunctions>> 
 <<Problem 01>> 
 <<Problem 02>> 
 <<Problem 03>> 
