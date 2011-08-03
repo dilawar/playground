@@ -1,0 +1,43 @@
+%Filename:  construct_bdd.c
+%Description:  This is a stand-alone program to construct a
+%Reduced order Binary Decision diagram. It is written in
+%non-literate style although care has been taken to explain thing
+%as clearly as possible.
+%
+%    Version:  1.0
+%    Created:  Wednesday 03 August 2011 08:26:02  IST
+%   Revision:  none
+%   Compiler:  gcc
+%
+%     Author:  (c) 2011, Dilawar Singh, dilawar@ee.iitb.ac.in
+%  Institute:  Indian Institute of Technology Bombay
+
+\section{Introduction}
+ 
+We plan to use Standaard template libraries (STL). It provides some
+advanced data-structures with many pre-defined functions to manipulate
+them. All include file will appear [[Includes]]
+
+<<Includes>>=
+#include	<stdio.h>
+#include	<string.h>
+#include	<error.h>
+#include	<ctype.h>
+#include	<stdlib.h>
+#include	<stdarg.h>
+#include	"construct_bdd.h"
+
+@
+\section{Read input arguments}
+
+<<MainFunction>>=
+int main (int argc, char** argv)
+{
+    return EXIT_SUCCESS;
+}
+
+@
+<<*>>=
+<<Includes>>
+<<MainFunction>>
+
