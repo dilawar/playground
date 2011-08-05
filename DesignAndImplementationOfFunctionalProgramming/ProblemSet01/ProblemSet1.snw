@@ -429,10 +429,10 @@ makeArraySimpson f a b (x:xs) h
     | mod x 2 /= 0 = (4.0 * f(a+(fromIntegral x)*h)) : makeArraySimpson f a b xs h
     | mod x 2 == 0 = (2.0 * f(a+(fromIntegral x)*h)) : makeArraySimpson f a b xs h
 
-cube :: (Float -> Float)
-cube x = x^2 - 2*x + 1 
+myF :: (Float -> Float)
+myF x = x^2 - 2*x + 1 
 
-testSimpson = simpson cube 0 4 1000
+testSimpson = simpson myF 0 4 1000
 @
 
 5.  Represent a fraction as (Float, Float), and define  the  following
@@ -503,6 +503,11 @@ integers r(1 <= r <= m) that are coprime to m.  Example: m = 10 has  r
 <<Problem 07>> 
 <<Problem 08>> 
 <<Problem 09>> 
+main :: IO ()
+main = do
+    x <- simpson myF 0.3 2.3 100
+    putStrLn "The result is:" 
+    putStrLn (show x)
 @ 
 
 \end{document}

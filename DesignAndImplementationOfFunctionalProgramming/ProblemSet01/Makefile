@@ -15,8 +15,8 @@
 SHELL = /bin/sh
 NOTANGLE = notangle 
 NOWEAVE = noweave -delay # it implies -n option. Automatic latex wrapper will not be includeded in out tex file.
-HC = ghci
-HFLAGS = #--make -threaded -eventlog 
+HC = ghc
+HFLAGS = --make -threaded -eventlog 
 HFLAGS2 = -odir ./codes -outputdir .
 
 $(file) : $(file).snw

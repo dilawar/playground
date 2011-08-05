@@ -1,5 +1,6 @@
-\documentclass{report}% ===> this file was generated automatically by noweave --- better not edit it
+\documentclass{article}% ===> this file was generated automatically by noweave --- better not edit it
 \usepackage{noweb}
+\usepackage{hyperref}
 \usepackage{amsmath,amsthm} 
 \title{Problem Set 01}
 \author{Dilawar Singh \\ 
@@ -7,7 +8,7 @@
 \date{\today}
 \begin{document} \maketitle
 
-\subsection{Import}
+\section{Import}
 \nwfilename{ProblemSet1.snw}\nwbegincode{1}\moddef{Import Modules}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 module Main where
 import Prelude
@@ -237,9 +238,9 @@ time. So how much time one has to sacrifice?
 \paragraph{Timing analysis} We can write $ b = k a^n + r \quad where
 \quad 0 \leq r \le a^n $. If $r =0 $ then $a^n$ divides $b$. This
 implies that $k a^n \leq b \le k a^(n+1) \implies n \le \log_a
-\frac{b}{k} \le n+1 $. If $a^n$ divides $b$ than $ n =
-\log_a\frac{b}{k}$. Thus, $n$ is not a very large number assuming that
-$k=1$ (worst case).
+\frac{b}{k} \le n+1 $. If $a^n$ divides $b$ than $ n = \log_a
+\frac{b}{k}$. Thus, $n$ is not a very large number assuming that $k=1$
+(worst case).
 
 There is strong case for {\Tt{}powerFact1\nwendquote} when one number is many order
 of magnitude bigger than the other one.
@@ -247,11 +248,43 @@ of magnitude bigger than the other one.
 \nwenddocs{}\nwbegincode{7}\moddef{Problem 03}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 
 -- Pick a choice
-powerFact :: Int -> Int ->  [Bool]
-powerFact a b | a > b = powerFact b a
-              | (div a b) > 1000 = powerFact1 a b
-              | otherwise = powerFact2 a b
+powerFactor :: Integer -> Integer ->  Int
+powerFactor a b | b == 0 = error "Divide by zero."
+                | b == 1 
+                    = error "You freaking kidding me! Divisor is 1."
+                | a == 0 = error "-Nan"
+                | b > a = powerFactor b a
+                | floor (logBase (fromInteger b) (fromInteger a)) >
+                10 = powerFact1 a b [0..]
+                | otherwise = powerFact2 a b 
 
+\{- It is important that in 'otherwise' guard, we put (x-1) rather that
+head(xs) - 1. Why? -\}
+
+powerFact1 :: Integer -> Integer -> [Int] -> Int
+powerFact1 a b (x:xs)| (mod a (b^x) == 0) = powerFact1 a b xs
+                     | otherwise = x - 1
+
+\{- Here is our lengthy function. -\}
+powerFact2 :: Integer -> Integer -> Int
+powerFact2 a b = getPosition . recurseOverList a b $ makeList a b
+
+makeList :: Integer -> Integer -> [Int]
+makeList m n = [1..p] where
+    p = floor (logBase (fromInteger n) (fromInteger m))
+
+recurseOverList :: Integer -> Integer -> [Int]  -> [Bool]
+recurseOverList m n [] = []
+recurseOverList m n (x:xs) | (mod m (n^x) == 0) = True : recurseOverList m n xs
+                           | otherwise = False : recurseOverList m n
+                           xs
+
+-- It takes an array of booleans and return the position where
+-- False has occured first time.
+getPosition :: [Bool] -> Int
+getPosition [] = 0
+getPosition (x:xs) | x == True = 1 + getPosition xs
+                   | otherwise = 0
 
 \nwendcode{}\nwbegindocs{8}\nwdocspar
 \subsection{Problem 4}
@@ -271,41 +304,89 @@ returns the value of the  integral, computed using Simpson’s Rule. Use
 your procedure to integrate cube between 0 and 1 (with n = 100  and  n
 = 1000).
 
-\par
+\paragraph{Discussion}
+Simpson rule is very accurate yet sufficiently simple  for
+numerical integration
+\footnote{\href{http://www.youtube.com/watch?v=uc4xJsi99bk}{A nice
+tutorial on Simpson Rule.}}. We breaks the region of integration into
+even number of smaller subregion (not neccessarily equal). Then we
+calculate the area of each subregion and adds all them up. The
+function is approximated by a quadratic in each subregion.
+
+Assume that our function $f(x)$ is to be integrated over a range $R = [a,
+b]$. First we divide $R$ into $2m$ number of smaller intervals where $m
+\geq 1$. Usually we chose these intervals to be equal for simplicity.
+Equallity of region is a not a condition enforced by simpson method.
+We can mark these sub-intervals on the x-axis as $a, x_1, x_2 \ldots
+x_{2m-1} , b$.
+
+Consider a interval $x_{even}, x_{odd}, x_{even}$. Surely, our
+function $f(x)$ is defined over them and have some values. We
+approximate our function $f(x)$ with a quadratic which  passes
+through points which $f(x)$ takes on these values. By forcing this
+constrains, we get the 'simpson rule'.
+
+One interesting thing about this algorithm is that it is inherently
+parallel i.e. one can calculate area corrosponding to each
+sub-interval in parallel and sum their results up to get the total
+area. Also one may like to calculate some part of the function more
+accurately - with finer approximation. This extensive calculation can
+be done either by sending the job to more able processor or by
+dividing the job into more number sub-tasks (i.e.  divide the
+sub-interval into finer sub-intervals). In any case, this should be
+done using concurrency. On these lines we design our implementation.
+
+\paragraph{Implementation}
+
+Our tompmost function {\Tt{}simpson\nwendquote} takes four arguements, f, a,
+b, n, where f is a function (Float -> Float), a is lower limit of
+integration, b is upper limit, and n is the number of parallel
+computations.
+
+We will break up our interval into n sub-interval. In this
+implementation we break the interval into equal parts and each such
+interval is computed in parallel. To compute each sub-interval, we
+write {\Tt{}simpsonSub\nwendquote}. {\Tt{}simosonSub\nwendquote} creates a list of n elements and
+map method {\Tt{}simpson\nwendquote} on it. One should avoid Weak Head Normal Form.
+
 
 \nwenddocs{}\nwbegincode{9}\moddef{Problem 04}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+\{- 
+    Create a list which contains limit-points and number in which the
+    interval is to be broken.
+-\}
+mkListOfIntervals :: Float -> Float -> Int -> [(Float, Float)]
+mkListOfIntervals a b n = listOfSubIntervals a b [1..n] (b-a)/n
+
+listOfSubIntervals :: Float -> Float -> [Int] -> Float -> [(Float, Float)]
+listOfSubIntervals a b (x:xs) h
+    | a == b = error "Interval is zero.!"
+    | xs == [] = []
+    | otherwise = (a+(x-1)*h , a+x*h) : listOfSubIntervals a b xs h
+
 simpson :: (Float-> Float) -> Float -> Float -> Integer -> Float
-simpson f a b n | mod n 2 == 1 = goodSimpson f a b (n+1)
-                | a < b = error "Limit values are insane!"
-                | n <= 0 = error "n should be a positive integer."
-                | otherwise = goodSimpson f a b n
+simpson f a b n 
+    | mod n 2 == 1 = goodSimpson f a b (n+1)
+    | a > b = error "Upper limit is less than the lower limit!"
+    | n <= 0 = error "n should be a positive integer."
+    | otherwise = goodSimpson f a b n
 
 goodSimpson :: (Float -> Float) -> Float -> Float -> Integer -> Float
-goodSimpson f a b n = (h/3) * (sum arraySimpson) 
+goodSimpson f a b n = (h/3) * (sum $ makeArraySimpson f a b [0..n] h)
     where h = (b - a) / (fromIntegral n)
-          arraySimpson = makeArraySimpson f a b n h
 
-makeArraySimpson :: (Float -> Float) -> Float -> Float -> Integer -> Float -> [Float]
-makeArraySimpson f a b n h 
-    = let
-        first = f a
-        last = f b
-        oddArray = mkOArray [1..n`div`2] where
-            mkOArray :: [Integer] -> [Float]
-            mkOArray [] = []
-            mkOArray (x:xs) = (f (a+(2*x-1)*h)) : mkOArray xs
+makeArraySimpson :: (Float -> Float) -> Float -> Float -> [Integer] -> Float -> [Float]
+makeArraySimpson f a b [] _ = []
+makeArraySimpson f a b (x:xs) h 
+    | x == 0 = (f  a) : makeArraySimpson f a b xs h
+    | xs == [] = (f  b) : makeArraySimpson f a b xs h
+    | mod x 2 /= 0 = (4.0 * f(a+(fromIntegral x)*h)) : makeArraySimpson f a b xs h
+    | mod x 2 == 0 = (2.0 * f(a+(fromIntegral x)*h)) : makeArraySimpson f a b xs h
 
-        evenArray = mkEArray [1..n`div`2-1] where
-            mkEArray :: [Integer] -> [Float]
-            mkEArray [] = []
-            mkEArray (x:xs) = (f (a+2.0*x*h)) : mkEArray xs 
-    in 
-        concat [oddArray, evenArray]
-            
 cube :: (Float -> Float)
-cube x = sqrt x
+cube x = x^2 - 2*x + 1 
 
-testSimpson = simpson cube 1.2 2.3 1000
+testSimpson = simpsonTest cube 0 4 1000
 \nwendcode{}\nwbegindocs{10}\nwdocspar
 
 5.  Represent a fraction as (Float, Float), and define  the  following
@@ -367,14 +448,14 @@ integers r(1 <= r <= m) that are coprime to m.  Example: m = 10 has  r
 \nwenddocs{}\nwbegincode{21}\moddef{*}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 \LA{}Import Modules\RA{} 
 \LA{}Problem 01\RA{} 
-\LA{}Problem 03\RA{}
+\LA{}Problem 02\RA{} 
+\LA{}Problem 03\RA{} 
 \LA{}Problem 04\RA{} 
 \LA{}Problem 05\RA{} 
 \LA{}Problem 06\RA{} 
 \LA{}Problem 07\RA{} 
-\LA{}Problem 08\RA{}
-\LA{}Problem 09\RA{}
-
+\LA{}Problem 08\RA{} 
+\LA{}Problem 09\RA{} 
 \nwendcode{}\nwbegindocs{22}\nwdocspar
 
 \end{document}

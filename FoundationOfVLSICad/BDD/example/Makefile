@@ -1,11 +1,13 @@
 ###############################################################################
 # Makefile for literate programes. It creates pdf and dvi documents as
-# well as generate codes for execution,
+# well as generate codes for execution.
 #
-# USAGE : make <target> file=<filename>
-# <fileaname> must be without any extension. For example, if one wants to make
-# example.snw for generating a dvi file then one should use following command.
-# $ make dvi file=example
+# USAGE : 
+# $ make  -- To execute the program.
+# $ make dvi -- To make a dvi document.
+# $ make pdf -- To create a pdf document.
+# $ make showdvi
+# $ make showpdf
 #
 # (c) Dilawar, 2011
 # Email : dilawar@ee.iitb.ac.in
@@ -14,14 +16,16 @@
 ###############################################################################
 SHELL = /bin/sh
 NOTANGLE = notangle 
-NOWEAVE = noweave -delay # it implies -n option. Automatic latex wrapper will not be includeded in out tex file.
+NOWEAVE = noweave #-delay it implies -n option. Automatic latex wrapper will not be includeded in out tex file.
 CC = gcc 
 CFLAGS = -Wall -D DEBUG
+file = construct_bdd
 CFLAGS2 =
 
 $(file) : $(file).snw
-	$(NOTANGLE) $(file).snw > ./codes/$(file).c
-	$(CC) $(CFLAGS) $(file).c -o $(file)
+	$(NOTANGLE) -RHeader $< | cpif ./codes/$(file).h
+	$(NOTANGLE) $< | cpif ./codes/$(file).c
+	$(CC) $(CFLAGS) ./codes/$(file).c -o mybdd
 
 
 dvi : $(file).snw

@@ -94,10 +94,45 @@ keep hash of variables and cache of computer results.
               mem ----> ------------- 
 
 \end{verbatim}
+ 
+Data is stored here with a type called [[addr]] which is simply a 32
+bit unsigned integer. The [[addr_]] macro converts an ordinary pointer to
+[[addr]].
+
+<<GlobalVariables>>=
+typedef unsigned int addr;
+#define addr_ (p) ((addr)(size_t)(p))
+@ %def addr_ addr
 
 
+To build this infrastructure, we need to define followings.
 
-\paragraph{The BDD file}
+<<GlobalVariables>>=
+#define logPageSize        12
+#define memSize            (1<<29)
+#define pageSize           (1<<logPageSize) /* bytes per page */
+#define pageMask           (pageSize-1)
+#define pageInts           pageSize/sizeof(int)
+#define bddNode_ (a)       ((bddNode*)(size_t)(a))
+#define page_ (a)          ((page*)(size_t)(a))
+
+
+typedef struct nodeStruct
+{
+    addr lo, hi;
+    int varRef;
+    unsigned int index; /* variable id followed by random bits. */
+} bddNode;
+
+typedef struct pageStruct
+{
+    addr dat[pageInts];
+} page;
+
+@ %def bddNode nodeStruct page 
+  %def nodeStruct logPageSize memSize pageSize pageMask pageInts  bddNode_ page_     
+
+@ \paragraph{The BDD file}
 
 User should pass  BDD expression in a text file with a variable ordering.
 If a variable ordering is not given then a ordering is derived by looking
@@ -171,8 +206,9 @@ header file [[Header]] as to be consistant with general coding practise.
 \paragraph{Definitions}
 
 <<Definitions>>=
+
 /* Function to read my BDD expression file. */
-_bddExpression* readBDDFile (char* filePath);
+struct bddExpression* readBDDFile (char*);
 
 @
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -190,9 +226,6 @@ In global variables we have [[bddExpression]] and [[bddNode]] structures.
 #define ZERO            0
 #define ONE             1
 
-typedef char[VAR_SIZE] var_t;     /* var_t is my variable type. */
-typedef char[OP_SIZE] binop_t;
-
 struct bddExpression             /* structure for binary expressions. */
 {
     struct bddExpression *lBddExpr;
@@ -201,26 +234,21 @@ struct bddExpression             /* structure for binary expressions. */
     char *lVar, *rVar; 
 };
 
-/* structure for bdd node. */
-struct bddNode 
-{
-    var_t varName;
-    bddExpression* pBddExpr;
-    struct bddNode *pLO;            /* pointer to LO */
-    struct bddNode *pHI;            /* pointer to HI */
-};
+@ %def bddExpression 
 
-@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph{Functions}
+@\paragraph{Functions}
 
-\paragraph{Read BDD File}
+@\paragraph{Read BDD File}
 
 Function [[readBDDFile]] should take [[filePath]] as argument and return
 a data-structure containing BDD-expression. 
 
 <<readBDDFile>>=
-
+struct bddExpression* readBDDFile (char* pfile)
+{
+    return NULL;
+}
 
 @
 %%
