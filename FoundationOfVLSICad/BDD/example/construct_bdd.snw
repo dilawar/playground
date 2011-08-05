@@ -226,6 +226,8 @@ In global variables we have [[bddExpression]] and [[bddNode]] structures.
 #define ZERO            0
 #define ONE             1
 
+/* This won't possibly use. */
+
 struct bddExpression             /* structure for binary expressions. */
 {
     struct bddExpression *lBddExpr;
