@@ -1,0 +1,6 @@
+# This is a comment line.
+# One should give a variable ordering (optional)
+BDD1 ::= (|| x2 x3)
+BDD2 ::= (&& (! BDD1) x1)
+BDD0 ::= (~| BDD1 BDD2)
+
