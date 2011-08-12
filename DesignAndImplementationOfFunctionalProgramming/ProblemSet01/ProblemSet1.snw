@@ -469,18 +469,29 @@ for a solution to exist?
 <<Problem 07>>=
 
 @
-8.  The zero of a function f(x) is a value x_0 such that x_0 = f  (x_0
-). If x_n is the current approximation of the zero of a function, then
-a better  approximation x_{n+1} is  given by:
 
-               x_{n+1}  = x_n −  f (x_n)/f' (x_n )
+\section{Problem 7}
+The zero of a function $f(x)$ is a value $x_0$ such that $x_0 = f  (x_0
+)$. If $x_n$ is the current approximation of the zero of a function, then
+a better  approximation $x_{n+1}$ is  given by:
 
-Use this fact to define a function approxSqrt n  eps  that  finds  the
+              $ x_{n+1}  = x_n −  f (x_n)/f' (x_n )$
+
+Use this fact to define a function [[approxSqrt n  eps]] that  finds  the
 square root of a number n.  It stops when one approximation is  within
 eps of the next.
 
 <<Problem 08>>=
+approxSqrt :: Float -> Float -> Float
+approxSqrt n eps = helperApprox n n eps err where
+    err = n^2 - n
 
+helperApprox :: Float -> Float -> Float -> Float -> Float
+helperApprox n x eps1 err
+    | err < eps1 = x
+    | otherwise = helperApprox n (nextX x) eps1 (x - nextX x) where
+        nextX x = x - (x^2 - n)/(2*x)
+            
 @
 9.  Write a function phi  n  representing  Euler’s  totient  function.
 
@@ -505,9 +516,9 @@ integers r(1 <= r <= m) that are coprime to m.  Example: m = 10 has  r
 <<Problem 09>> 
 main :: IO ()
 main = do
-    x <- simpson myF 0.3 2.3 100
+ --   x <- simpson myF 0.3 2.3 100
     putStrLn "The result is:" 
-    putStrLn (show x)
+--    putStrLn (show x)
 @ 
 
 \end{document}
