@@ -12,7 +12,7 @@
 <<Import Modules>>=
 module Main where
 import Prelude
-import Control.Parallel
+import Control.Parallel -- To test simpson. 
 @
 We need to define some of functions which we will need in the course
 of solving these problems. Since Haskell does not let different kind
@@ -107,7 +107,6 @@ isPrime n = not $ or $ isAnyFactor n (mkList n)
 @
 
 \paragraph{Problem 2}
-\paragraph{Statement}
 A  perfect  number  is  one  whose  factors  add  up  to  itself.
 For example 6 and 28 are the  first two perfect numbers.  Write a function
 isPerfect that returns True if the input number n is a perfect  number
@@ -159,7 +158,6 @@ isPerfect n | sum (getFactors n) == n = True
 
 @
 \paragraph{Problem 3}
-\paragraph{Statement}
 Write a  function powerFactor which takes two arguments  a and b and
 returns the largest n such that
 
@@ -259,7 +257,7 @@ implies that $k a^n \leq b \le k a^(n+1) \implies n \le \log_a
 There is strong case for [[powerFact1]] when one number is many order
 of magnitude bigger than the other one.
 
-<<Problem 03>>=
+< <Problem 03>>=
 
 -- Pick a choice
 powerFactor :: Integer -> Integer ->  Int
@@ -301,7 +299,7 @@ getPosition (x:xs) | x == True = 1 + getPosition xs
                    | otherwise = 0
 
 @
-\subparagraph{Problem 4}
+\paragraph{Problem 4}
 Simpson’s rule is an accurate  method  of  numerical  integration.
 Using Simpson’s rule, the integral of a function f  between  a  and  b
 is approximated as
@@ -433,24 +431,23 @@ myF :: (Float -> Float)
 myF x = x^2 - 2*x + 1 
 
 testSimpson = simpson myF 0 4 1000
+@ %def simpson
 @
 
-5.  Represent a fraction as (Float, Float), and define  the  following
+\paragraph{Problem 5}  Represent a fraction as (Float, Float), and define  the  following
 functions:
 
- (a) makeFraction a b which returns (x,y) such that x/y  is  a  proper
-fraction equivalent to a / b. For eg, make fraction 10 4 should return
-(5,2).
+ (a) [[makeFraction a b]] which returns $(x,y)$ such that $\frac{x}{y}$  is  a
+ proper fraction equivalent to $\frac{a}{ b}$. For eg, [[makeFraction 10 4]] should return
+ (5,2).
 
  (b) numer f and denom f which return the numerator and denominator of
 f.
 
- (c) sum f1 f2 which returns f1+f2.
+ (c) sum $f_1$ $f_2$ which returns $f_1+f_2$.
 
- (d) equal f1 f2 which returns True if  f1==f2  and  False  otherwise.
+ (d) [[equal f1 f2]] which returns True if  $f1==f2$ and  False  otherwise.
 
-
-\paragraph{Discussion}
 
 A fraction is defined with type (Float, Float) which is  a rational number and can be
 converted into a type of (Int, Int). To represent this rational number into its
@@ -474,15 +471,18 @@ calculateGCD m n
 
 
 @
-6. Define a function numReverse  n which returns a number whose digits
+\paragraph{Problem 6} Define a function numReverse  n which returns a number whose digits
 are the in the reverse order of the  digits  in  n.   numReverse  1234
 should   return   4321,   numReverse    120    should    return    21.
 
+Firstly, we calulcate the value of left-most digit in the given number in
+radix-10 format using [[calcLength]] e.g. 132 has 1 at left-most position with
+value 2 i.e. $10^2$. Over this number, we now recurse the function
+[[helperNumRev]] which returns the reversed number. This function takes three
+arguments: $n$, number to reverse; $l$, value of left-most digit in $n$;
+$newNum$, final result to return initialised to $0$.
 
 <<Problem 06>>=
---numReverse :: Int -> [Int]
---numReverse n = makeReverseList n []
-
 calcLength :: Int -> Int -> Int
 calcLength n x
         | n < 10 = x
@@ -497,7 +497,7 @@ helperNumRev n l newNum
         | otherwise = helperNumRev (div n 10) (l-1) ((mod n 10)*(10^l) + newNum)
 
 @
-7.  Write a function hasSolution a b  c  which  returns  True  if  the
+\paragraph{Problem 7}  Write a function hasSolution a b  c  which  returns  True  if  the
 diophantine equation ax + by = c has solutions for integer values of x
 and y. Hint : What condition should  c satisfy with respect to a and b
 for a solution to exist?
