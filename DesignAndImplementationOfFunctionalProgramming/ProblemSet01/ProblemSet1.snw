@@ -450,7 +450,28 @@ f.
  (d) equal f1 f2 which returns True if  f1==f2  and  False  otherwise.
 
 
+\paragraph{Discussion}
+
+A fraction is defined with type (Float, Float) which is  a rational number and can be
+converted into a type of (Int, Int). To represent this rational number into its
+\texttt{minimum form}, one has to divide both numerator $num$ and denominator
+$den$ by $gcd(num, den)$ where $gcd(a,b)$ is the greatest common divisor of $a$
+and $b$.
+
+To calculate gcd of two numbers, one can use Euclid algorithm. Later we simply
+divide both numerator and denominator by their gcd.
+
 <<Problem 05>>=
+calculateGCD :: Integer -> Integer -> Integer
+calculateGCD m n 
+        | m == n =  m
+        | m * n == 0 = error "Zero"
+        | n > m = calculateGCD n m
+        | m `rem` n == 0 = n
+        | m `rem` n /= 0 = calculateGCD n (m `rem` n)
+        | otherwise = error ("Some exceptional error has occured." ++ 
+            " I am not designed to handle such an error. Existing...")
+
 
 @
 6. Define a function numReverse  n which returns a number whose digits
@@ -466,7 +487,7 @@ diophantine equation ax + by = c has solutions for integer values of x
 and y. Hint : What condition should  c satisfy with respect to a and b
 for a solution to exist?
 
-<<Problem 07>>=
+<<Problem 06>>=
 
 @
 
@@ -480,8 +501,8 @@ a better  approximation $x_{n+1}$ is  given by:
 Use this fact to define a function [[approxSqrt n  eps]] that  finds  the
 square root of a number n.  It stops when one approximation is  within
 eps of the next.
-
-<<Problem 08>>=
+ 
+<<Problem 07>>=
 approxSqrt :: Float -> Float -> Float
 approxSqrt n eps = helperApprox n n eps err where
     err = n^2 - n
@@ -493,14 +514,27 @@ helperApprox n x eps1 err
         nextX x = x - (x^2 - n)/(2*x)
             
 @
-9.  Write a function phi  n  representing  Euler’s  totient  function.
+8.  Write a function phi  n  representing  Euler’s  totient  function.
 
 In mathematical notation, phi(m) is defined as the number of  positive
 integers r(1 <= r <= m) that are coprime to m.  Example: m = 10 has  r
 = 1,3,7,9.  Thus phi(10) = 4.
-<<Problem 09>>=
+<<Problem 08>>=
+coprime :: Integer -> Integer -> Bool
+coprime a b 
+        | b > a = coprime b a
+        | a * b == 0 = error "Nonnegative integers only"
+        | b == 1 = True
+        | calculateGCD a b == 1 = True
+        | otherwise = False
 
-@
+
+phi :: Integer -> Int
+phi n | n == 0 = 0
+      | n < 0 = error "Only non-negative numbers"
+      | otherwise = length (filter  (coprime n) [1..n])
+
+@ 
 
 <<*>>=
 <<Import Modules>> 
@@ -513,7 +547,7 @@ integers r(1 <= r <= m) that are coprime to m.  Example: m = 10 has  r
 <<Problem 06>> 
 <<Problem 07>> 
 <<Problem 08>> 
-<<Problem 09>> 
+
 main :: IO ()
 main = do
  --   x <- simpson myF 0.3 2.3 100
