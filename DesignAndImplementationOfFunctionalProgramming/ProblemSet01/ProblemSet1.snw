@@ -487,8 +487,18 @@ diophantine equation ax + by = c has solutions for integer values of x
 and y. Hint : What condition should  c satisfy with respect to a and b
 for a solution to exist?
 
-<<Problem 06>>=
+\paragraph{Discussion}
+See the extended Euclid algorithm. It not only gives gcd of two numbers but also
+shows a way to calculate two integers $a$ and $b$ such that $gcd(m,n) = am +
+bn$. Now one can locate a pattern between extended-Euclid algorithm and  problem. Given diophantine
+equation has a solution \texttt{if} $gcd(a,b)$ divides $c$. What about
+\texttt{if and only if}.
 
+<<Problem 06>>=
+hasSolution :: Integer -> Integer -> Integer -> Bool
+hasSolution a b c 
+        | mod c (calculateGCD a b) == 0 = True
+        | otherwise = False
 @
 
 \section{Problem 7}
