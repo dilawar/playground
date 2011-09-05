@@ -257,7 +257,7 @@ implies that $k a^n \leq b \le k a^(n+1) \implies n \le \log_a
 There is strong case for [[powerFact1]] when one number is many order
 of magnitude bigger than the other one.
 
-< <Problem 03>>=
+<<Problem 03>>=
 
 -- Pick a choice
 powerFactor :: Integer -> Integer ->  Int
