@@ -1,13 +1,57 @@
+% (c) 2011, Dilawar Singh
+% dilawar@ee.iitb.ac.in
+% 
 
-                               Problem Set 2
-                               -------------
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{noweb}
 
-1. Longest Increasing Subsequence : Given a sequence of n real numbers
-   a1 ...an , determine a subsequence (not necessarily contiguous) of maximum
+\begin{document}
+\pagestyle{noweb}
+
+@ \paragraph{Problem 1}
+   Longest Increasing Subsequence : Given a sequence of $n$ real numbers
+   $a_1 \ldots a_n$ , determine a subsequence (not necessarily contiguous) of maximum
    length in which the values in the subsequence form a strictly increasing
    sequence.
 
-2. Box Stacking : You are given a set of n types of rectangular 3-D boxes,
+Let the given sequence of real numbers is $S$. We are only interested in the
+strictly increasing subsequence. A strictly increasing subsequence $P$ of a
+sequence $S$ is a subsequence of $S$ such that $\forall e \in P, e \in S$ and any two
+consecutive elements $p_i, p_j \in P$ satisfy $p_i \le p_j $ whenever $p_i$ is not
+the highest element of $P$.
+
+
+Since elements of sequence are real numbers they honour the law to trichotomy
+e.g. $\forall a, b \in S$, the statement $ a < b \lor a > b \lor a = b$ is a tautology.
+
+It follows that if a sequence $S$ is a strictly decreasing sequence then it has trivial
+subsequences of length 1 which are strictly increasing i.e. any single element of
+$S$ is such a sequence. For instance, sequence $10,9,8 \ldots 1$ does not a
+subsequence of length more than 1 which is strictly increasing: all possible
+subsequece which are strictly increasing are $(10)$, $(9)$, ..., $(1)$. Thus, if a
+sequence has a strictly increasing non-trivial subsequence then it must have at least two
+consecutive elements $a$, and $b$ such that $a < b$.
+
+<<Problem1>>=
+--findStrictIncreasingSubSeq :: [Int] -> [Int]
+--findStrictIncreasingSubSeq (x:xs)
+
+convertToBooleanTable :: [Int] -> [[Bool]]
+convertToBooleanTable [] = []
+convertToBooleanTable (z:zs)
+        = (convertToBooleanList z (z:zs)) : (convertToBooleanTable zs)
+
+
+convertToBooleanList :: Int -> [Int] -> [Bool]
+convertToBooleanList x [] = []
+convertToBooleanList x (y:ys)
+        | x < y = True : convertToBooleanList x ys
+        | otherwise = False : convertToBooleanList x ys
+
+
+@ \paragraph{Problem 2} 
+    Box Stacking : You are given a set of n types of rectangular 3-D boxes,
    where the ith box has height hi , width wi and depth di (all real numbers).
    You want to create a stack of boxes which is as tall as possible, but you
    can only stack a box on top of another box if the dimensions of the 2D
@@ -16,16 +60,18 @@
    as its base. It is also allowable to use multiple instances of the same type
    of box.
 
-3. Write a function (perm n r) which will behave as follows:
+@ \paragraph{Problem 3} 
+    Write a function (perm n r) which will behave as follows:
     perm 5 1 = [[1], [2], [3], [4], [5]]
     perm 5 2 = [[1, 2], [1, 3], [1, 4], [1, 5], [2, 1], [2, 3], [2, 4], [2, 5],
                 [3, 1], [3, 2], [3, 4], [3, 5], [4, 1], [4, 2], [4, 3], [4, 5],
                 [5, 1], [5, 2], [5, 3], [5, 4]]
 
    What is  an appropriate value  of (perm n  0). You can  assume that
-perm is always called with n >= r.
+   perm is always called with n >= r.
 
-4. Suppose that you are given a non-empty list of coins in which there
+@ \paragraph{Problem 4} 
+   Suppose that you are given a non-empty list of coins in which there
    is  exactly one  fake  coin that  is  lighter than  the others.  We
    represent the coins in such a list as:
 
@@ -45,11 +91,13 @@ and not to compare weights.
 Write find  fake so that  it does not compare weights  more than
 log2n times, where n is the length of l. 
 
-5. Given a number n and a list l, write a function can generate? which
+@ \paragraph{Problem 5}
+Given a number n and a list l, write a function can generate? which
 returns True  if l has a  sublist (obtained by  dropping some elements
 from l) which sums up to n, and False otherwise.
 
-6. Suppose we decide to  represent polynomials of a single variable by
+@ \paragraph{Problem 6} 
+Suppose we decide to  represent polynomials of a single variable by
 the coefficients of the individual terms. As examples:
 
 [0, 2,  0, 3, 2] represents  2 * x4 +  3 * x3 +  2 * x, and  [5, 3, 2]
@@ -62,7 +110,8 @@ x.
 (b) add p1 p2, which will add two polynomials.
 (c) multiply p1 p2, which will multiply two polynomials. 
 
-7. We want  to implement sets. Since the most  important thing you can
+@ \paragraph{Problem 7} 
+We want  to implement sets. Since the most  important thing you can
 do with  a set is to  test membership of  a given element, we  want to
 represent sets as the datatype Set(a -> Bool). The function a -> Bool
 associated with a set is called the charateristic function of the set
@@ -82,7 +131,7 @@ e.  difference
 
 Is there an advantage of such a representation?
 
-8.  A  well balanced parantheses string (WBPS) is defined by the
+@ \paragraph{Problem 8}  A  well balanced parantheses string (WBPS) is defined by the
 grammar
 
 	S ->  (S) S  | epsilon
@@ -101,7 +150,8 @@ removal of which would give a WBPS. As examples, errno ")(" returns 2,
 errno ())()))" returns 3, and errno (())() is, of course 0.
 
 
-9. Consider  the representation of  a geometric  region as  having the
+@ \paragraph{Problem 9}
+Consider  the representation of  a geometric  region as  having the
    type:
 
       type Region = Point -> Bool
@@ -139,7 +189,9 @@ errno ())()))" returns 3, and errno (())() is, of course 0.
           translate :: Region -> Point -> Region
 
 
-10. Consider the representation of small language in Haskell:
+@ \paragraph{Problem 10} 
+
+Consider the representation of small language in Haskell:
 
    A program is a list of function definition followed by a single
    expression
@@ -162,4 +214,7 @@ errno ())()))" returns 3, and errno (())() is, of course 0.
     the language:
 
        eval :: Program -> Int 
-
+<<*>>=
+<<Problem1>>
+@
+\end{document}
