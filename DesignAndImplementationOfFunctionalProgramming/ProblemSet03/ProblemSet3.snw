@@ -1,0 +1,153 @@
+\documentclass[]{article}
+\usepackage[margin=20mm]{geometry}
+\usepackage{amsmath}
+\usepackage{tikz,subfig}
+\usepackage{noweb}
+\usepackage{amsthm}
+\usepackage{fontenc}
+\usepackage{graphicx}
+\usepackage[dvips]{hyperref}
+\newtheorem{excercise}{Excercise}
+\newtheorem{axiom}{Axiom}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{remark}{Remark}[section]
+\newtheorem{definition}{Definition}[section]
+\begin{document}
+\paragraph{Problem 1}
+
+Write a function $ps :: Integer \rightarrow Integer$ that calculates the number of the
+ways in which an n-operand expression can be parenthesized.  For example, $ps 4$
+evaluates to 5 because there are 5 ways of parenthesizing a 4-operand
+expression, namely $a-(b-(c-d))$, $ a-((b-c)-d)$,
+$(a-b)-(c-d)$,$(a-(b-c))-d$,$((a-b)-c)-d$. (extra credit for using list
+comprehension).
+
+\paragraph{Discussion}
+An expression $a * b$ where $*$ is any binary operation can be considered as a
+binary graph with values are its leaf. Such a binary graph represents
+parenthesized expression. For three variables, for instance $a$ $b$, and $c$, we
+can have two possible parenthesized expressions: $(a+b)+c, a+(b+c)$.
+
+\begin{figure}[h]
+\centering
+\subfloat[][]{
+\begin{tikzpicture}
+\coordinate
+    child {[fill] circle (2pt) }
+    child {[fill] circle (2pt) } 
+    ;
+\end{tikzpicture}} 
+\hspace{5mm}
+\subfloat[][]{
+\begin{tikzpicture}
+\coordinate
+    child {[fill] circle (2pt)}
+    child { 
+        child {[fill] circle (2pt)}
+        child {[fill] circle (2pt)}
+    }
+    ;
+\end{tikzpicture}
+\hspace{5mm}
+\begin{tikzpicture}
+\coordinate
+    child { 
+        child {[fill] circle (2pt)}
+        child {[fill] circle (2pt)}}
+    child {[fill] circle (2pt)}
+    ;
+\end{tikzpicture}}
+\caption{\small Figure (a) shows encoding of parenthesized expression $(a*b)$ where $*$
+is a binary operation. Figure (b) depicts two possible parenthesized version of
+three variable expression.  If binary operation is $+$ then figure depicts
+$((a+b)+c)$ and $(a+(b+c))$. We assume that permulation of variable is
+immaterial i.e. $(a+b)$ and $(b+a)$ are same expressions.}
+\label{fig_bin_tree}.
+\end{figure}
+
+One can reformulate above problem as \textit{Given $n$ variables, in how many
+ways one can construct such binary-trees are showsn in figure
+\ref{fig_bin_tree}.}
+
+\begin{theorem}
+For given $n > 2$ variables, one can construct ${}^nC_2 - 1$ distinct binary
+trees.
+\end{theorem}
+\begin{proof}
+We prove it by induction. For $n = 2$, there is 
+\end{proof}
+
+
+<<Problem1>>= 
+ps :: Int -> Int
+ps 1 = 1
+ps 2 = 1
+ps n = psL [1..(n-1)] 0
+
+psL :: [Int] -> Int -> Int
+psL [] s = s
+psL (x:[]) s = s + (ps x) * (ps x)
+psL (x:y:[]) s = s + 2 * (ps x) * (ps y)
+psL (x:xs) s = psL (init xs) (s + 2 * (ps x) * (ps (last xs)))
+@
+@
+Q2.   s e n d
+    + m o r e
+    ----------
+    m o n e y
+
+    Here each of the alphabets above  stand for a distinct digit such that
+    the resulting addition is correct.  Write a Haskell expression using list
+    comprehension  which will  solve  the puzzle  and  give the  following
+    output: [('s',9),('e',5),('n',6),('d',7),('m',1),('o',0),('r',8),('y',2)]. 
+
+Q3. Using list comprehension, write a Haskell function queens n which
+    will generate all solutions of the n-queens problem.  You may find it useful
+    to represent a solution using only column numbers. For example, a solution to
+    the 8-queens problem may be \[1,5,8,6,3,7,2,4\] which actually means
+    \[(1,1),(2,5),(3,8)...\].
+
+Q4. Let x & y be two integers such that 1 < x < y and x+y < 100. 'A' is given
+    the sum (x+y) and 'B' is given their product (x*y).  The following conversation
+    happens, A:I dont't know the numbers.  B:I knew that already.  A:Now I know the
+    numbers.  B:Now I too know the numbers.  Write a Haskell program to find out the
+    numbers. Make use of list comprehension.
+
+Q5. Use the functions map and concat instead of the list comprehension notation
+    to deﬁne the following list: [ (x,y+z) | x<-[1..10], y<-[1..x], z<-[1..y] ]
+
+
+Q6. Implement foldTree for BTree analogous to fold for Lists. The function
+    foldBTree has to provide replacement for each constructor. Implement flatten
+    using foldTree.
+
+Q7. Write a function isBST :: BTree -> Bool which takes a BTree and returns True
+    if it is a Binary Search Tree otherwise returns false.  The function should
+    traverse the tree only once.
+
+Q8. We  have  seen  that  expressions  in  C-like  languages
+    (uncurried  expressions) can  be represented  as  Gtree Char,
+    where Gtree is defined as:
+
+           data   Gtree  a = Gnode  a  [Gtree  a]
+
+    Similarly,  expressions in  Haskell-like  languages in  which
+    functions  are  applied  one  argument  at  a  time  (curried
+    expressions) can be represented as Btree Char, where Btree is
+    defined as:
+
+        data  Btree  a = Leaf  a  |   Bnode  (Btree  a ) (Btree  a)
+
+    Write a  function b_to_g  :: Btree Char  -> Gtree  Char which
+    will   take  a  Btree   representation  of   a  Haskell-style
+    expression and  convert it into  a Gtree representation  of a
+    C-style  expression.  Similarly  write a  function  g_to_b ::
+    Gtree Char  -> Btree Char which will  take C-style expression
+    and convert it into a Haskell style expression.
+
+<<*>>=
+<<Problem1>>
+@
+
+\end{document}
