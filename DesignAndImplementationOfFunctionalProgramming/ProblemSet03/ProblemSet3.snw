@@ -158,6 +158,7 @@ be a better way than a binary-decision diagram to encode the whole computation.
 
 \begin{figure}
 \centering
+\subfloat[][]{
 \begin{tikzpicture}[level/.style={sibling distance=40mm/#1}, val/.style={circle,draw}]
 \foreach \x/\y/\tag in {3/6/1, 1/4/2, 5/4/3}
 {
@@ -183,8 +184,11 @@ be a better way than a binary-decision diagram to encode the whole computation.
                edge [bend left] (11)
            
            ;
-
-\end{tikzpicture}
+\end{tikzpicture}}
+\subfloat[][]{
+\begin{equation}
+\end{equation}
+}
 \end{figure}
 
 <<Problem2>>=
