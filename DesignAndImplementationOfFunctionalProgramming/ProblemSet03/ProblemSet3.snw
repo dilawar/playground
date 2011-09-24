@@ -1,7 +1,7 @@
 \documentclass[]{article}
 \usepackage[margin=20mm]{geometry}
 \usepackage{amsmath}
-\usepackage{tikz,subfig}
+\usepackage{tikz,subfig,wrapfig}
 \usepackage{noweb}
 \usepackage{amsthm}
 \usepackage{fontenc}
@@ -122,87 +122,167 @@ was a carry from the previous computation, one can formulate the possible set of
 equations. Since the computation depends on 'if there was a carry', what could
 be a better way than a binary-decision diagram to encode the whole computation. 
 
-%\begin{figure}[h]
-%\centering
-%\begin{tikzpicture}
-%\node (1) at (3,10)  [ draw] {$m=1$};
-%\node (2) at (1.5,8) [draw] {$s-o=8$};
-%\node (3) at (4.5,8) [draw] {$s-o=9$};
-%\node (4) at (1.5,6) [draw] {$9o+n=1+e$};
-%\node (5) at (4.5,6) [draw] {$9o+n=e$};
-%\node (6) at (1.5,4) [draw] {$9n+e=1+r$};
-%\node (7) at (4.5,4) [draw] {$9n+e=r$};
-%\node (8) at (3,2)   [draw] {$9e+y=d$};
-%\draw (1) --  (2);
-%\draw [dashed] (1) --  (3);
-%\draw (2) -- (4);
-%\draw [dashed] (2) -- (5);
-%\draw (3) -- (4);
-%\draw [dashed] (3) -- (5);
-%\draw (4) -- (6);
-%\draw [dashed] (4) -- (7);
-%\draw (5) -- (6);
-%\draw [dashed] (5) -- (7);
-%\draw (6) to [bend right] (8);
-%\draw (6) to [ dashed] (8);
-%\draw (7) to [] (8);
-%\draw (7) to [bend left,dashed] (8);
-%\end{tikzpicture} 
-%\caption{\small Figure shows flow of computation. One starts from the root node
-%and traverse the along the graph and collect equations represented by nodes. A
-%dashed edge represents the condition that a carry was produced in preceding sum
-%while solid edge represents it did not. There are total $8$ such distinct paths,
-%    each having $5$ equations. Thus, there could be 8 system of linear
-%    equations each containing 5 equations.}
-%\end{figure}
-
-\begin{figure}
+\begin{figure}[h]
 \centering
-\subfloat[][]{
-\begin{tikzpicture}[level/.style={sibling distance=40mm/#1}, val/.style={circle,draw}]
-\foreach \x/\y/\tag in {3/6/1, 1/4/2, 5/4/3}
-{
-    \node [val] (\tag) at (\x,\y) {$\tag$};
-}
-\foreach \x/\y/\tag in {0/2/4,2/2/5,4/2/6,6/2/7,0/0/8,2/0/9,4/0/10,6/0/11}
-{
-    \node [val] (\tag) at(\x,\y)  {$\tag$};
-}
-\path [->] (1) edge [dashed] (2)
-               edge (3)
-           (2) edge [dashed] (4)
-               edge (5) 
-           (3) edge [dashed] (6)
-               edge (7)
-           (4) edge [dashed, bend right] (8)
-               edge [bend left] (8)
-           (5) edge [dashed, bend right] (9)
-               edge [bend left] (9)
-           (6) edge [dashed, bend right] (10)
-               edge [bend left] (10)
-           (7) edge [dashed, bend right] (11)
-               edge [bend left] (11)
-           
-           ;
-\end{tikzpicture}}
-\subfloat[][]{
-\begin{equation}
-\end{equation}
-}
+\begin{tikzpicture}
+\node (root) at (6,10)  [draw] {$root$};
+\node (1) at (4,8) [draw] {$d+e=y$};
+\node (2) at (8,8) [draw] {$d+e=10+y$};
+\node (3) at (0,6) [draw] {$n+r=e$};
+\node (4) at (4,6) [draw] {$n+r=10+e$};
+\node (5) at (8,6) [draw] {$1+n+r=e$};
+\node (6) at (12,6) [draw] {$1+n+r=10+e$};
+\node (7) at (0,4) [draw] {$e+o=n$};
+\node (8) at (4,4) [draw] {$e+o=10+n$};
+\node (9) at (8,4) [draw] {$1+e+o=n$};
+\node (10) at (12,4) [draw] {$1+e+o=10+n$};
+\node (11) at (4,2) [draw] {$s+m=10+o$};
+\node (12) at (8,2) [draw] {$1+s+m=10+o$};
+\node (13) at (6,0) [draw] {$m=1$};
+\path [->] (root) edge [dashed] (1)
+                  edge (2)
+            (1) edge [dashed] (3)
+                edge (4)
+            (2) edge [dashed] (5)
+                edge (6)
+            (3) edge [dashed] (7)
+                edge (8)
+            (4) edge [dashed] (9)
+                edge (10)
+            (5) edge [dashed] (7)
+                edge (8)
+            (6) edge [dashed] (9)
+                edge (10)
+            (7) edge [dashed] (11)
+                edge (12)
+            (8) edge [dashed] (11)
+                edge (12)
+            (9) edge [dashed] (11)
+                edge (12)
+            (10) edge [dashed] (11)
+                edge (12)
+            (11) edge [bend right, dashed] (13)
+                edge [bend left] (13)
+            (12) edge [bend right, dashed] (13)
+                edge [bend left] (13)
+            ;
+\end{tikzpicture} 
+\caption{\small This figure shows the possible sytem of equations for this
+problem. A dashed edges shows that there is no carry generated at this level of
+addition. For instance, node $n+r=e$ means that no carry was generated when we
+added $n$ and $r$. A solid edges shows that a carry is generated. There are 5 equations
+in each of system. A total 16 such systems are possible. How many of them will
+produce a unique solution?}
 \end{figure}
+
+%\begin{eqnarray}
+%s &=& 10 + o \\
+%s &=& 9 + o \\
+%\end{eqnarray}
+%
+%\begin{wrapfigure}{R}{\textwidth}
+%\centering
+%\begin{tikzpicture}[level/.style={sibling distance=40mm/#1}, val/.style={circle,draw}]
+%\foreach \x/\y/\tag in {3/6/1, 1/4/2, 5/4/3}
+%{
+%    \node [val] (\tag) at (\x,\y) {$\tag$};
+%}
+%\foreach \x/\y/\tag in {0/2/4,2/2/5,4/2/6,6/2/7,0/0/8,2/0/9,4/0/10,6/0/11}
+%{
+%    \node [val] (\tag) at(\x,\y)  {$\tag$};
+%}
+%\path [->] (1) edge [dashed] (2)
+%               edge (3)
+%           (2) edge [dashed] (4)
+%               edge (5) 
+%           (3) edge [dashed] (6)
+%               edge (7)
+%           (4) edge [dashed, bend right] (8)
+%               edge [bend left] (8)
+%           (5) edge [dashed, bend right] (9)
+%               edge [bend left] (9)
+%           (6) edge [dashed, bend right] (10)
+%               edge [bend left] (10)
+%           (7) edge [dashed, bend right] (11)
+%               edge [bend left] (11)
+%           
+%           ;
+%\end{tikzpicture}
+%\caption{\small This figure shows the possible sytem of equations for this
+%problem. A dashed edges shows that there was no carry generated in previous
+%addition. A solid edges shows that a carry was generated. There are 4 equations
+%in each of system. A total 8 such systems are possible.}
+%\end{wrapfigure}
+
+As the caption of previous figure reads, we need to generate all such 16 systems
+of linear equations and test them for unique solutions which condition that all
+variables have values between 0 and 10.
+
+One such a system is following.
 
 <<Problem2>>=
 
+sendMoreMoney 
+    = [[('s',s) ,('e', e),('n',n),('d',d),('m',m),('o',o),('r',r),('y',y)] | 
+        s <- [8,9] , e <- [0..9], n <- [0..9], d <-[0..9], m <- [1]
+         , o <- [0,1], r <- [0..9],  y <-[0..9]
+         , s /= e , s /= n, s /= d, s /= m , s /=o, s /= r, s /= y
+          , e /= n, e /= d, e /= m , e /=o, e /= r, e /= y
+          , n /= d, n /= m , n /=o, n /= r, n /= y
+          , d /= m , d /=o, d /= r, d /= y
+          , m /=o, m /= r, m /= y
+          , o /= r, o /= y
+          , r /= y
+          , (1000 * s + 100 * e + 10*n + d) + (1000 * m + 100*o + 10*r + e) 
+                    == (10000*m + 1000*o + 100*n + 10*e + y)]
 
-
+@ %def sendMoreMoney
 @
-@
 
-Q3. Using list comprehension, write a Haskell function queens n which
-    will generate all solutions of the n-queens problem.  You may find it useful
+\paragraph{Problem 3} 
+    Using list comprehension, write a Haskell function queens $n$ which
+    will generate all solutions of the $n$-queens problem.  You may find it useful
     to represent a solution using only column numbers. For example, a solution to
-    the 8-queens problem may be \[1,5,8,6,3,7,2,4\] which actually means
-    \[(1,1),(2,5),(3,8)...\].
+    the 8-queens problem may be $[1,5,8,6,3,7,2,4]$ which actually means
+    $[(1,1),(2,5),(3,8)...]$.
+
+
+<<Problem3>>=
+
+data Gtree a = Node a [Gtree a]
+            | Empty
+             deriving (Show, Eq)
+
+-- Convert a given list of pair into a list of nodes. We'll attach these nodes
+-- to a root graph.
+listToTree :: [(Int,Int)] -> [Gtree (Int, Int)]
+listToTree [] = []
+listToTree (x:xs) = (Node x []) : (listToTree xs)
+
+-- Generate the chessboard.
+allMoves :: Int -> [(Int, Int)]
+allMoves n = [(x,y) | x <- [1..n], y <- [1..n]]
+chessboard = allMoves 4
+
+-- Generate all possible location left for other queens when one queen is placed
+-- at (a,b) and construct a tree of such moves.
+posMov :: (Int, Int)  -> [(Int, Int)]
+posMov  (a, b) = [(x, y) | (x,y) <- chessboard
+        , x + y /= a + b
+        , x - y /= a - b
+        , y /= b, x /= a
+      ]
+
+-- Generate all possible location left for next queen in the next level.
+posMovNextLevel :: (Int, Int) ->  [(Int, Int)]
+posMovNextLevel (a, b)
+        = [(x, y) | (x,y) <- chessboard
+        , x + y /= a + b
+        , x - y /= a - b
+        , y == (b+1), x /= a
+        ]
+
+@
 
 Q4. Let x & y be two integers such that 1 < x < y and x+y < 100. 'A' is given
     the sum (x+y) and 'B' is given their product (x*y).  The following conversation
@@ -245,6 +325,7 @@ Q8. We  have  seen  that  expressions  in  C-like  languages
 <<*>>=
 <<Problem1>>
 <<Problem2>>
+<<Problem3>>
 @
 
 \end{document}
