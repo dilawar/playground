@@ -1,8 +1,10 @@
 \documentclass[]{article}
 \usepackage[margin=20mm]{geometry}
 \usepackage{amsmath}
-\usepackage{tikz,subfig,wrapfig}
+\usepackage{tikz}
+%%\usetikzlibrary{intersections}
 \usepackage{noweb}
+\usepackage{subfig,wrapfig}
 \usepackage{amsthm}
 \usepackage{fontenc}
 \usepackage{graphicx}
@@ -262,41 +264,167 @@ listToTree (x:xs) = (Node x []) : (listToTree xs)
 -- Generate the chessboard.
 allMoves :: Int -> [(Int, Int)]
 allMoves n = [(x,y) | x <- [1..n], y <- [1..n]]
-chessboard = allMoves 4
+initChessBoard = allMoves 4 -- Full chess board
 
--- Generate all possible location left for other queens when one queen is placed
--- at (a,b) and construct a tree of such moves.
-posMov :: (Int, Int)  -> [(Int, Int)]
-posMov  (a, b) = [(x, y) | (x,y) <- chessboard
-        , x + y /= a + b
-        , x - y /= a - b
-        , y /= b, x /= a
-      ]
+{- 
+    Get a chessboard and strip-down rows and columns on which a queen can not be
+    placed.
+-}
+chessboard :: (Int, Int) -> [(Int, Int)] -> [(Int, Int)]
+chessboard (a,b) x
+    | a > 0 && b > 0 = [(p,q) | (p,q) <- x, p+q /= a+b
+                        ,p-q /= a-b, q == (b+1), p /= a ]
+    | otherwise = x -- left unchanged
 
--- Generate all possible location left for next queen in the next level.
+---- Generate all possible location left for other queens when one queen is placed
+---- at (a,b) and construct a tree of such moves.
+--posMov :: (Int, Int)  -> [(Int, Int)]
+--posMov  (a, b) = [(x, y) | (x,y) <- chessboard 
+--        , x + y /= a + b
+--        , x - y /= a - b
+--        , y /= b, x /= a
+--      ]
+--
+{- 
+    Generate all possible location left for next queen in the next level.
+ -}
 posMovNextLevel :: (Int, Int) ->  [(Int, Int)]
 posMovNextLevel (a, b)
-        = [(x, y) | (x,y) <- chessboard
+        = [(x, y) | (x,y) <- chessboard (a, b) initChessBoard
         , x + y /= a + b
         , x - y /= a - b
         , y == (b+1), x /= a
         ]
 
+-- Create a tree and add these
+treeNextLevel :: (Int, Int) -> Gtree (Int, Int)
+treeNextLevel (x,y) = Node (x, y) $ listToTree (chessboard  (x,y) initChessBoard)
+
+{- Now for all possible node in this tree, we should add next level. -}
+
+{- Test case, start from (1,1) -} 
+myTree :: (Int, Int) -> (Int, Int) -> Gtree (Int, Int)
+myTree (a,b) [] =  Node (a,b) []
+myTree (a,b) (x:xs) 
+    = Node (a,b) (map (Node x) listToTree (posMovNextLevel (a, b)))
+
+
+
 @
 
-Q4. Let x & y be two integers such that 1 < x < y and x+y < 100. 'A' is given
-    the sum (x+y) and 'B' is given their product (x*y).  The following conversation
-    happens, A:I dont't know the numbers.  B:I knew that already.  A:Now I know the
-    numbers.  B:Now I too know the numbers.  Write a Haskell program to find out the
-    numbers. Make use of list comprehension.
+\paragraph{Problem 4}
+\label{prob_4}
+    Let $x$ and $y$ be two integers such that $1 < x < y$ and $x+y < 100$. 'A' is given
+    the $sum (x+y)$ and 'B' is given their product $(x*y)$.  The following conversation
+    happens, 
+    \begin{enumerate}
+    \item [A] I dont't know the numbers.  
+    \item [B] I knew that already.  
+    \item [A] Now I know the numbers.  
+    \item [B] Now I too know the numbers.  
+    \end{enumerate}
 
-Q5. Use the functions map and concat instead of the list comprehension notation
+    Write a Haskell program to find out the numbers. Make use of list comprehension.
+
+\paragraph{Discussion}
+
+    Let's create a geometric picture and see if we can draw some conclusion from
+    there. For instance, given numbers honour some inequalities which can be
+    represented by some line (after all there are only two numbers!).
+
+    \begin{figure}[h]
+    \centering
+    \resizebox{\textwidth}{!}{
+    \begin{tikzpicture}[domain=-1:10]
+
+    \draw[very thin, color=gray] (-1,-1) grid (10,10); % grid
+    
+    \draw[->] (-1,0) -- (10,0) node [right] {$a$};
+    \draw[->] (0,-1) -- (0,10) node [above] {$b$};
+
+    \draw[color=red, name path=a1] plot (\x, {0.1}) node at (6,0.5) {$a=1$};
+    \draw[color=red, name path=b1] plot ({0.1}, \x) node at (0.8,4) {$b=1$};
+
+    \draw[color=red] plot (\x, {10-\x}) node at (8,2.5) {$a+b=100$};
+    \draw[color=red, name path=abequal] plot (\x, {\x}) node at (3,2) {$b=a$}; 
+
+    \draw[color=blue, domain=-0.5:8.5, name path=sum] plot (\x, {8-\x}) node at (6,2.5) {$a+b = A$};
+    \draw[color=blue, smooth, domain=0.5:10, name path=mult] plot (\x, {5/\x}) node at (5,1.5) {$ab=B$};
+    
+ %   \fill[name intersections={of=sum and prod, name=i, total=\t}]
+ %       \foreach \s in {1...\t}{(i-\s) circle (2pt) node {\s}};
+
+    \end{tikzpicture}
+    }
+
+    \caption{Geometric representation of prob \ref{prob_4}.}
+    \label{fig:geometric_prob_4}
+    \end{figure}
+
+    Since A is given the sum $s$, by looking at it, she concludes that $ 1 < x <
+    \frac{s-1}{2} (\frac{s}{2})$ when $s$ is odd (even) and $ \frac{s+1}{2}
+    (\frac{s}{2}) < y < {s-1}$. If $s$ is odd then exactly one of these two
+    numbers is even while other is odd otherwise both numbers are either even or
+    odd. Since no other information is available to A, she says that \emph{She
+    does not know the numbers.}.
+
+    B has the product $p$. Now if $p$ has two prime factors than B will know the
+    numbers. But how can B be sure by looking at $p$ that A does not know the
+    numbers? Since A only has the sum, and there are many possibilities to
+    decompose this sum into factors, there is no way one can solve this puzzle.
+
+    However, some arguments can be made if B was to make the first statement.
+
+<<Problem4>>=
+
+
+
+@ @
+
+\paragraph{Problem 5} 
+    Use the functions map and concat instead of the list comprehension notation
     to deﬁne the following list: [ (x,y+z) | x<-[1..10], y<-[1..x], z<-[1..y] ]
 
+<<Problem5>>=
 
-Q6. Implement foldTree for BTree analogous to fold for Lists. The function
+listGiven = [(x, y+z) | x <-[1..10], y <-[1..x], z <- [1..y]]
+
+listA m = map (\n -> (m,n))(concat (map (\y -> [1+y..y+y]) [1..m]))
+listMine = concat (map (\x -> (listA x)) [1..10])
+
+prop_equal = listGiven == listMine
+@
+
+\paragraph{Problem 6} 
+    Implement foldTree for BTree analogous to fold for Lists. The function
     foldBTree has to provide replacement for each constructor. Implement flatten
     using foldTree.
+
+\paragraph{Discussion}
+One can define [[Btree]] in two ways. One using [[Empty]] and [[Node x left
+right]] and other is [[Leaf x]] and [[Node left right]]. For each we given
+[[foldBtree]].
+
+<<Problem6>>=
+
+{- case 1 -}
+data Btree1 a = Null | Node1 a (Btree1 a) (Btree1 a)
+    deriving (Show, Eq)
+
+treeBFold1 :: (a -> b -> b -> b) -> b -> Btree1 a -> b
+treeBFold1 f e Null = e
+treeBFold1 f e (Node1 x l r)
+               = f x (treeBFold1 f e l) (treeBFold1 f e r)
+
+
+
+data Btree2 a = Leaf a | Node2 (Btree2 a) (Btree2 a)
+    deriving (Show, Eq)
+
+treeBFold2 :: (b -> b -> b) -> (a -> b) -> Btree2 a -> b
+treeBFold2 _ g (Leaf x) = g x
+treeBFold2 f g (Node2 l r) = f (treeBFold2 f g l) (treeBFold2 f g r)
+@
 
 Q7. Write a function isBST :: BTree -> Bool which takes a BTree and returns True
     if it is a Binary Search Tree otherwise returns false.  The function should
@@ -323,9 +451,12 @@ Q8. We  have  seen  that  expressions  in  C-like  languages
     and convert it into a Haskell style expression.
 
 <<*>>=
+import Test.QuickCheck
 <<Problem1>>
 <<Problem2>>
-<<Problem3>>
+<<Problem4>>
+<<Problem5>>
+<<Problem6>>
 @
 
 \end{document}
