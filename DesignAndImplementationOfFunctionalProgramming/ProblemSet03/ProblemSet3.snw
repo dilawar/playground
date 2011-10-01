@@ -431,9 +431,14 @@ flatten2 = treeBFold2 (++) (\x -> [x])
 
 @
 
-Q7. Write a function isBST :: BTree -> Bool which takes a BTree and returns True
+\paragrah{Problem 7}
+    Write a function isBST :: BTree -> Bool which takes a BTree and returns True
     if it is a Binary Search Tree otherwise returns false.  The function should
     traverse the tree only once.
+
+<<Problem7>>=
+
+@
 
 Q8. We  have  seen  that  expressions  in  C-like  languages
     (uncurried  expressions) can  be represented  as  Gtree Char,
