@@ -416,7 +416,7 @@ treeBFold1 f e Null = e
 treeBFold1 f e (Node1 x l r)
                = f x (treeBFold1 f e l) (treeBFold1 f e r)
 
-
+{- case 2 -}
 
 data Btree2 a = Leaf a | Node2 (Btree2 a) (Btree2 a)
     deriving (Show, Eq)
@@ -424,6 +424,11 @@ data Btree2 a = Leaf a | Node2 (Btree2 a) (Btree2 a)
 treeBFold2 :: (b -> b -> b) -> (a -> b) -> Btree2 a -> b
 treeBFold2 _ g (Leaf x) = g x
 treeBFold2 f g (Node2 l r) = f (treeBFold2 f g l) (treeBFold2 f g r)
+
+{- Flatten -}
+flatten1 = treeBFold1 (\x l r -> l ++ [x] ++ r) []
+flatten2 = treeBFold2 (++) (\x -> [x])
+
 @
 
 Q7. Write a function isBST :: BTree -> Bool which takes a BTree and returns True
