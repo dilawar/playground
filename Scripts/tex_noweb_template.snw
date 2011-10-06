@@ -1,0 +1,43 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage{pgf,tikz}
+\usepackage{subfig}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{noweb}
+\usepackage{amsthm}
+\usepackage{hyperref}
+\usetikzlibrary{circuits.logic.US}
+\usetikzlibrary{circuits.ee}
+\setlength{\parskip}{3mm}
+\newtheorem{axiom}{Axiom}
+\newtheorem{definition}{Definition}
+\newtheorem{comment}{Comment}
+\newtheorem{example}{Example}
+\newtheorem{lemma}{Lemma}
+\newtheorem{prop}{Property}
+\newtheorem{remark}{Remark}
+\newtheorem{theorem}{Theorem}
+\author{Dilawar Singh \\
+Email : \texttt{dilawar@ee.iitb.ac.in}}
+\title{Some titles}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+
+    Here goes the abstract.
+
+\end{abstract}
+
+\input{file1}
+%\input{formal_view}
+
+%%%% Here goes the code. 
+
+<<*>>=
+@
+
+%\bibliographystyle{alpha}
+%\bibliography{}
+\end{document}
