@@ -1,0 +1,38 @@
+\documentclass{article}\usepackage{noweb}\pagestyle{noweb}\noweboptions{}\begin{document}\nwfilename{graphs_with_graphtool.snw}\nwbegindocs{0}% some experiments with graphtool% ===> this file was generated automatically by noweave --- better not edit it
+
+Here is what we want to do today.
+\nwenddocs{}\nwbegincode{1}\moddef{*}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+\LA{}Import\RA{}
+\LA{}Create tiny graphs\RA{}
+\LA{}Combine these tiny graphs\RA{}
+\LA{}Convert these graphs into various structures\RA{}
+\LA{}Handle very large graphs\RA{}
+\eatline
+\nwendcode{}\nwbegindocs{2}\nwdocspar
+
+Import {\Tt{}graphs-tool\nwendquote}.
+
+\nwenddocs{}\nwbegincode{3}\moddef{Import}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+from graph_tool.all import *
+\nwendcode{}\nwbegindocs{4}\nwdocspar
+
+The first step is to initialize a graph. 
+
+\nwenddocs{}\nwbegincode{5}\moddef{Initialise}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+g = Graph()
+\nwendcode{}\nwbegindocs{6}\nwdocspar
+
+By default, initialised graphs are directed. To construct undirected graphs, one
+must pass a value to the directed parameter.
+
+\nwenddocs{}\nwbegincode{7}\moddef{Create tiny graphs}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+\LA{}Initialise\RA{}
+\nwendcode{}\nwbegindocs{8}\nwdocspar
+\nwenddocs{}\nwbegincode{9}\moddef{Combine these tiny graphs}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+\nwendcode{}\nwbegindocs{10}\nwdocspar
+\nwenddocs{}\nwbegincode{11}\moddef{Convert these graphs into various structures}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+\nwendcode{}\nwbegindocs{12}\nwdocspar
+\nwenddocs{}\nwbegincode{13}\moddef{Handle very large graphs}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+\nwendcode{}\nwbegindocs{14}\nwdocspar
+\nwenddocs{}\end{document}
+
