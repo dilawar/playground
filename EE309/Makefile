@@ -1,60 +1,60 @@
-# WinAVR Sample makefile written by Eric B. Weddington, Jörg Wunsch, et al.
-# Modified (bringing often-changed options to the top) by Elliot Williams
+# Originally written by Eric B. Weddington, J?rg Wunsch, et al.
+# Modified by : Dilawar Singh for course EE309
+# dilawar@ee.iitb.ac.in
 
-# make all = Make software and program
-# make clean = Clean out built project files.
-# make coff = Convert ELF to AVR COFF (for use with AVR Studio 3.x or VMLAB).
-# make extcoff = Convert ELF to AVR Extended COFF (for use with AVR Studio
-#                4.07 or greater).
-# make program = Download the hex file to the device, using avrdude.  Please
-#                customize the avrdude settings below first!
-# make filename.s = Just compile filename.c into the assembler code only
-# To rebuild project do "make clean" then "make all".
+####### ABOUT 
+	 # make all = Make software and program
+	 # make clean = Clean out built project files.
+	 # make coff = Convert ELF to AVR COFF (for use with AVR Studio 3.x or VMLAB).
+	 # make extcoff = Convert ELF to AVR Extended COFF (for use with AVR Studio
+	 #                4.07 or greater).
+	 # make hex = Make hex file which can be downloaded into device.
+	 # make program = Download the hex file to the device, using avrdude.  Please
+	 #                customize the avrdude settings below first!
+	 # make filename.s = Just compile filename.c into the assembler code only
+	 # To rebuild project do "make clean" then "make all".
 
-# Microcontroller Type
-# MCU = attiny13
-MCU =atmega35
-# MCU = atmega8
+	 # Microcontroller Type. Change it if you are working with another atmega.
+MCU =atmega32
 
-# Target file name (without extension).
+	 # Target file name (without extension). 
 TARGET = exp5
 
-# Programming hardware: type avrdude -c ?
-# to get a full listing.
+	 # Programming hardware: type avrdude -c ?
+	 # to get a full listing.
 AVRDUDE_PROGRAMMER = dapa              # official name of 
 
 AVRDUDE_PORT = /dev/parport0           # linux
 #AVRDUDE_PORT = lpt1		       # windows
 
-############# Don't need to change below here for most purposes  (Elliot)
 
-# Optimization level, can be [0, 1, 2, 3, s]. 0 turns off optimization.
-# (Note: 3 is not always the best optimization level. See avr-libc FAQ.)
+	 # Optimization level, can be [0, 1, 2, 3, s]. 0 turns off optimization.
+	 # (Note: 3 is not always the best optimization level. See avr-libc FAQ.)
 OPT = 2
 
-# Output format. (can be srec, ihex, binary)
+	 # Output format. (can be srec, ihex, binary). We want hex!
 FORMAT = ihex
 
-# List C source files here. (C dependencies are automatically generated.)
+	 # List C source files here. (C dependencies are automatically generated.)
 SRC = $(TARGET).c
 
-# If there is more than one source file, append them above, or modify and
-# uncomment the following:
+#######OPTIONAL 
+	 # NOTE : If there is more than one source file, append them above, or modify and
+	 # uncomment the following:
 #SRC += foo.c bar.c
 
-# You can also wrap lines by appending a backslash to the end of the line:
+	 # You can also wrap lines by appending a backslash to the end of the line:
 #SRC += baz.c \
 #xyzzy.c
 
 
-
-# List Assembler source files here.
-# Make them always end in a capital .S.  Files ending in a lowercase .s
-# will not be considered source files but generated files (assembler
-# output from the compiler), and will be deleted upon "make clean"!
-# Even though the DOS/Win* filesystem matches both .s and .S the same,
-# it will preserve the spelling of the filenames, and gcc itself does
-# care about how the name is spelled on its command-line.
+	 # List Assembler source files here.
+	 # Make them always end in a capital .S.  Files ending in a lowercase .s
+	 # will not be considered source files but generated files (assembler
+	 # output from the compiler), and will be deleted upon "make clean"!
+	 # Even though the DOS/Win* filesystem matches both .s and .S the same,
+	 # it will preserve the spelling of the filenames, and gcc itself does
+	 # care about how the name is spelled on its command-line.
 ASRC = 
 
 
@@ -63,13 +63,13 @@ ASRC =
 EXTRAINCDIRS = 
 
 
-# Optional compiler flags.
-#  -g:        generate debugging information (for GDB, or for COFF conversion)
-#  -O*:       optimization level
-#  -f...:     tuning, see gcc manual and avr-libc documentation
-#  -Wall...:  warning level
-#  -Wa,...:   tell GCC to pass this to the assembler.
-#    -ahlms:  create assembler listing
+	 # Optional compiler flags.
+	 #  -g:        generate debugging information (for GDB, or for COFF conversion)
+	 #  -O*:       optimization level
+	 #  -f...:     tuning, see gcc manual and avr-libc documentation
+	 #  -Wall...:  warning level
+	 #  -Wa,...:   tell GCC to pass this to the assembler.
+	 #    -ahlms:  create assembler listing
 CFLAGS = -g -O$(OPT) \
 -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums \
 -Wall -Wstrict-prototypes \
@@ -77,9 +77,9 @@ CFLAGS = -g -O$(OPT) \
 $(patsubst %,-I%,$(EXTRAINCDIRS))
 
 
-# Set a "language standard" compiler flag.
-#   Unremark just one line below to set the language standard to use.
-#   gnu99 = C99 + GNU extensions. See GCC manual for more information.
+	 # Set a "language standard" compiler flag.
+	 #   Unremark just one line below to set the language standard to use.
+	 #   gnu99 = C99 + GNU extensions. See GCC manual for more information.
 #CFLAGS += -std=c89
 #CFLAGS += -std=gnu89
 #CFLAGS += -std=c99
@@ -87,34 +87,34 @@ CFLAGS += -std=gnu99
 
 
 
-# Optional assembler flags.
-#  -Wa,...:   tell GCC to pass this to the assembler.
-#  -ahlms:    create listing
-#  -gstabs:   have the assembler create line number information; note that
-#             for use in COFF files, additional information about filenames
-#             and function names needs to be present in the assembler source
-#             files -- see avr-libc docs [FIXME: not yet described there]
+	 # Optional assembler flags.
+	 #  -Wa,...:   tell GCC to pass this to the assembler.
+	 #  -ahlms:    create listing
+	 #  -gstabs:   have the assembler create line number information; note that
+	 #             for use in COFF files, additional information about filenames
+	 #             and function names needs to be present in the assembler source
+	 #             files -- see avr-libc docs [FIXME: not yet described there]
 ASFLAGS = -Wa,-adhlns=$(<:.S=.lst),-gstabs 
 
 
 
-# Optional linker flags.
-#  -Wl,...:   tell GCC to pass this to linker.
-#  -Map:      create map file
-#  --cref:    add cross reference to  map file
+	 # Optional linker flags.
+	 #  -Wl,...:   tell GCC to pass this to linker.
+	 #  -Map:      create map file
+	 #  --cref:    add cross reference to  map file
 LDFLAGS = -Wl,-Map=$(TARGET).map,--cref
 
 
 
 # Additional libraries
 
-# Minimalistic printf version
+	 # Minimalistic printf version
 #LDFLAGS += -Wl,-u,vfprintf -lprintf_min
 
-# Floating point printf version (requires -lm below)
+	 # Floating point printf version (requires -lm below)
 #LDFLAGS += -Wl,-u,vfprintf -lprintf_flt
 
-# -lm = math library
+	 # -lm = math library
 LDFLAGS += -lm
 
 
@@ -126,21 +126,21 @@ AVRDUDE_WRITE_FLASH = -U flash:w:$(TARGET).hex
 
 AVRDUDE_FLAGS = -p $(MCU) -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER)
 
-# Uncomment the following if you want avrdude's erase cycle counter.
-# Note that this counter needs to be initialized first using -Yn,
-# see avrdude manual.
-#AVRDUDE_ERASE += -y
+	 # Uncomment the following if you want avrdude's erase cycle counter.
+	 # Note that this counter needs to be initialized first using -Yn,
+	 # see avrdude manual.
+AVRDUDE_ERASE += -y
 
-# Uncomment the following if you do /not/ wish a verification to be
-# performed after programming the device.
-#AVRDUDE_FLAGS += -V
+	 # Uncomment the following if you do /not/ wish a verification to be
+	 # performed after programming the device.
+AVRDUDE_FLAGS += -V
 
-# Increase verbosity level.  Please use this when submitting bug
-# reports about avrdude. See <http://savannah.nongnu.org/projects/avrdude> 
-# to submit bug reports.
-#AVRDUDE_FLAGS += -v -v
+	 # Increase verbosity level.  Please use this when submitting bug
+	 # reports about avrdude. See <http://savannah.nongnu.org/projects/avrdude> 
+	 # to submit bug reports.
+AVRDUDE_FLAGS += -v -v
 
-#Run while cable attached or don't
+	 #Run while cable attached or don't
 AVRDUDE_FLAGS += -E reset #keep chip disabled while cable attached
 #AVRDUDE_FLAGS += -E noreset
 
@@ -152,7 +152,7 @@ AVRDUDE_FLAGS += -E reset #keep chip disabled while cable attached
 
 # ---------------------------------------------------------------------------
 
-# Define directories, if needed.
+	 # Define directories, if needed.
 DIRAVR = /usr/lib/avr
 DIRAVRBIN = $(DIRAVR)/bin
 DIRAVRUTILS = $(DIRAVR)/utils/bin
@@ -160,8 +160,8 @@ DIRINC = $(DIRAVR)/include
 DIRLIB = $(DIRAVR)/lib
 
 
-# Define programs and commands.
-SHELL = sh
+	 # Define programs and commands.
+SHELL = bash
 
 CC = avr-gcc
 
@@ -181,7 +181,6 @@ HEXSIZE = $(SIZE) --target=$(FORMAT) $(TARGET).hex
 ELFSIZE = $(SIZE) -A $(TARGET).elf
 
 
-
 # Define Messages
 # English
 MSG_ERRORS_NONE = Errors: none
@@ -199,7 +198,6 @@ MSG_LINKING = Linking:
 MSG_COMPILING = Compiling:
 MSG_ASSEMBLING = Assembling:
 MSG_CLEANING = Cleaning project:
-
 
 
 
@@ -273,13 +271,15 @@ extcoff: $(TARGET).elf
 	$(COFFCONVERT) -O coff-ext-avr $< $(TARGET).cof
 
 
+hex: $(TARGET).elf
+	@echo
+	@echo $(MSG_FLASH) $@
+	$(OBJCOPY) -O $(FORMAT) -R .eeprom $< $(TARGET).hex
 
 
 # Program the device.  
 program: $(TARGET).hex $(TARGET).eep
 	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM)
-
-
 
 
 # Create final output files (.hex, .eep) from ELF output file.

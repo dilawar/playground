@@ -31,10 +31,10 @@ void PORTs_init(void)
 
 int main()
 {
-    unsigned char keypress='A';
+    char keypress='A';
     USART_Init(51);
     PORTs_init();
-    unsigned char a;
+    unsigned int a = 0;
     while(1)
     {
         a=PINA;
@@ -51,7 +51,8 @@ int main()
             else if(a==0x07) {USART_Transmit('d'); keypress='0';}
             else
             {
-                PORTA=0xDF;
+                USART_Transmit('/');
+				PORTA=0xDF;
                 a=PINA;
                 a=a&0x0F;
                 if(a==0x0E)      {USART_Transmit('e');keypress='3';}
@@ -59,7 +60,8 @@ int main()
                 else if(a==0x0B) {USART_Transmit('g');keypress='B';}
                 else if(a==0x07) {USART_Transmit('h');keypress='F';}
                 else
-                {
+               {
+			   		USART_Transmit('+');
                     PORTA=0xBF;
                     a=PINA;
                     a=a&0x0F;
@@ -69,6 +71,7 @@ int main()
                     else if(a==0x07) {USART_Transmit('l');keypress='E';}
                     else
                     {
+					    USART_Transmit('-');
                         PORTA=0x7F;
                         a=PINA;
                         a=a&0x0F;
