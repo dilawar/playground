@@ -15,10 +15,10 @@
 	 # To rebuild project do "make clean" then "make all".
 
 	 # Microcontroller Type. Change it if you are working with another atmega.
-MCU =atmega32
+MCU =atmega16
 
 	 # Target file name (without extension). 
-TARGET = exp5
+TARGET = avr
 
 	 # Programming hardware: type avrdude -c ?
 	 # to get a full listing.
