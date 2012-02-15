@@ -19,6 +19,12 @@ elseif exists("b:current_syntax")
   finish
 endif
 
+syntax match crontabNick "^\s*@\(reboot\|yearly\|annually\|monthly\|weekly\|daily\|midnight\|hourly\)\>" nextgroup=crontabCmd skipwhite
+
+syntax match crontabVar "^\s*\k\w*\s*="me=e-1
+
+syntax case ignore
+
 syntax match crontabMin "^\s*[-0-9/,.*]\+" nextgroup=crontabHr skipwhite
 syntax match crontabHr "\s[-0-9/,.*]\+" nextgroup=crontabDay skipwhite contained
 syntax match crontabDay "\s[-0-9/,.*]\+" nextgroup=crontabMnth skipwhite contained
@@ -32,10 +38,6 @@ syntax keyword crontabDow7 contained sun mon tue wed thu fri sat
 syntax region crontabCmd start="\S" end="$" skipwhite contained keepend contains=crontabPercent
 syntax match crontabCmnt "^\s*#.*"
 syntax match crontabPercent "[^\\]%.*"lc=1 contained
-
-syntax match crontabNick "^\s*@\(reboot\|yearly\|annually\|monthly\|weekly\|daily\|midnight\|hourly\)\>" nextgroup=crontabCmd skipwhite
-
-syntax match crontabVar "^\s*\k\w*\s*="me=e-1
 
 " Define the default highlighting.
 " For version 5.7 and earlier: only when not done already

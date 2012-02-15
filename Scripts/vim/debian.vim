@@ -1,6 +1,6 @@
 " Debian system-wide default configuration Vim
 
-set runtimepath=~/.vim,/var/lib/vim/addons,/usr/share/vim/vimfiles,/usr/share/vim/vim72,/usr/share/vim/vimfiles/after,/var/lib/vim/addons/after,~/.vim/after
+set runtimepath=~/.vim,/var/lib/vim/addons,/usr/share/vim/vimfiles,/usr/share/vim/vim73,/usr/share/vim/vimfiles/after,/var/lib/vim/addons/after,~/.vim/after
 
 " Normally we use vim-extensions. If you want true vi-compatibility
 " remove change the following statements
@@ -30,7 +30,6 @@ endif
 if has("autocmd")
   " set mail filetype for reportbug's temp files
   augroup debian
-    au BufRead reportbug.*		set ft=mail
     au BufRead reportbug-*		set ft=mail
   augroup END
 endif
@@ -47,4 +46,16 @@ if has('gui_running')
   " Make shift-insert work like in Xterm
   map <S-Insert> <MiddleMouse>
   map! <S-Insert> <MiddleMouse>
+endif
+
+if executable("launchpad-integration")
+  " Launchpad integration
+  an 9999.76 &Help.Get\ Help\ Online\.\.\.             :call <SID>LPI("--info")<CR>
+  an 9999.77 &Help.Translate\ This\ Application\.\.\.  :call <SID>LPI("--translate")<CR>
+  an 9999.78 &Help.Report\ a\ Problem\.\.\.            :call <SID>LPI("--bugs")<CR>
+  an 9999.79 &Help.-lpisep-                            <Nop>
+
+  fun! s:LPI(opt)
+    call system("launchpad-integration --pid " . getpid() . " " . a:opt)
+  endfun
 endif

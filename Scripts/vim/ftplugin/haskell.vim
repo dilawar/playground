@@ -1,14 +1,20 @@
-"
-" general Haskell source settings
-" (shared functions are in autoload/haskellmode.vim)
-"
-" (Claus Reinke, last modified: 28/04/2009)
-"
-" part of haskell plugins: http://projects.haskell.org/haskellmode-vim
-" please send patches to <claus.reinke@talk21.com>
+" Vim filetype plugin file
+" Language:         Haskell
+" Maintainer:       Nikolai Weibull <now@bitwi.se>
+" Latest Revision:  2008-07-09
 
-" try gf on import line, or ctrl-x ctrl-i, or [I, [i, ..
-setlocal include=^import\\s*\\(qualified\\)\\?\\s*
-setlocal includeexpr=substitute(v:fname,'\\.','/','g').'.'
-setlocal suffixesadd=hs,lhs,hsc
+if exists("b:did_ftplugin")
+  finish
+endif
+let b:did_ftplugin = 1
 
+let s:cpo_save = &cpo
+set cpo&vim
+
+let b:undo_ftplugin = "setl com< cms< fo<"
+
+setlocal comments=s1fl:{-,mb:-,ex:-},:-- commentstring=--\ %s
+setlocal formatoptions-=t formatoptions+=croql
+
+let &cpo = s:cpo_save
+unlet s:cpo_save

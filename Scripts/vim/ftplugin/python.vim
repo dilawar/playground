@@ -14,7 +14,6 @@ setlocal suffixesadd=.py
 setlocal comments-=:%
 setlocal commentstring=#%s
 
-" Debian patch: use pydoc for keyword lookup
 setlocal keywordprg=pydoc
 
 setlocal omnifunc=pythoncomplete#Complete

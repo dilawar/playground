@@ -1,10 +1,13 @@
 " Vim syntax file
 " Language:	Groovy
-" Maintainer:	Alessio Pace <billy.corgan@tiscali.it>
-" Version: 	0.1.9b
+" Original Author:	Alessio Pace <billy.corgan@tiscali.it>
+" Maintainer:	Tobias Rapp <yahuxo@gmx.de>
+" Version: 	0.1.10
 " URL:	  http://www.vim.org/scripts/script.php?script_id=945	
-" Last Change:	6/4/2004
+" Last Change:	2010 Nov 29
 
+" THE ORIGINAL AUTHOR'S NOTES:
+"
 " This is my very first vim script, I hope to have
 " done it the right way.
 " 
@@ -16,8 +19,7 @@
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded
 "
-" HOWTO USE IT (INSTALL):
-" [groovy is still not recognized by vim! :-( ]
+" HOWTO USE IT (INSTALL) when not part of the distribution:
 "
 " 1) copy the file in the (global or user's $HOME/.vim/syntax/) syntax folder
 " 
@@ -228,6 +230,7 @@ if !exists("groovy_ignore_groovydoc") && main_syntax != 'jsp'
   " syntax include @groovyHtml <sfile>:p:h/html.vim
    syntax include @groovyHtml runtime! syntax/html.vim
   unlet b:current_syntax
+  syntax spell default  " added by Bram
   syn region  groovyDocComment    start="/\*\*"  end="\*/" keepend contains=groovyCommentTitle,@groovyHtml,groovyDocTags,groovyTodo,@Spell
   syn region  groovyCommentTitle  contained matchgroup=groovyDocComment start="/\*\*"   matchgroup=groovyCommentTitle keepend end="\.$" end="\.[ \t\r<&]"me=e-1 end="[^{]@"me=s-2,he=s-1 end="\*/"me=s-1,he=s-1 contains=@groovyHtml,groovyCommentStar,groovyTodo,@Spell,groovyDocTags
 
@@ -246,7 +249,9 @@ syn match   groovySpecialError     contained "\\."
 syn match   groovySpecialCharError contained "[^']"
 syn match   groovySpecialChar      contained "\\\([4-9]\d\|[0-3]\d\d\|[\"\\'ntbrf]\|u\x\{4\}\)"
 syn region  groovyString          start=+"+ end=+"+ end=+$+ contains=groovySpecialChar,groovySpecialError,@Spell,groovyELExpr
-syn region  groovyString          start=+'+ end=+'+ end=+$+ contains=groovySpecialChar,groovySpecialError,@Spell,groovyELExpr
+syn region  groovyString          start=+'+ end=+'+ end=+$+ contains=groovySpecialChar,groovySpecialError,@Spell
+syn region  groovyString          start=+"""+ end=+"""+ contains=groovySpecialChar,groovySpecialError,@Spell,groovyELExpr
+syn region  groovyString          start=+'''+ end=+'''+ contains=groovySpecialChar,groovySpecialError,@Spell
 " syn region groovyELExpr start=+${+ end=+}+ keepend contained
  syn match groovyELExpr /\${.\{-}}/ contained
 GroovyHiLink groovyELExpr Identifier
