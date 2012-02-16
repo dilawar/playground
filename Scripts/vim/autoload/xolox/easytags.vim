@@ -1,9 +1,9 @@
 " Vim script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: November 26, 2011
+" Last Change: January 15, 2012
 " URL: http://peterodding.com/code/vim/easytags/
 
-let g:xolox#easytags#version = '2.7.5'
+let g:xolox#easytags#version = '2.8.1'
 
 " Public interface through (automatic) commands. {{{1
 
@@ -272,6 +272,7 @@ function! s:find_tagged_files(entries, context) " {{{3
 endfunction
 
 function! xolox#easytags#highlight() " {{{2
+  " TODO This is a mess; Re-implement Python version in Vim script, benchmark, remove Python version.
   try
     " Treat C++ and Objective-C as plain C.
     let filetype = get(s:canonical_aliases, &ft, &ft)
@@ -313,8 +314,8 @@ function! xolox#easytags#highlight() " {{{2
           let matches = filter(copy(taglist), filter)
           if matches != []
             " Convert matched tags to :syntax command and execute it.
-            call map(matches, 'xolox#misc#escape#pattern(get(v:val, "name"))')
-            let pattern = tagkind.pattern_prefix . '\%(' . join(xolox#misc#list#unique(matches), '\|') . '\)' . tagkind.pattern_suffix
+            let matches = xolox#misc#list#unique(map(matches, 'xolox#misc#escape#pattern(get(v:val, "name"))'))
+            let pattern = tagkind.pattern_prefix . '\%(' . join(matches, '\|') . '\)' . tagkind.pattern_suffix
             let template = 'syntax match %s /%s/ containedin=ALLBUT,%s'
             let command = printf(template, hlgroup_tagged, escape(pattern, '/'), xolox#misc#option#get('easytags_ignored_syntax_groups'))
             call xolox#misc#msg#debug("easytags.vim %s: Executing command '%s'.", g:xolox#easytags#version, command)
@@ -488,7 +489,7 @@ function! xolox#easytags#write_tagsfile(tagsfile, headers, entries) " {{{2
   if sort_order == 1
     call sort(a:entries)
   else
-    call sort(a:entries, 1)
+    call sort(a:entries, function('s:foldcase_compare'))
   endif
   let lines = []
   if xolox#misc#os#is_win()
@@ -509,6 +510,12 @@ endfunction
 
 function! s:join_entry(value)
   return type(a:value) == type([]) ? join(a:value, "\t") : a:value
+endfunction
+
+function! s:foldcase_compare(a, b)
+  let a = toupper(a:a)
+  let b = toupper(a:b)
+  return a == b ? 0 : a ># b ? 1 : -1
 endfunction
 
 function! xolox#easytags#file_has_tags(filename) " {{{2
