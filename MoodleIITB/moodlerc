@@ -1,0 +1,12 @@
+# This is a configuration file for moodle.py application.
+# If you are in doubt, email to 
+# dilawar@ee.iitb.ac.in
+# usename is your moddle username.
+# password is your moddle password.
+username = dilawars
+password = %brahmamshmi
+course = EE 705
+activities = Assignments
+activity = Lab session 1
+activity = Lab session 2
+download = ./Moodle"
