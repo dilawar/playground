@@ -10,13 +10,13 @@
 %%    Copyright:  Copyright (C)  2006-2010  Dr.-Ing. Fritz Mehner  (mehner@fh-swf.de)
 %%      Version:  1.0
 %%      Created:  10.11.2006
-%%     Revision:  $Id: c-hotkeys.tex,v 1.38 2011/01/07 19:21:35 mehner Exp $
+%%     Revision:  $Id: c-hotkeys.tex,v 1.48 2011/12/27 21:09:44 mehner Exp $
 %%                
 %%        Notes:  
 %%                
 %%=====================================================================================
 
-\documentclass[oneside,11pt,landscape,DIV16]{scrartcl}
+\documentclass[oneside,11pt,landscape,DIV17]{scrartcl}
 
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
@@ -28,8 +28,9 @@
 
 \setlength\parindent{0pt}
 
-\newcommand{\Pluginversion}{5.13}
-\newcommand{\ReleaseDate}{ January 2011}
+\newcommand{\Pluginversion}{5.17}
+\newcommand{\ReleaseDate}{ December 2011}
+\newcommand{\Rep}{{\tiny{[n]}}}
 
 %%----------------------------------------------------------------------
 %%  luximono : Type1-font
@@ -85,12 +86,12 @@ Plugin: http://vim.sourceforge.net\\
 %
 \hline
 \multicolumn{2}{|r|}{\textsl{\textbf{C}omments}} \\
-\hline \verb'\cl'  & end-of-line comment                     \hfill (n,v,i)\\
-\hline \verb'\cj'  & adjust end-of-line comment              \hfill (n,v,i)\\
-\hline \verb'\cs'  & set end-of-line comment column          \hfill (n)    \\
-\hline \verb'\c*'  & code $\Rightarrow$ comment \verb'/* */' \hfill (n,v)  \\
-\hline \verb'\cc'  & code $\Rightarrow$ comment \verb'//'    \hfill (n,v)  \\
-\hline \verb'\co'  & comment $\Rightarrow$ code              \hfill (n,v)  \\
+\hline \Rep\verb'\cl'  & end-of-line comment                     \hfill (n,v,i)\\
+\hline \Rep\verb'\cj'  & adjust end-of-line comment              \hfill (n,v,i)\\
+\hline     \verb'\cs'  & set end-of-line comment column          \hfill (n)    \\
+\hline \Rep\verb'\c*'  & code $\Rightarrow$ comment \verb'/* */' \hfill (n,v)  \\
+\hline \Rep\verb'\cc'  & code $\Rightarrow$ comment \verb'//'    \hfill (n,v,o)\\
+\hline \Rep\verb'\co'  & comment $\Rightarrow$ code              \hfill (n,v,o)\\
 
 \hline \verb'\cfr' & frame comment                           \hfill (n,i)\\
 \hline \verb'\cfu' & function comment                        \hfill (n,i)\\
@@ -106,6 +107,7 @@ Plugin: http://vim.sourceforge.net\\
 
 \hline \verb'\cd' & date                                    \hfill (n,v,i)\\
 \hline \verb'\ct' & date \& time                            \hfill (n,v,i)\\
+\hline \Rep\verb'\cx' & toggle comments: C $\leftrightarrow$ C++                  \hfill (n,v,i)\\
 \hline 
 \end{tabular}\\
 %%~~~~~ TABULAR :  end  ~~~~~~~~~~
@@ -146,6 +148,7 @@ Plugin: http://vim.sourceforge.net\\
 \hline \verb'\p"'   & \verb$#include"..."$         \hfill (n,i)\\
 \hline \verb'\pd'   & \verb'#define'               \hfill (n,i)\\
 \hline \verb'\pu'   & \verb'#undef'                \hfill (n,i)\\
+\hline \verb'\pif'  & \verb'#if #endif'            \hfill (n,v,i)\\
 \hline \verb'\pie'  & \verb'#if #else #endif'      \hfill (n,v,i)\\
 \hline \verb'\pid'  & \verb'#ifdef #else #endif'   \hfill (n,v,i)\\
 \hline \verb'\pin'  & \verb'#ifndef #else #endif'  \hfill (n,v,i)\\
@@ -170,13 +173,14 @@ Plugin: http://vim.sourceforge.net\\
 %%----------------------------------------------------------------------
 \hline 
 \multicolumn{2}{|r|}{\textsl{S\textbf{n}ippet}} \\
-\hline \verb'\nr'  & read code snippet         \hfill (n,i)\\
-\hline \verb'\nw'  & write code snippet        \hfill (n,v,i)\\
-\hline \verb'\ne'  & edit code snippet         \hfill (n,i)\\
-\hline \verb'\np'  & pick up prototype         \hfill (n,v,i)\\
-\hline \verb'\ni'  & insert prototype(s)       \hfill (n,i)\\
-\hline \verb'\nc'  & clear  prototype(s)       \hfill (n,i)\\
-\hline \verb'\ns'  & show   prototype(s)       \hfill (n,i)\\
+\hline     \verb'\nr'  & read code snippet         \hfill (n,i)\\
+\hline     \verb'\nw'  & write code snippet        \hfill (n,v,i)\\
+\hline     \verb'\ne'  & edit code snippet         \hfill (n,i)\\
+\hline \Rep\verb'\nf' \Rep\verb'\np'  & pick up function prototype         \hfill (n,v,i)\\
+\hline \Rep\verb'\nm'  & pick up method prototype         \hfill (n,v,i)\\
+\hline     \verb'\ni'  & insert prototype(s)       \hfill (n,i)\\
+\hline     \verb'\nc'  & clear  prototype(s)       \hfill (n,i)\\
+\hline     \verb'\ns'  & show   prototype(s)       \hfill (n,i)\\
 %
 \hline \verb'\ntl' & edit local templates      \hfill (n,i)\\
 \hline \verb'\ntg' & edit global templates$^1$ \hfill (n,i)\\
@@ -191,8 +195,8 @@ Plugin: http://vim.sourceforge.net\\
 \hline \verb'\if'  & function                         \hfill (n,v,i)\\
 \hline \verb'\isf' & static function                  \hfill (n,v,i)\\
 \hline \verb'\im'  & \verb'main()'                    \hfill (n,v,i)\\
-\hline \verb'\i0'  & \verb'for( x=0; x<n; x+=1 )'     \hfill (n,v,i)\\
-\hline \verb'\in'  & \verb'for( x=n-1; x>=0; x-=1 )'  \hfill (n,v,i)\\
+\hline \Rep\verb'\i0'  & \verb'for( x=0; x<n; x+=1 )'     \hfill (n,v,i)\\
+\hline \Rep\verb'\in'  & \verb'for( x=n-1; x>=0; x-=1 )'  \hfill (n,v,i)\\
 \hline \verb'\ie'  & \verb'enum'   + \verb'typedef'   \hfill (n,v,i)\\
 \hline \verb'\is'  & \verb'struct' + \verb'typedef'   \hfill (n,v,i)\\
 \hline \verb'\iu'  & \verb'union'  + \verb'typedef'   \hfill (n,v,i)\\
@@ -200,20 +204,23 @@ Plugin: http://vim.sourceforge.net\\
 \hline \verb'\isc' & \verb'scanf()'                   \hfill (n,i)\\
 \hline \verb'\ica' & \verb'p=calloc()'                \hfill (n,i)\\
 \hline \verb'\ima' & \verb'p=malloc()'                \hfill (n,i)\\
+\hline \verb'\ire' & \verb'p=realloc()'               \hfill (n,i)\\
 \hline \verb'\isi' & \verb'sizeof()'                  \hfill (n,v,i)\\
 \hline \verb'\ias' & \verb'assert()'                  \hfill (n,v,i)\\
 \hline \verb'\ii'  & open input file                  \hfill (n,v,i)\\
 \hline \verb'\io'  & open output file                 \hfill (n,v,i)\\
+\hline \verb'\ifs' & fscanf                           \hfill (n,i)\\
+\hline \verb'\ifp' & fprintf                          \hfill (n,i)\\
 \hline
 \end{tabular}\\
 %
 \begin{minipage}[b]{64mm}%
 \scriptsize{%
-\vspace{10mm}
-\hrulefill\\
-$^1$ {systemwide installation only}\\
+\vspace{1mm}
+%\hrulefill\\
+$^1$ {system-wide installation only}\\
 }%
-\end{minipage}\\
+\end{minipage}
 %
 %
 %%======================================================================
@@ -275,6 +282,7 @@ $^1$ {systemwide installation only}\\
 \hline \verb'\ra'  & set comand line arguments               \hfill (n,i)\\
 \hline \verb'\rm'  & run \texttt{ make}$^1$                      \hfill (n,i)\\
 \hline \verb'\rmc' & run \texttt{ make clean}$^1$                \hfill (n,i)\\
+\hline \verb'\rcm' & choose a makefile $^1$                \hfill (n,i)\\
 \hline \verb'\rme' & executable\ to\ run$^1$                     \hfill (n,i)\\
 \hline \verb'\rma' & cmd.\ line arg.\ for \texttt{make}$^1$      \hfill (n,i)\\
 %
@@ -285,7 +293,7 @@ $^1$ {systemwide installation only}\\
 \hline \verb'\rka' & cmd.\ line arg.\ for \texttt{CodeCheck} \hfill (n,i)\\
 %
 \hline \verb'\rd'  & run \texttt{ indent}         \hfill (n,i)\\
-\hline \verb'\rh'  & hardcopy buffer             \hfill (n,i,v)\\
+\hline \Rep\verb'\rh'  & hardcopy buffer             \hfill (n,i,v)\\
 \hline \verb'\rs'  & show plugin settings        \hfill (n,i)\\
 \hline \verb'\rx'  & set xterm size              \hfill (n,i, only Unix \& GUI)\\
 \hline \verb'\ro'  & change output destination   \hfill (n,i)\\

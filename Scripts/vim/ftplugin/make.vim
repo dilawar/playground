@@ -1,28 +1,31 @@
-" Vim filetype plugin file
-" Language:	Make
-" Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2006 Jun 17
-
+" ------------------------------------------------------------------------------
+"
+" Vim filetype plugin file (part of the c.vim plugin)
+"
+"   Language :  make 
+"     Plugin :  c.vim 
+" Maintainer :  Fritz Mehner <mehner@fh-swf.de>
+"   Revision :  $Id: make.vim,v 1.4 2011/12/27 21:04:33 mehner Exp $
+"
+" ------------------------------------------------------------------------------
+"
 " Only do this when not done yet for this buffer
-if exists("b:did_ftplugin")
+" 
+if exists("b:did_make_ftplugin")
   finish
 endif
-let b:did_ftplugin = 1
+let b:did_make_ftplugin = 1
 
-let b:undo_ftplugin = "setl et< sts< fo< com< cms< inc<"
+ map    <buffer>  <silent>  <C-F9>                  :call C_Make()<CR>
+imap    <buffer>  <silent>  <C-F9>             <C-C>:call C_Make()<CR>
+ map    <buffer>  <silent>  <LocalLeader>rm         :call C_Make()<CR>
+imap    <buffer>  <silent>  <LocalLeader>rm    <C-C>:call C_Make()<CR>
+ map    <buffer>  <silent>  <LocalLeader>rcm        :call C_ChooseMakefile()<CR>
+imap    <buffer>  <silent>  <LocalLeader>rcm   <C-C>:call C_ChooseMakefile()<CR>
+ map    <buffer>  <silent>  <LocalLeader>rmc        :call C_MakeClean()<CR>
+imap    <buffer>  <silent>  <LocalLeader>rmc   <C-C>:call C_MakeClean()<CR>
+ map    <buffer>  <silent>  <LocalLeader>rme        :call C_MakeExeToRun()<CR>
+imap    <buffer>  <silent>  <LocalLeader>rme   <C-C>:call C_MakeExeToRun()<CR>
+ map    <buffer>  <silent>  <LocalLeader>rma        :call C_MakeArguments()<CR>
+imap    <buffer>  <silent>  <LocalLeader>rma   <C-C>:call C_MakeArguments()<CR>
 
-" Make sure a hard tab is used, required for most make programs
-setlocal noexpandtab softtabstop=0
-
-" Set 'formatoptions' to break comment lines but not other lines,
-" and insert the comment leader when hitting <CR> or using "o".
-setlocal fo-=t fo+=croql
-
-" Set 'comments' to format dashed lists in comments
-setlocal com=sO:#\ -,mO:#\ \ ,b:#
-
-" Set 'commentstring' to put the marker after a #.
-setlocal commentstring=#\ %s
-
-" Including files.
-let &l:include = '^\s*include'
