@@ -1,5 +1,5 @@
 """
-    moodle.py
+    iitb_moodle.py
     Author : Dilawar Singh
     Institute : IIT Bombay
     Email : dilawar@ee.iitb.ac.in
@@ -51,7 +51,7 @@ class IitbMoodle():
         making a successfull connection to Moodle.
         """
         print("Reading configuration file ...")
-        self.url = 'http://moodle.iitb.ac.in/login/index.php'
+        self.url = ''
         self.username = ""
         self.password = ""
         self.course_key = ""
@@ -67,6 +67,7 @@ class IitbMoodle():
         else :
             print "File .moodlerc does not exists in your home folder. \
             Existing..."
+            raise proxy_exception
             sys.exit(0)
 
         for line in f :
@@ -79,9 +80,14 @@ class IitbMoodle():
             
             else :
                 (key, val) = line.split("=")
-                if key.split()[0] == 'username' :
+
+                if key.split()[0] == 'url' :
+                    self.url = val.split()[0]
+                
+                elif key.split()[0] == 'username' :
                     self.username = val.split()[0]
                 
+
                 elif key.split()[0] == 'password' :
                     self.password = val.split()[0]
 

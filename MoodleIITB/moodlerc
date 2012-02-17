@@ -2,9 +2,10 @@
 # If you are in doubt, email to 
 # dilawar@ee.iitb.ac.in
 # usename is your moddle username.
-# password is your moddle password.
-username = dilawars
-password = %brahmamshmi
+# password is your moddle password.:
+url = http://moodle.iitb.ac.in/index/login.php
+username = 
+password = 
 course = EE 705
 activities = Assignments
 activity = Lab session 1

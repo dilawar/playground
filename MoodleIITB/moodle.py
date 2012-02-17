@@ -17,23 +17,17 @@ from iitb_moodle import IitbMoodle
 try:
     moodle = IitbMoodle()
     moodle.read_configuration()
-except moodle.Exception:
+
+except IOError as (errorno, strerror):
+    print "I/O error({0}): {1}".format(errorno, strerror)
+
+except moodle.proxy_exception:
     print("Error: Configuration file error! File name ~/.moodlerc")
 
-try :
+else :
     moodle.make_connection()
-except moodle.Exception:
-    print("Error: Failed to make connection!")
-
-try :
     moodle.get_course_page()
-except moodle.Exception:
-    print("Error: Course page does not exists or incorrect regular expression.")
-
-try :
     moodle.download_data()
     print ("Total ", moodle.num_assignment, "assignments have been downloaded to ", \
          moodle.root_dir, "directory")
-except moodle.Exception:
-    print("Error: Can not download data. Do you have enough priviledges.")
 
