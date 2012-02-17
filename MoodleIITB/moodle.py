@@ -35,7 +35,6 @@ class IitbMoodle():
         self.enable_logging(False);
     
     def set_proxy(self):
-        print("Setting up proxy environment ...")
         self.br.set_proxies({})
 
 
@@ -100,7 +99,7 @@ class IitbMoodle():
                    self.activities.append(val)
                 
                 elif key.split()[0] == 'download' :
-                   self.download = val.split()[0]
+                   self.root_dir = val.split()[0]
                 
                 elif key.split()[0] == 'proxy' :
                    self.proxy = val.split()[0]
@@ -111,11 +110,12 @@ class IitbMoodle():
 
     def make_connection(self):
         if self.proxy == "true" :
-            pass
+            print("Acquiring proxy variables from environment ...")
         else :
+            print("Ignoring proxy variables...")
             self.set_proxy()
 
-        print("logging into moodle ..")
+        print("Logging into Moodle ..")
         res = self.br.open(self.url)
         # select the form and login
         assert self.br.viewing_html()
@@ -130,7 +130,7 @@ class IitbMoodle():
                 self.br.form['username'] = self.username
                 self.br.form['password'] = self.password
                 self.br.submit()
-                print(" |-  Submitting login form ...")
+                print(" |- Submitting login form ...")
                 res = self.br.response()
                 res_html = res.get_data()
                 #print html2text.html2text(res_html)
@@ -143,7 +143,7 @@ class IitbMoodle():
         course_url = self.course.geturl()
         [url, id ] = course_url.split('id=')
         self.course_id = id
-        print(" |- Acquiring course id ..." + id)
+        print(" |- Acquiring course id ...")
 
         #course_html = self.course.get_data()
         #print html2text.html2text(course_html)
