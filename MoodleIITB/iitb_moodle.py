@@ -13,14 +13,14 @@
 import re
 import mechanize, urllib, urllib2
 import cookielib, logging, html2text
-import sys, os, shutil
+import sys, os, shutil, getpass, glob, subprocess
 
 class IitbMoodle():
 
     """ A python application to access moodle and download data from it.
     """
     def __init__(self):
-        print("Initializing link ... ")
+        print("Initializing moodle ... ")
         self.br = mechanize.Browser( factory=mechanize.RobustFactory())
         self.br.set_handle_equiv(False)
         self.br.set_handle_robots(False)
@@ -60,6 +60,7 @@ class IitbMoodle():
         self.num_assignment = 0;
         self.root_dir = "./Moodle";
         self.proxy = "false"
+        self.extract = 'true'
         home = os.environ['HOME']
         path = home+"/.moodlerc"
         if os.path.isfile(path) :
@@ -67,7 +68,6 @@ class IitbMoodle():
         else :
             print "File .moodlerc does not exists in your home folder. \
             Existing..."
-            raise proxy_exception
             sys.exit(0)
 
         for line in f :
@@ -89,7 +89,10 @@ class IitbMoodle():
                 
 
                 elif key.split()[0] == 'password' :
-                    self.password = val.split()[0]
+                    self.password = ' '.join(val.split())
+                    if self.password == '':
+                        self.password=getpass.getpass()
+                        print self.password
 
                 elif key.split()[0] == 'course' :
                     val = ' '.join(val.split())
@@ -106,6 +109,9 @@ class IitbMoodle():
                 
                 elif key.split()[0] == 'download' :
                    self.root_dir = val.split()[0]
+                
+                elif key.split()[0] == 'extract' :
+                   self.extract = val.split()[0]
                 
                 elif key.split()[0] == 'proxy' :
                    self.proxy = val.split()[0]
@@ -208,7 +214,7 @@ class IitbMoodle():
         print(" |- Setting download directory to " + down_dir)
         for user in self.user_dict.keys() :
             if self.user_dict[user] == "":
-                pass
+                print('No submission found for {1}'.format(user))
             else :
                 url = self.user_dict[user][1]
                 if url == '':
@@ -217,8 +223,51 @@ class IitbMoodle():
                     temp_dir = down_dir+"/"+self.user_dict[user][0]
                     if not os.path.exists(temp_dir):
                         os.makedirs(temp_dir)
+                    else:
+                        shutil.rmtree(temp_dir)
 
                     print(" * Downloading submission of  "+self.user_dict[user][0])
                     loc = self.br.retrieve(url)[0]
                     shutil.move(loc,temp_dir) 
+                    if self.extract == 'true':
+                        self.extract_asssignments(act)
+                    else:
+                        pass
+
+    def extract_asssignments(self, dir):
+        path = self.root_dir+"/"+dir
+        dirList = os.listdir(path)
+        print "In dir {0}".format(self.root_dir)
+        for dir in dirList:
+            temp=path+"/"+dir
+            print temp
+            if os.path.isdir(temp):
+                os.chdir(temp)
+                print "Do something here."
+
+                listing = glob.glob(temp+'/*gz')
+                for file in listing:
+                    print "file : {0}".format(file)
+                    subprocess.call(["tar", "xzvf", file])
+
+                listing = glob.glob(temp+'/*bz')
+                for file in listing:
+                    print "file : {0}".format(file)
+                    subprocess.call(["tar", "xjvf", file])
+
+                listing = glob.glob(temp+'/*zip')
+                for file in listing:
+                    print "file : {0}".format(file)
+                    subprocess.call(["unzip", "-o", file])
+
+                listing = glob.glob(temp+'/*rar')
+                for file in listing:
+                    print "file : {0}".format(file)
+                    subprocess.call(["unrar", "x", "-o+", file])
+                
+                os.chdir(path)
+            else:
+                pass
+            
+
 

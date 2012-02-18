@@ -10,4 +10,5 @@ course = EE 705
 activities = Assignments
 activity = Lab session 1
 activity = Lab session 2
-download = ./Moodle"
+download = ./Moodle
+extract = true

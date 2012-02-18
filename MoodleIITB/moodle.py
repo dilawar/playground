@@ -21,13 +21,8 @@ try:
 except IOError as (errorno, strerror):
     print "I/O error({0}): {1}".format(errorno, strerror)
 
-except moodle.proxy_exception:
-    print("Error: Configuration file error! File name ~/.moodlerc")
-
 else :
     moodle.make_connection()
     moodle.get_course_page()
     moodle.download_data()
-    print ("Total ", moodle.num_assignment, "assignments have been downloaded to ", \
-         moodle.root_dir, "directory")
-
+    print 'Total {0} assignments have been downloaded to {1}'.format(moodle.num_assignment, moodle.root_dir)
