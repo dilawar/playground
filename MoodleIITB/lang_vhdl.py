@@ -30,12 +30,13 @@ class VHDL:
                     m = re.search(r"entity\ +(\w+)\ +is[\ \n]+end\ +(\w*)\ *\w*[;]", self.src, re.I)
                     if m : 
                         test_bench = m.group(1)
-                        print("Testbench entity is {0}".format(test_bench))
-                        print("In file {0}".format(f.name))
-                        #subprocess.call(["ghdl", "-a", f.name])
-                        #subprocess.call(["ghdl", "-m", test_bench])
-                        #subprocess.call(["ghdl", "-r", test_bench, "--stop-time=500ns", \
-                        #    "--vcd=out.vcd"])
+                        #print("Testbench entity is {0}".format(test_bench))
+                        #print("In file {0}".format(f.name))
+                        vcdOption = "--vcd="+test_bench+".vcd"
+                        subprocess.call(["ghdl", "-a", f.name])
+                        subprocess.call(["ghdl", "-m", test_bench])
+                        subprocess.call(["ghdl", "-r", test_bench, "--stop-time=1000ns", \
+                            vcdOption])
 
                     else : 
                         #print "No testbench."
