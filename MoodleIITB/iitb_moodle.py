@@ -12,7 +12,6 @@
                                         """
 import re
 import mechanize, urllib, urllib2
-import cookielib, logging, html2text
 import sys, os, shutil, getpass, glob, subprocess
 
 class IitbMoodle():
@@ -32,19 +31,9 @@ class IitbMoodle():
         self.br.set_handle_refresh(mechanize._http.HTTPRefreshProcessor(), max_time=2)
         self.br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux 1686; en-US;\
             rv:1.9.0.1) Gecko/201171615 Ubuntu/11.10-1 Firefox/3.0.1')]
-        self.enable_logging(False);
     
     def set_proxy(self):
         self.br.set_proxies({})
-
-
-    def enable_logging(self, log_flag):
-        if log_flag == True :
-            logger = logging.getLogger("mechanize")
-            logger.addHandler(logging.StreamHandler(sys.stdout))
-            logger.setLevel(logging.INFO)
-        else:
-            pass
 
     def read_configuration(self):
         """ This function reads a config file and set the values needed for
@@ -61,6 +50,10 @@ class IitbMoodle():
         self.root_dir = "./Moodle";
         self.proxy = "false"
         self.extract = 'true'
+        self.language = 'vhdl'
+        self.compile = 'false'
+        self.download = 'true'
+        self.cxx = ''
         home = os.environ['HOME']
         path = home+"/.moodlerc"
         if os.path.isfile(path) :
@@ -92,12 +85,10 @@ class IitbMoodle():
                     self.password = ' '.join(val.split())
                     if self.password == '':
                         self.password=getpass.getpass()
-                        print self.password
 
                 elif key.split()[0] == 'course' :
                     val = ' '.join(val.split())
                     self.course_key = val
-                
 
                 elif key.split()[0] == 'activities' :
                     val = ' '.join(val.split())
@@ -106,8 +97,11 @@ class IitbMoodle():
                 elif key.split()[0] == 'activity' :
                    val = ' '.join(val.split())
                    self.activities.append(val)
-                
+               
                 elif key.split()[0] == 'download' :
+                   self.download = val.split()[0] 
+                
+                elif key.split()[0] == 'downloaddir' :
                    self.root_dir = val.split()[0]
                 
                 elif key.split()[0] == 'extract' :
@@ -115,6 +109,15 @@ class IitbMoodle():
                 
                 elif key.split()[0] == 'proxy' :
                    self.proxy = val.split()[0]
+
+                elif key.split()[0] == 'language' :
+                   self.language = val.split()[0]
+
+                elif key.split()[0] == 'compile' :
+                   self.compile = val.split()[0]
+
+                elif key.split()[0] == 'cxx' :
+                   self.cxx = val.split()[0]
 
                 else :
                      print ("Unknow configuration variable.. Ignoring.")
@@ -145,7 +148,6 @@ class IitbMoodle():
                 print(" |- Submitting login form ...")
                 res = self.br.response()
                 res_html = res.get_data()
-                #print html2text.html2text(res_html)
             else:
                 form_id = form_id + 1;
 
@@ -155,28 +157,27 @@ class IitbMoodle():
         course_url = self.course.geturl()
         [url, id ] = course_url.split('id=')
         self.course_id = id
-        print(" |- Acquiring course id ...")
-
-        #course_html = self.course.get_data()
-        #print html2text.html2text(course_html)
+        print(" |- Acquiring course page ...")
 
     def goto_main_activity(self):
         self.activity_id = []
-        print (" |- Acquiring link of activity ... ")
-        print self.activity_name
-        activity_res = self.br.follow_link(text_regex=self.activity_name)
-        for act in self.activities :
-            act_res = self.br.follow_link(text_regex=act)
-            act_url = act_res.geturl()
-            [url, act_id] = act_url.split('id=')
-            self.activity_id.append(act_id)
+        if self.download == 'true':
+            print (" |- Acquiring link of activity ... ")
+            print self.activity_name
+            activity_res = self.br.follow_link(text_regex=self.activity_name)
+            for act in self.activities :
+                act_res = self.br.follow_link(text_regex=act)
+                act_url = act_res.geturl()
+                [url, act_id] = act_url.split('id=')
+                self.activity_id.append(act_id)
 
-            view_act_res = self.br.follow_link(text_regex=r".*(View).*[0-9]*(submitted).*")
-            self.fetch_activity_links(view_act_res)
-            self.download_files(act)
-            print("****")
-            print("Successfully downloaded data for this activity. Iterating over activities ...")
-            self.br.open(activity_res.geturl())
+                view_act_res = self.br.follow_link(text_regex=r".*(View).*[0-9]*(submitted).*")
+                self.fetch_activity_links(view_act_res)
+                self.download_files(act)
+                print("Successfully downloaded data for this activity!")
+                self.br.open(activity_res.geturl())
+            else:
+                print("Option variable \"Download\" is not true")
 
     def fetch_activity_links(self, link_res):
         self.user_dict = dict()
@@ -213,7 +214,7 @@ class IitbMoodle():
             os.makedirs(down_dir)
         print(" |- Setting download directory to " + down_dir)
         for user in self.user_dict.keys() :
-            if self.user_dict[user] == "":
+            if self.user_dict[user] == '':
                 print('No submission found for {1}'.format(user))
             else :
                 url = self.user_dict[user][1]
@@ -233,7 +234,7 @@ class IitbMoodle():
                             os.remove(temp_dir) # remove file.
                             os.makedirs(temp_dir) # create dir
 
-                    print(" Downloading submission of  "+self.user_dict[user][0])
+                    print("Downloading submission of  "+self.user_dict[user][0])
                     loc = self.br.retrieve(url)[0]
                     shutil.move(loc,temp_dir) 
                     if self.extract == 'true':
@@ -250,22 +251,22 @@ class IitbMoodle():
         os.chdir(path)
         listing = glob.glob(path+'/*gz')
         for file in listing:
-            print " -> Extracting archive ...{0}".format(file)
+            print " |- Extracting archive ...{0}".format(file)
             subprocess.call(["tar", "xzvf", file], stdout=subprocess.PIPE)
 
         listing = glob.glob(path+'/*bz')
         for file in listing:
-            print " -> Extracting archive ...{0}".format(file)
+            print " |- Extracting archive ...{0}".format(file)
             subprocess.call(["tar", "xjvf", file], stdout=subprocess.PIPE)
 
         listing = glob.glob(path+'/*zip')
         for file in listing:
-            print " -> Extracting archive ...{0}".format(file)
+            print " |- Extracting archive ...{0}".format(file)
             subprocess.call(["unzip", "-o", file], stdout=subprocess.PIPE)
 
         listing = glob.glob(path+'/*rar')
         for file in listing:
-            print " -> Extracting archive ...{0}".format(file)
+            print " |- Extracting archive ...{0}".format(file)
             subprocess.call(["unrar", "x", "-o+", file], stdout=subprocess.PIPE)
                    
 

@@ -2,13 +2,21 @@
 # If you are in doubt, email to 
 # dilawar@ee.iitb.ac.in
 # usename is your moddle username.
-# password is your moddle password.:
-url = http://moodle.iitb.ac.in/index/login.php
-username = 
-password = 
+# password is your moddle password.
+#
+url = http://moodle.iitb.ac.in/login/index.php
+username = dilawars
+password =
+proxy = false
 course = EE 705
 activities = Assignments
 activity = Lab session 1
-activity = Lab session 2
-download = ./Moodle
+#activity = Lab session 2
+#activity = Lab session 3
+#activity = Lab session 4
+download = false
+downloaddir = /home/dilawar/Works/myrepo/Courses/2012_VLSIDesignLab/
 extract = true
+language = vhdl
+compile = true
+cxx = ghdl

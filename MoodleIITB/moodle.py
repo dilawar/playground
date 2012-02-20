@@ -32,9 +32,12 @@ else :
     
     lang = VHDL()
     lang.dirName(moodle.root_dir)
-    if os.path.exists(lang.srcDir) :
-        for x in os.walk(lang.srcDir):
-            lang.compile_testbench(x[0])
+    if moodle.compile == 'true' :
+        if os.path.exists(lang.srcDir) :
+            for x in os.walk(lang.srcDir):
+                lang.compile_testbench(x[0], moodle.cxx)
+        else:
+            print "Given path does not exists."
     else:
-        print "Given path does not exists."
+        pass
 

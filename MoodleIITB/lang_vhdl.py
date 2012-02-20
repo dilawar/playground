@@ -11,7 +11,7 @@ class VHDL:
     def dirName(self, dir):
         self.srcDir = dir
 
-    def compile_testbench(self, dir):
+    def compile_testbench(self, dir, cxx):
         '''
         This function compiles the test_bench in given directory.
         
@@ -30,24 +30,21 @@ class VHDL:
                     m = re.search(r"entity\ +(\w+)\ +is[\ \n]+end\ +(\w*)\ *\w*[;]", self.src, re.I)
                     if m : 
                         test_bench = m.group(1)
-                        #print("Testbench entity is {0}".format(test_bench))
+                        print("Compiling entity {0} using {1}".format(test_bench, cxx))
                         #print("In file {0}".format(f.name))
-                        vcdOption = "--vcd="+test_bench+".vcd"
-                        subprocess.call(["ghdl", "-a", f.name])
-                        subprocess.call(["ghdl", "-m", test_bench])
-                        subprocess.call(["ghdl", "-r", test_bench, "--stop-time=1000ns", \
-                            vcdOption])
+                        #print "cxx : {0}".format(cxx)
+                        if cxx == 'ghdl':
+                            vcdOption = "--vcd="+test_bench+".vcd"
+                            subprocess.call(["ghdl", "-a", f.name] \
+                                    , stdout=subprocess.PIPE)
+                            subprocess.call(["ghdl", "-m", test_bench] \
+                                    , stdout=subprocess.PIPE)
+                            subprocess.call(["ghdl", "-r" \
+                                    , test_bench, "--stop-time=1000ns" \
+                                    , vcdOption] \
+                                    , stdout=subprocess.PIPE)
+                        elif cxx == 'vsim' :
+                            pass
 
                     else : 
-                        #print "No testbench."
                         pass
-'''
-vhdl = VHDL()
-vhdl.dirName('/home/dilawar/Works/myrepo/Courses/2012_VLSIDesignLab/Lab session 1')
-print vhdl.srcDir
-if os.path.exists(vhdl.srcDir) :
-    for x in os.walk(vhdl.srcDir):
-        vhdl.compile_testbench(x[0])
-else:
-    print "Given path does not exists."
-'''
