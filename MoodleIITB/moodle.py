@@ -13,8 +13,10 @@
                                        
 """
 
+import os
 from iitb_moodle import IitbMoodle
 from lang_vhdl import VHDL
+
 try:
     moodle = IitbMoodle()
     moodle.read_configuration()
@@ -31,8 +33,8 @@ else :
     lang = VHDL()
     lang.dirName(moodle.root_dir)
     if os.path.exists(lang.srcDir) :
-        lang.compile_testbench()
+        for x in os.walk(lang.srcDir):
+            lang.compile_testbench(x[0])
     else:
         print "Given path does not exists."
-        sys.exit(0)
 
