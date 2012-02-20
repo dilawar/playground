@@ -221,53 +221,52 @@ class IitbMoodle():
                     pass
                 else:
                     temp_dir = down_dir+"/"+self.user_dict[user][0]
+                    
                     if not os.path.exists(temp_dir):
                         os.makedirs(temp_dir)
                     else:
-                        shutil.rmtree(temp_dir)
+                        print(" ** WARNING ** Path already exists.. Deleting ..")
+                        if os.path.isdir(temp_dir):
+                            shutil.rmtree(temp_dir) # remove dir
+                            os.makedirs(temp_dir) # and create new one
+                        else:
+                            os.remove(temp_dir) # remove file.
+                            os.makedirs(temp_dir) # create dir
 
                     print(" * Downloading submission of  "+self.user_dict[user][0])
                     loc = self.br.retrieve(url)[0]
                     shutil.move(loc,temp_dir) 
                     if self.extract == 'true':
-                        self.extract_asssignments(act)
+                        self.extract_asssignments(temp_dir)
                     else:
                         pass
 
     def extract_asssignments(self, dir):
-        path = self.root_dir+"/"+dir
-        dirList = os.listdir(path)
-        print "In dir {0}".format(self.root_dir)
-        for dir in dirList:
-            temp=path+"/"+dir
-            print temp
-            if os.path.isdir(temp):
-                os.chdir(temp)
-                print "Do something here."
+        
+        path = dir
+        if not os.path.isdir(path):
+            shutil.rmtree(dir)
+        
+        os.chdir(path)
+        listing = glob.glob(path+'/*gz')
+        for file in listing:
+            print " * Extracting archive ...{0}".format(file)
+            subprocess.call(["tar", "xzvf", file], stdout=subprocess.PIPE)
 
-                listing = glob.glob(temp+'/*gz')
-                for file in listing:
-                    print "file : {0}".format(file)
-                    subprocess.call(["tar", "xzvf", file])
+        listing = glob.glob(path+'/*bz')
+        for file in listing:
+            print " * Extracting archive ..."
+            subprocess.call(["tar", "xjvf", file], stdout=subprocess.PIPE)
 
-                listing = glob.glob(temp+'/*bz')
-                for file in listing:
-                    print "file : {0}".format(file)
-                    subprocess.call(["tar", "xjvf", file])
+        listing = glob.glob(path+'/*zip')
+        for file in listing:
+            print " * Extracting archive ..."
+            subprocess.call(["unzip", "-o", file], stdout=subprocess.PIPE)
 
-                listing = glob.glob(temp+'/*zip')
-                for file in listing:
-                    print "file : {0}".format(file)
-                    subprocess.call(["unzip", "-o", file])
-
-                listing = glob.glob(temp+'/*rar')
-                for file in listing:
-                    print "file : {0}".format(file)
-                    subprocess.call(["unrar", "x", "-o+", file])
-                
-                os.chdir(path)
-            else:
-                pass
-            
+        listing = glob.glob(path+'/*rar')
+        for file in listing:
+            print " * Extracting archive ..."
+            subprocess.call(["unrar", "x", "-o+", file], stdout=subprocess.PIPE)
+                   
 
 

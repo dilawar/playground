@@ -1,4 +1,3 @@
-from iitb_moodle import IitbMoodle
 
 """
     moodle.py
@@ -14,6 +13,8 @@ from iitb_moodle import IitbMoodle
                                        
 """
 
+from iitb_moodle import IitbMoodle
+from lang_vhdl import VHDL
 try:
     moodle = IitbMoodle()
     moodle.read_configuration()
@@ -26,3 +27,12 @@ else :
     moodle.get_course_page()
     moodle.download_data()
     print 'Total {0} assignments have been downloaded to {1}'.format(moodle.num_assignment, moodle.root_dir)
+    
+    lang = VHDL()
+    lang.dirName(moodle.root_dir)
+    if os.path.exists(lang.srcDir) :
+        lang.compile_testbench()
+    else:
+        print "Given path does not exists."
+        sys.exit(0)
+

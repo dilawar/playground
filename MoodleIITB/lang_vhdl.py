@@ -41,7 +41,7 @@ class VHDL:
                     else : 
                         #print "No testbench."
                         pass
-
+'''
 vhdl = VHDL()
 vhdl.dirName('/home/dilawar/Works/myrepo/Courses/2012_VLSIDesignLab/Lab session 1')
 print vhdl.srcDir
@@ -50,4 +50,4 @@ if os.path.exists(vhdl.srcDir) :
         vhdl.compile_testbench(x[0])
 else:
     print "Given path does not exists."
-
+'''
