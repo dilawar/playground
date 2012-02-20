@@ -5,6 +5,8 @@ class VHDL:
 
     def __init__(self):
         self.test_bench = ''
+        self.component = ''
+        self.port = dict()
         self.src = ''
         self.srcDir = ''
 
@@ -54,19 +56,28 @@ class VHDL:
         print "Getting design for {0} in file {1}".format(test_bench, file)
         m = re.search(r'''component\s+(\w+)\s*(is)*\s+
                 port\s*[(]
-                (\s*\w+(\s*[,]\s*\w+\s*)*\s*[:]\s*
-                (in|out)\s*\w+\s*([(]\s*\d+\s*\w+\s*\d+\s*[)])*\s*[;]*)*
+                ((\s*\w+(\s*[,]\s*\w+\s*)*\s*[:]\s*
+                (in|out)\s*\w+\s*([(]\s*\d+\s*\w+\s*\d+\s*[)])*\s*[;]*)*)
                 \s*[)]\s*[;]
                 \s+end\s+component\s*\w*[;]'''
                 , data, re.I | re.VERBOSE)
 
         if m:
-            print m.group(0)
-            print m.group(1)
-            print m.group(2)
+            text = m.group(3)
+            self.component = m.group(1)
+            for pExpr in text.split(';'):
+                [p, expr]  = pExpr.split(':')
+                p = p.strip()
+                temp = expr.split()
+                type = temp[0].strip()
+                del temp[0]
+                for i in p.split(','):
+                    expr = ' '.join(temp)
+                    self.port[i] = (type, (expr))
         
         else:
             print ("Can not find any component in this file.")
-            os.system("pause")
 
+        # print dictionary
+        print self.port
 
