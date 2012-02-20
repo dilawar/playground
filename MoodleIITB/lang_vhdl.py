@@ -1,5 +1,5 @@
 import re
-import glob, os, subprocess
+import glob, os, subprocess, sys
 
 class VHDL:
 
@@ -30,6 +30,7 @@ class VHDL:
                     m = re.search(r"entity\ +(\w+)\ +is[\ \n]+end\ +(\w*)\ *\w*[;]", self.src, re.I)
                     if m : 
                         test_bench = m.group(1)
+                        self.get_design(test_bench, self.src);
                         print("Compiling entity {0} using {1}".format(test_bench, cxx))
                         #print("In file {0}".format(f.name))
                         #print "cxx : {0}".format(cxx)
@@ -48,3 +49,24 @@ class VHDL:
 
                     else : 
                         pass
+
+    def get_design(self, test_bench, data):
+        print "Getting design for {0} in file {1}".format(test_bench, file)
+        m = re.search(r'''component\s+(\w+)\s*(is)*\s+
+                port\s*[(]
+                (\s*\w+(\s*[,]\s*\w+\s*)*\s*[:]\s*
+                (in|out)\s*\w+\s*([(]\s*\d+\s*\w+\s*\d+\s*[)])*\s*[;]*)*
+                \s*[)]\s*[;]
+                \s+end\s+component\s*\w*[;]'''
+                , data, re.I | re.VERBOSE)
+
+        if m:
+            print m.group(0)
+            print m.group(1)
+            print m.group(2)
+        
+        else:
+            print ("Can not find any component in this file.")
+            os.system("pause")
+
+
