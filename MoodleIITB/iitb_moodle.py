@@ -233,7 +233,7 @@ class IitbMoodle():
                             os.remove(temp_dir) # remove file.
                             os.makedirs(temp_dir) # create dir
 
-                    print(" * Downloading submission of  "+self.user_dict[user][0])
+                    print(" Downloading submission of  "+self.user_dict[user][0])
                     loc = self.br.retrieve(url)[0]
                     shutil.move(loc,temp_dir) 
                     if self.extract == 'true':
@@ -250,22 +250,22 @@ class IitbMoodle():
         os.chdir(path)
         listing = glob.glob(path+'/*gz')
         for file in listing:
-            print " * Extracting archive ...{0}".format(file)
+            print " -> Extracting archive ...{0}".format(file)
             subprocess.call(["tar", "xzvf", file], stdout=subprocess.PIPE)
 
         listing = glob.glob(path+'/*bz')
         for file in listing:
-            print " * Extracting archive ..."
+            print " -> Extracting archive ...{0}".format(file)
             subprocess.call(["tar", "xjvf", file], stdout=subprocess.PIPE)
 
         listing = glob.glob(path+'/*zip')
         for file in listing:
-            print " * Extracting archive ..."
+            print " -> Extracting archive ...{0}".format(file)
             subprocess.call(["unzip", "-o", file], stdout=subprocess.PIPE)
 
         listing = glob.glob(path+'/*rar')
         for file in listing:
-            print " * Extracting archive ..."
+            print " -> Extracting archive ...{0}".format(file)
             subprocess.call(["unrar", "x", "-o+", file], stdout=subprocess.PIPE)
                    
 
