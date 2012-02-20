@@ -35,13 +35,17 @@ data4 = '''component full_adder
  port (a,b,c_in :in bit ; s_out,c_out : out bit) ;
   end component ;'''
 
+data5 = '''component coach
+port(d: in bit_vector (9 downto 0); o: out bit_vector (7 downto 0));
+end component;'''
+
 m = re.search(r'''component\s+(\w+)\s*(is)*\s+
                 port\s*[(]
                 (\s*\w+(\s*[,]\s*\w+\s*)*\s*[:]\s*
-                (in|out)\s*\w+([(]\s*\d+\s*\w+\s*\d+\s*[)])*\s*[;]*)*
+                (in|out)\s*\w+\s*([(]\s*\d+\s*\w+\s*\d+\s*[)])*\s*[;]*)*
                 \s*[)]\s*[;]
                 \s+end\s+component\s*\w*[;]'''
-                , data4, re.I | re.VERBOSE)
+                , data5, re.I | re.VERBOSE)
 
 if m:
     print m.group(0)
