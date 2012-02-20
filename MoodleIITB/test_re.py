@@ -31,13 +31,17 @@ data3 = '''component HA
 port (a,c:in bit;sum,carry:out bit);
 end component;'''
 
+data4 = '''component full_adder 
+ port (a,b,c_in :in bit ; s_out,c_out : out bit) ;
+  end component ;'''
+
 m = re.search(r'''component\s+(\w+)\s*(is)*\s+
                 port\s*[(]
                 (\s*\w+(\s*[,]\s*\w+\s*)*\s*[:]\s*
-                (in|out)\s*\w+([(]\s*\d+\s*\w+\s*\d+\s*[)])*[;]*)*
+                (in|out)\s*\w+([(]\s*\d+\s*\w+\s*\d+\s*[)])*\s*[;]*)*
                 \s*[)]\s*[;]
                 \s+end\s+component\s*\w*[;]'''
-                , data3, re.I | re.VERBOSE)
+                , data4, re.I | re.VERBOSE)
 
 if m:
     print m.group(0)
