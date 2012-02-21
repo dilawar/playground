@@ -61,6 +61,8 @@ set iskeyword+=_
 set spell spelllang=en
 set dictionary+=/usr/share/dict/words
 
+" c-support
+set errorformat^=%-GIn\ file\ included\ %.%#
 let $VIMRUNTIME="/home/dilawar/Works/MyPublic/Scripts/vim"
 
 colorscheme peachpuff
@@ -71,6 +73,11 @@ imap ddd <C-X><C-K>
 
 au BufRead,BufNewFile *.snw set filetype=noweb
 let g:haddock_browser="/usr/bin/firefox"
+let g:alternateExtensions_C="H,hh,h"
+let g:alternateExtensions_hh="C,cc,cpp,c"
+let g:SuperTabDefaultCompletionType="context"
+:highlight Pmenu guibg=brown gui=bold
+
 "let g:SuperTabDefaultCompletionType="context"
 let noweb_backend="tex"
 let noweb_language="haskell"
