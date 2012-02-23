@@ -116,7 +116,6 @@ architecture stimulus of testbench is\n\tcomponent ''')
                     self.tb.write(u';\n')
                 else:
                     pass
-                    #print comp, comp_name
 
             self.tb.write(u'begin\n')
             self.tb.write(u'\tdut : '+unicode(comp_name)+u' \n\tport map (');
@@ -127,9 +126,13 @@ architecture stimulus of testbench is\n\tcomponent ''')
                 else:
                     pass
         
+            
             pos = self.tb.tell()
             self.tb.seek(pos-2)
             self.tb.write(u' );')
+            self.tb.write(u'\ttest : process \n')
+
+
             print self.tb.getvalue()
 
 
