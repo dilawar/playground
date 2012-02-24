@@ -111,7 +111,7 @@ end ENTITY testbench;
 ARCHITECTURE stimulus OF testbench IS\n\tCOMPONENT ''')
             self.tb.write(unicode(comp_name)+u'\n')
             self.tb.write(u'\tPORT ( \n')
-            self.tb.write(u'\t'+unicode(comp_expr)+u';\n')
+            self.tb.write(u'\t'+unicode(comp_expr)+u'\n')
             self.tb.write(u'\t);\nEND COMPONENT;\n')
 
             # Attach signal.
