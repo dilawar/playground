@@ -134,9 +134,7 @@ ARCHITECTURE stimulus OF testbench IS\n\tCOMPONENT ''')
                 else:
                     pass
         
-            
-            pos = tb.tell()
-            tb.seek(pos-2)
+            tb.seek(-2, 2)
             tb.write(u' );\n')
             tb.write(u'\n\ttest : PROCESS \n')
 
