@@ -75,7 +75,7 @@ class CompareProgram():
         index = 0
         prevKey = ''
         for i in self.allfiles:
-            key = i.split('/')[2]
+            key = i.split('/')[1]
             if prevKey == key : 
                 self.file_dict[(index, key)].append(i)
             else :
@@ -100,6 +100,8 @@ class CompareProgram():
         self.log_file_hig = cStringIO.StringIO()
 
     def compare_with_programs(self, count,  file, dict):
+        #print ' Compare with {0}'.format(file)
+        #print dict
         with open(file, 'r') as f1 :
             for i in dict :
                 with open(i, 'r') as f2:
@@ -120,16 +122,16 @@ class CompareProgram():
                     if w > 100 :
                         self.log_file.write(log)
     
-                    if s.ratio() > 0.2 and s.ratio() < 0.4  :
+                    if s.ratio() > 0.17 and s.ratio() < 0.35  :
                         print 'Mild copying possible in files'
                         print '{0} : {1} : {2}'.format(s.ratio(), f1.name, f2.name)
                         self.log_file_low.write(log)
-                    if s.ratio() > 0.4 and s.ratio() < 0.55  :
+                    if s.ratio() > 0.35 and s.ratio() < 0.50  :
                         print 'Significant copying possible in files'
                         print '{0} : {1} : {2}'.format(s.ratio(), f1.name, f2.name)
                         self.log_file_med.write(log)
-                    if s.ratio() > 0.55  :
-                        print 'These two files are alomost copied.'
+                    if s.ratio() >= 0.50  :
+                        print 'These two files matches a lot!'
                         print '{0} : {1} : {2}'.format(s.ratio(), f1.name, f2.name)
                         self.log_file_hig.write(log)
                     else : pass
@@ -152,10 +154,10 @@ class CompareProgram():
                     id2, name2 = j
                     if j <= i : pass
                     else :
-                        for fl2 in self.file_dict[(id2, name2)] :
-                            lst.append(id2)
-                            cnt1 = cnt1 + len(self.file_dict[j])
-                            self.compare_with_programs(cnt0, fl1, self.file_dict[j])
+                        lst.append(id2)
+                        cnt1 = cnt1 + len(self.file_dict[j])
+                        #print 'X', fl1, self.file_dict[j]
+                        self.compare_with_programs(cnt0, fl1, self.file_dict[j])
                 comp[id1] = lst
                 #print 'For {0}, total {1} comparison'.format(fl1, cnt1)
                 cnt0 = cnt0 + cnt1
