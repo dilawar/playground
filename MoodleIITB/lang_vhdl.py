@@ -10,9 +10,12 @@ class VHDL:
         self.comp_expr = ''
         self.src = ''
         self.srcDir = ''
+        self.testDir = ''
+        self.autotest = 'false'
 
     def dirName(self, dir):
         self.srcDir = dir
+        self.testDir = dir
 
     def compile_testbench(self, dir, cxx):
         '''
@@ -43,7 +46,12 @@ class VHDL:
                     self.get_ports(test_bench, self.src);
                     print '\n\n** ADDING NEW TESTBENCHES **\n'
 
-                    self.add_testbenches(self.component, self.port)
+                    if self.autotest == 'true':
+                        self.add_testbenches(self.component, self.port)
+                        self.add_test_vectors(self.testDir)
+                    else:
+                        print 'No self-testing...'
+
                     #print(" |- Compiling {0} using {1}".format(test_bench, cxx))
                     #print("In file {0}".format(f.name))
                     #print "cxx : {0}".format(cxx)
@@ -63,7 +71,7 @@ class VHDL:
                 else : 
                     pass
                     
-        print 'Total {0} testbenches are found in this dir.'.format(tbcount)
+        #print 'Total {0} testbenches are found in this dir.'.format(tbcount)
 
     def get_ports(self, test_bench, data):
         self.port = dict()
@@ -96,7 +104,8 @@ class VHDL:
                         self.port[(i, m.group(1))] = (type, (expr))
         
         else:
-            print ("Can not find any component in this file.")
+            pass
+            #print ("Can not find any component in this file.")
 
 
 
@@ -224,3 +233,7 @@ ARCHITECTURE stimulus OF testbench IS\n\tCOMPONENT ''')
                 tb.write(u'END ARCHITECTURE;\n')
 
 
+    def add_test_vectors(self, dir):
+        print dir
+        for file in glob.glob('*.vec'):
+            print file.name

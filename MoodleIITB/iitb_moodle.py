@@ -53,6 +53,7 @@ class IitbMoodle():
         self.language = 'vhdl'
         self.compile = 'false'
         self.download = 'true'
+        self.autotest = 'false'
         self.cxx = ''
         home = os.environ['HOME']
         path = home+"/.moodlerc"
@@ -89,6 +90,10 @@ class IitbMoodle():
                 elif key.split()[0] == 'course' :
                     val = ' '.join(val.split())
                     self.course_key = val
+
+                elif key.split()[0] == 'autotest' :
+                    val = ' '.join(val.split())
+                    self.autotest = val
 
                 elif key.split()[0] == 'activities' :
                     val = ' '.join(val.split())

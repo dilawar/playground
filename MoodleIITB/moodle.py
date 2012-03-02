@@ -32,6 +32,12 @@ else :
     
     lang = VHDL()
     lang.dirName(moodle.root_dir)
+    
+    if moodle.autotest == 'true' :
+        lang.autotest = 'true'
+    else:
+        lang.autotest = 'false'
+
     if moodle.compile == 'true' :
         if os.path.exists(lang.srcDir) :
             for x in os.walk(lang.srcDir):
