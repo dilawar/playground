@@ -67,7 +67,7 @@ if moodle.compare == 'true' :
     for i in moodle.activities :
         cmp = CompareProgram()
         # second argument, if set to True will backup and delete esisting stats. 
-        cmp.set_dir_path(moodle.root_dir+i, True)
+        cmp.set_dir_path(moodle.root_dir+i, False)
         cmp.traverse_and_compare()
         cmp.save_logs()
         ###initialize graph and its log directories.
