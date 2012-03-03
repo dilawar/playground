@@ -12,6 +12,7 @@ class VHDL:
         self.srcDir = ''
         self.testDir = ''
         self.autotest = 'false'
+        self.compile = 'false'
 
     def dirName(self, dir):
         self.srcDir = dir
@@ -44,9 +45,9 @@ class VHDL:
                     self.tbname = test_bench
 
                     self.get_ports(test_bench, self.src);
-                    print '\n\n** ADDING NEW TESTBENCHES **\n'
 
                     if self.autotest == 'true':
+                        print '\n\n** ADDING NEW TESTBENCHES **\n'
                         self.add_testbenches(self.component, self.port)
                         self.add_test_vectors(self.testDir)
                     else:
@@ -55,18 +56,21 @@ class VHDL:
                     #print(" |- Compiling {0} using {1}".format(test_bench, cxx))
                     #print("In file {0}".format(f.name))
                     #print "cxx : {0}".format(cxx)
-                    if cxx == 'ghdl':
-                        vcdOption = "--vcd="+test_bench+".vcd"
-                        subprocess.call(["ghdl", "-a", f.name] \
-                                , stdout=subprocess.PIPE)
-                        subprocess.call(["ghdl", "-m", test_bench] \
-                                , stdout=subprocess.PIPE)
-                        subprocess.call(["ghdl", "-r" \
-                                , test_bench, "--stop-time=1000ns" \
-                                , vcdOption] \
-                                , stdout=subprocess.PIPE)
-                    elif cxx == 'vsim' :
-                        pass
+                    
+                    if self.compile == 'true' :
+                        if cxx == 'ghdl':
+                            vcdOption = "--vcd="+test_bench+".vcd"
+                            subprocess.call(["ghdl", "-a", f.name] \
+                                    , stdout=subprocess.PIPE)
+                            subprocess.call(["ghdl", "-m", test_bench] \
+                                    , stdout=subprocess.PIPE)
+                            subprocess.call(["ghdl", "-r" \
+                                    , test_bench, "--stop-time=1000ns" \
+                                    , vcdOption] \
+                                    , stdout=subprocess.PIPE)
+                        elif cxx == 'vsim' :
+                            pass
+                    else : pass
 
                 else : 
                     pass

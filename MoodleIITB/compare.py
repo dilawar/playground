@@ -12,17 +12,37 @@ from IPython import embed
  
 class CompareProgram():
     def __init__(self):
-        self.dir_path = '.'
+        self.src_path = '.'
+        self.log_dir = self.src_path+"/stats/"
         self.allfiles = []
         self.file_dict = cl.defaultdict(list)
         self.total_program = 0
         self.lang = 'vhdl'
-        self.log_name = "stats.log"
-        self.log_name_low = "copy_low.log"
-        self.log_name_med = "copy_medium.log"
-        self.log_name_hig = "copy_high.log"
+        self.log_name = self.src_path+"/stats.log"
+        self.log_name_low = self.src_path+"/copy_low.log"
+        self.log_name_med = self.src_path+"/copy_medium.log"
+        self.log_name_hig = self.src_path+"/copy_high.log"
 
+    
+    
+    def set_dir_path(self, dir):
+        
+        if os.path.exists(dir):
+            if os.path.exists(dir+"/stats"):
+                shutil.rmtree(dir+"/stats")
+                os.makedirs(dir+"/stats")
+            else:
+                os.makedirs(dir+"/stats")
+        else : 
+            print 'There is no dirctory {0}'.format(dir)
+            sys.exit(0)
 
+        self.src_path = dir
+        self.log_dir = self.src_path+"/stats/"
+        self.log_name = self.log_dir+"/stats.log"
+        self.log_name_low = self.log_dir+"/copy_low.log"
+        self.log_name_med = self.log_dir+"/copy_medium.log"
+        self.log_name_hig = self.log_dir+"/copy_high.log"
 
 
     def safe_backup(self, path, keep_original=True):
@@ -57,7 +77,7 @@ class CompareProgram():
 
     def get_all_programs(self) :
         count = 0;
-        for dirpath, dirnames, filenames in os.walk(self.dir_path) :
+        for dirpath, dirnames, filenames in os.walk(self.src_path) :
             for file in filenames :
                 if self.lang == 'vhdl' :
                     if re.search(r'\w+\.vhd[l]?$', file):
@@ -75,7 +95,8 @@ class CompareProgram():
         index = 0
         prevKey = ''
         for i in self.allfiles:
-            key = i.split('/')[1]
+            key = i.split(self.src_path)[1]
+            key = key.split('/')[1]
             if prevKey == key : 
                 self.file_dict[(index, key)].append(i)
             else :
@@ -172,6 +193,4 @@ class CompareProgram():
         self.log_file_med.close()
         self.log_file_hig_f.write(self.log_file_hig.getvalue())
         self.log_file_hig.close()
-
                             
-

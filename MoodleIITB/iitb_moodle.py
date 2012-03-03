@@ -52,6 +52,7 @@ class IitbMoodle():
         self.extract = 'true'
         self.language = 'vhdl'
         self.compile = 'false'
+        self.compare = 'false'
         self.download = 'true'
         self.autotest = 'false'
         self.cxx = ''
@@ -117,6 +118,9 @@ class IitbMoodle():
 
                 elif key.split()[0] == 'language' :
                    self.language = val.split()[0]
+
+                elif key.split()[0] == 'compare' :
+                   self.compare = val.split()[0]
 
                 elif key.split()[0] == 'compile' :
                    self.compile = val.split()[0]
