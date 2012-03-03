@@ -4,10 +4,11 @@ This file read vhdl files in all directory and compare them and create a log
 file which can be used by other script to analyze.
 
 '''
-import os, re, glob, difflib, sys
+import os, re, difflib
+import sys
+import time
 import collections as cl
 import shutil
-import base64
 import cStringIO
 from IPython import embed
  
@@ -23,13 +24,17 @@ class CompareProgram():
         self.log_name_low = self.src_path+"/copy_low.log"
         self.log_name_med = self.src_path+"/copy_medium.log"
         self.log_name_hig = self.src_path+"/copy_high.log"
+        self.is_log = True
 
     
     
     def set_dir_path(self, dir):
         
         if os.path.exists(dir):
-            if os.path.exists(dir+"/stats"):
+            stat_dir = dir+"/stats"
+            if os.path.exists(stat_dir):
+                # create a backup with timestamp.
+                shutil.copytree(stat_dir, stat_dir+'_'+unicode(time.time()))
                 shutil.rmtree(dir+"/stats")
                 os.makedirs(dir+"/stats")
             else:
@@ -60,7 +65,7 @@ class CompareProgram():
             if os.path.exists(path):
                 new_path = unicode("{0}.bak".format(path))
                 if os.path.isfile(path):
-                        shutil.move(path, new_path)
+                        shutil.copy(path, new_path)
                 elif os.path.isdir(path):
                         shutil.copytree(path, new_path)
                 else:
@@ -106,17 +111,9 @@ class CompareProgram():
                 index = index + 1
                 prevKey = key
 
-
-    def init_log_file(self):
-        log_path = self.safe_backup(self.log_name)
-        self.log_file_f = open(log_path, 'w')        
-        log_path = self.safe_backup(self.log_name_low)
-        self.log_file_low_f = open(log_path, 'w')
-        log_path = self.safe_backup(self.log_name_med)
-        self.log_file_med_f = open(log_path, 'w')
-        log_path = self.safe_backup(self.log_name_hig)
-        self.log_file_hig_f = open(log_path, 'w')
         
+
+    def init_log_streams(self):
         # string streams.
         self.log_file = cStringIO.StringIO()
         self.log_file_low = cStringIO.StringIO()
@@ -165,14 +162,26 @@ class CompareProgram():
     
 
     def save_logs(self):
-        self.log_file_f.write(self.log_file.getvalue())
-        self.log_file_low_f.write(self.log_file_low.getvalue())
-        self.log_file_med_f.write(self.log_file_med.getvalue())
-        self.log_file_hig_f.write(self.log_file_hig.getvalue())
- 
+        log_path = (self.log_name)
+        with open(log_path, 'w') as log_file_f :
+            log_file_f.write(self.log_file.getvalue())
+
+        log_path =(self.log_name_low)
+        with  open(log_path, 'w') as  log_file_low_f :
+            log_file_low_f.write(self.log_file_low.getvalue())
+
+        log_path = (self.log_name_med)
+        with  open(log_path, 'w') as  log_file_med_f :
+            log_file_med_f.write(self.log_file_med.getvalue())
+
+        log_path = (self.log_name_hig)
+        with  open(log_path, 'w') as log_file_hig_f :
+            log_file_hig_f.write(self.log_file_hig.getvalue())
+
+
 
     def traverse_and_compare(self):
-        self.init_log_file()
+        self.init_log_streams()
         self.create_dict_of_program()
         cnt0 = 0
         comp = dict()

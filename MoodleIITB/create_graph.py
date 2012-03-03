@@ -1,6 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import os
+import sys
 
 class CreateGraph():
 
@@ -18,10 +19,12 @@ class CreateGraph():
         self.avg_match = []
     
     def open_stat_file(self):
+        print self.stat_file
         if os.path.exists(self.stat_file):
             self.f = open(self.stat_file)
         else:
             print 'Stat file does not exists.'
+            sys.exit(2)
 
     def create_network(self):
         self.create_lists()

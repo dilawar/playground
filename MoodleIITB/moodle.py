@@ -16,7 +16,7 @@
 import os
 from iitb_moodle import IitbMoodle
 from lang_vhdl import VHDL
-from compare import CompareProgram
+from compare_programs import CompareProgram
 from create_graph import CreateGraph
     
 moodle = IitbMoodle()
@@ -61,6 +61,7 @@ if moodle.compare == 'true' :
     ''' 
     We need to iterate over moodle downloaded activities and check for
     similarity.
+    
     '''
     print moodle.root_dir
     for i in moodle.activities :
