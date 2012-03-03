@@ -28,15 +28,17 @@ class CompareProgram():
 
     
     
-    def set_dir_path(self, dir):
+    def set_dir_path(self, dir, delFlag):
         
         if os.path.exists(dir):
             stat_dir = dir+"/stats"
             if os.path.exists(stat_dir):
-                # create a backup with timestamp.
-                shutil.copytree(stat_dir, stat_dir+'_'+unicode(time.time()))
-                shutil.rmtree(dir+"/stats")
-                os.makedirs(dir+"/stats")
+                if delFlag == True :
+                    # create a backup with timestamp.
+                    shutil.copytree(stat_dir, stat_dir+'_'+unicode(time.time()))
+                    shutil.rmtree(dir+"/stats")
+                    os.makedirs(dir+"/stats")
+                else : pass
             else:
                 os.makedirs(dir+"/stats")
         else : 
