@@ -7,6 +7,7 @@ file which can be used by other script to analyze.
 import os, re, glob, difflib, sys
 import collections as cl
 import shutil
+import base64
 import cStringIO
 from IPython import embed
  
@@ -46,33 +47,28 @@ class CompareProgram():
 
 
     def safe_backup(self, path, keep_original=True):
-        """
+        
+        """safe_backup
+
         Rename a file or directory safely without overwriting an existing 
         backup of the same name.
+        
         """
         count = -1
         new_path = path
         while True:
             if os.path.exists(path):
-                if count == -1:
-                    new_path = unicode("{0}.bak".format(path))
-                else:
-                    new_path = unicode("{0}.bak.{1}".format(path, count))
-                if os.path.exists(new_path):
-                    count += 1
-                    continue
-                else:
-                    if keep_original:
-                        if os.path.isfile(path):
-                            shutil.copy(path, new_path)
-                        elif os.path.isdir(path):
-                            shutil.copytree(path, new_path)
-                    else:
+                new_path = unicode("{0}.bak".format(path))
+                if os.path.isfile(path):
                         shutil.move(path, new_path)
-                    break
+                elif os.path.isdir(path):
+                        shutil.copytree(path, new_path)
+                else:
+                    shutil.move(path, new_path)
+                break
             else:
                 break
-        return new_path
+        return path
 
 
     def get_all_programs(self) :
@@ -90,7 +86,13 @@ class CompareProgram():
         print "Total {0} programs".format(self.total_program)
 
     def create_dict_of_program(self):
-        ''' Extract students names and create a map which keeps their files. '''
+        
+        '''create_dict_of_program
+        
+        Extract students names and create a map which keeps their files. 
+        
+        '''
+        
         self.get_all_programs()
         index = 0
         prevKey = ''
@@ -103,6 +105,7 @@ class CompareProgram():
                 self.file_dict[(index+1, key)].append(i)
                 index = index + 1
                 prevKey = key
+
 
     def init_log_file(self):
         log_path = self.safe_backup(self.log_name)
@@ -119,6 +122,7 @@ class CompareProgram():
         self.log_file_low = cStringIO.StringIO()
         self.log_file_med = cStringIO.StringIO()
         self.log_file_hig = cStringIO.StringIO()
+
 
     def compare_with_programs(self, count,  file, dict):
         #print ' Compare with {0}'.format(file)
@@ -159,7 +163,14 @@ class CompareProgram():
                         #print 'No significant match.'
                         #print '{0} : {1} : {2}'.format(s.ratio(), f1.name, f2.name)
     
-    
+
+    def save_logs(self):
+        self.log_file_f.write(self.log_file.getvalue())
+        self.log_file_low_f.write(self.log_file_low.getvalue())
+        self.log_file_med_f.write(self.log_file_med.getvalue())
+        self.log_file_hig_f.write(self.log_file_hig.getvalue())
+ 
+
     def traverse_and_compare(self):
         self.init_log_file()
         self.create_dict_of_program()
@@ -183,14 +194,4 @@ class CompareProgram():
                 #print 'For {0}, total {1} comparison'.format(fl1, cnt1)
                 cnt0 = cnt0 + cnt1
         #print 'Total comparisions {0}'.format(cnt0)
-
-    def save_logs(self):
-        self.log_file_f.write(self.log_file.getvalue())
-        self.log_file.close()
-        self.log_file_low_f.write(self.log_file_low.getvalue())
-        self.log_file_low.close()
-        self.log_file_med_f.write(self.log_file_med.getvalue())
-        self.log_file_med.close()
-        self.log_file_hig_f.write(self.log_file_hig.getvalue())
-        self.log_file_hig.close()
-                            
+        self.save_logs()   

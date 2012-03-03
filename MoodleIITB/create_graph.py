@@ -2,10 +2,12 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import os
 
-class CreateNetwork():
+class CreateGraph():
 
-    def __init__(self):
-        self.stat_file = './stats.log'
+    def __init__(self, dir):
+        self.dir = dir
+        self.stat_dir = self.dir+'/stats/'
+        self.stat_file = self.dir+'/stats/stats.log'
         self.file1 = []
         self.file2 = []
         self.user_dict = dict()
@@ -57,6 +59,8 @@ class CreateNetwork():
 
 
     def create_lists(self):
+        self.open_stat_file()
+        #print self.f.name
         for line in self.f :
             if len(line) > 2:
                 [count, matches, avg_match, ratio, file1, file2] \
@@ -66,23 +70,29 @@ class CreateNetwork():
                 self.ratio.append(ratio)
                 self.matches.append(matches)
                 self.avg_match.append(avg_match)
-                user1 = (file1.split('/')[1])
-                user2 = (file2.split('/')[1])
+                user1 = file1.split(self.dir)[1]
+                user2 = file2.split(self.dir)[1]
+                u1 = user1.split('/')[1]
+                u2 = user2.split('/')[1]
 
-                self.user1.append(user1)
-                self.user2.append(user2)
-
-                if user1 in self.user_dict : pass 
-                else :
-                    self.user_dict[user1] = len(self.user_dict) + 1
+                self.user1.append(u1)
+                self.user2.append(u2)
                 
-                if user2 in self.user_dict : pass 
+                if u1 in self.user_dict : pass 
                 else :
-                    self.user_dict[user2] = len(self.user_dict) + 1
+                    self.user_dict[u1] = len(self.user_dict) + 1
+                
+                if u2 in self.user_dict : pass 
+                else :
+                    self.user_dict[u2] = len(self.user_dict) + 1
+
+        #print self.user_dict
     
     def draw_and_save_grapgh(self):
         
-        plt.text(1,1, 'In Assignment 4')
+        self.create_network()
+        print '\n\n** Saving graphs in {0} **'.format(self.stat_dir)
+        plt.figure(0)
         plt.subplot(311)
         plt.title('Possible interaction')
         fig = nx.draw_graphviz(self.graph_low \
@@ -93,7 +103,6 @@ class CreateNetwork():
                 , width = 0.5 \
                 , node_color = 'yellow' \
                 )
-        plt.savefig('low.png')
         
         plt.subplot(312)
         plt.title('Possible copies')
@@ -105,7 +114,6 @@ class CreateNetwork():
                 , width = 1.0 \
                 , node_color = 'yellow' \
                 )
-        plt.savefig('medium.png')
         
         plt.subplot(313)
         plt.title('Definite copies')
@@ -117,21 +125,20 @@ class CreateNetwork():
                 , width = 1.9 \
                 , node_color = 'yellow' \
                 )
-        plt.savefig('assignment4.png')
+        plt.savefig(self.stat_dir+'/assignment.png')
 
 
-        plt.title('Assignment 4')
-        plt.figure(0)
+        plt.figure(1)
         plt.title('Possible interactions')
         fig = nx.draw_graphviz(self.graph_low, prog='twopi')
-        plt.savefig('low.png')
-        
-        plt.figure(1)
-        plt.title('Possible copies')
-        nx.draw_graphviz(self.graph_med, prog='twopi')
-        plt.savefig('medium.png')
+        plt.savefig(self.stat_dir+'/low.png')
         
         plt.figure(2)
+        plt.title('Possible copies')
+        nx.draw_graphviz(self.graph_med, prog='twopi')
+        plt.savefig(self.stat_dir+'/medium.png')
+        
+        plt.figure(3)
         plt.title('Definite copies')
         nx.draw_graphviz(self.graph_high, prog='twopi')
-        plt.savefig('high.png')
+        plt.savefig(self.stat_dir+'/high.png')
