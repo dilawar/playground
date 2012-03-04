@@ -18,13 +18,14 @@ from iitb_moodle import IitbMoodle
 from lang_vhdl import VHDL
 from compare_programs import CompareProgram
 from create_graph import CreateGraph
+from process_log import NetworkPrograms
     
 moodle = IitbMoodle()
 moodle.read_configuration()
 
-moodle.make_connection()
-moodle.get_course_page()
-moodle.download_data()
+#moodle.make_connection()
+#moodle.get_course_page()
+#moodle.download_data()
 print 'Total {0} assignments have been downloaded to {1}'\
         .format(moodle.num_assignment, moodle.root_dir)
 
@@ -68,8 +69,14 @@ if moodle.compare == 'true' :
         cmp = CompareProgram()
         # second argument, if set to True will backup and delete esisting stats. 
         cmp.set_dir_path(moodle.root_dir+i, False)
-        cmp.traverse_and_compare()
-        cmp.save_logs()
+        #cmp.traverse_and_compare()
+        #cmp.save_logs()
+        
         ###initialize graph and its log directories.
-        network = CreateGraph(cmp.src_path)
-        network.draw_and_save_grapgh()
+        #network = CreateGraph(cmp.src_path)
+        #network.draw_and_save_grapgh()
+
+        # initialize NetworkPrograms class.
+        net = NetworkPrograms(cmp.log_dir)
+        #net.generate_plagiarism_graph()
+        net.create_msg_dictionaries()
