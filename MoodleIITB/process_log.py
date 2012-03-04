@@ -112,11 +112,11 @@ class NetworkPrograms():
 
         graph_draw(g1 \
                 #, vprops = {"label" :g.vertex_properties["v_name"]} \
-                , ecolor = e_similarity_index
-                , size = (100,100)
+                , ecolor = e_similarity_index \
+                , size = (100,100) \
                 , sep = 2 \
-                , penwidth = e_pen_width
-                , vsize = 0.05
+                , penwidth = e_pen_width \
+                , vsize = 0.05 \
                 , output = self.log_path+"/copy_high.png" \
                 )
         
@@ -126,11 +126,11 @@ class NetworkPrograms():
 
         graph_draw(g2 \
                 #, vprops = {"label" :g.vertex_properties["v_name"]} \
-                , ecolor = e_similarity_index
-                , size = (100,100)
+                , ecolor = e_similarity_index \
+                , size = (100,100) \
                 , sep = 2 \
-                , penwidth = e_pen_width
-                , vsize = 0.05
+                , penwidth = e_pen_width \
+                , vsize = 0.05 \
                 , output = self.log_path+"/copy_suspect.png" \
                 )
 
@@ -143,8 +143,8 @@ class NetworkPrograms():
                 , ecolor = e_similarity_index
                 , size = (100,100)
                 , sep = 2 \
-                , penwidth = e_pen_width
-                , vsize = 0.05
+                , penwidth = e_pen_width \
+                , vsize = 0.05 \ 
                 , output = self.log_path+"/copy_all.png" \
                 )
         
