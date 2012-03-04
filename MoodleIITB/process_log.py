@@ -6,9 +6,10 @@ import cStringIO
 
 class NetworkPrograms():
 
-    def __init__(self, dir):
+    def __init__(self, dir, activity_name):
         self.log_path = dir
         self.log_list = []
+        self.activity = unicode(activity_name)
         self.student_dict = cl.defaultdict(list)
         self.src_path = dir.split('stats')[0]
         
@@ -184,12 +185,13 @@ class NetworkPrograms():
         
         for edge in g.edges() :
              if e_file_size_ratio[edge] > 0.25 and e_file_size_ratio[edge] < 4:
-                if e_similarity_index[edge] > 0.60 :
+                if e_similarity_index[edge] > 0.63 :
                     src, tgt =  edge
                     st1 = v_name[src]
                     st2 = v_name[tgt]
                     pair = e_file_pair[edge]
-                    match = '\n |-{0}\n |-{1}\n'.format(pair[0], pair[1])
+                    match = '\n |-{0}\n |-{1}\n **MATCH INDEX {2}'\
+                            .format(pair[0], pair[1], e_similarity_index[edge])
                     full_copy_dict[st1].append(match)
                     full_copy_dict[st2].append(match)
 
@@ -198,24 +200,46 @@ class NetworkPrograms():
                     st1 = v_name[src]
                     st2 = v_name[tgt]
                     pair = e_file_pair[edge]
-                    match = 'File {0} matches {1}\n'.format(pair[0], pair[1])
+                    match = '\n |-{0}\n |-{1}\n **MATCH INDEX {2}'\
+                            .format(pair[0], pair[1], e_similarity_index[edge])
                     possible_copy_dict[st1].append(match)
                     possible_copy_dict[st2].append(match)
                 else : pass
 
-        # save a log file.
-        with open(self.log_path+"/matching_files.txt", "w") as f :
-            f.write("Following stundents have copied.\n\n")
-            for i in full_copy_dict :
-                f.write(unicode(i)+":\n\n")
-                for line in full_copy_dict[i] :
-                    f.write("  "+unicode(line)+'\n')
+                # if there are more than one file with 0.5 matching, send it to
+                # full_copy_dict
+                to_del = []
+                for i in possible_copy_dict :
+                    if len(possible_copy_dict[i]) > 2 :
+                        for line in possible_copy_dict[i] :
+                            full_copy_dict[i].append(line)
+                        # remove this entry from possible copy.
+                        to_del.append(i)
+                    else : pass
+                
+                for i in to_del :
+                    del(possible_copy_dict[i])
 
-            f.write("\n\nFollowing students may have copied. Verify manually\n")
-            for i in possible_copy_dict :
-                f.write(unicode(i)+":\n\n")
-                for line in possible_copy_dict[i] :
-                    f.write("  "+unicode(line)+'\n')
+        # save a log file.
+        f = cStringIO.StringIO()
+        f.write("Following stundents have copied.\n\n")
+        for i in full_copy_dict :
+            f.write(unicode(i)+":\n\n")
+            for line in full_copy_dict[i] :
+                f.write("  "+unicode(line)+'\n')
+
+        with open(self.log_path+"/"+self.activity+"_convicted.txt", "w") as fl :
+            fl.write(f.getvalue())
+        
+        f = cStringIO.StringIO()
+        f.write("\n\nFollowing students may have copied. Verify manually\n")
+        for i in possible_copy_dict :
+            f.write(unicode(i)+":\n\n")
+            for line in possible_copy_dict[i] :
+                f.write("  "+unicode(line)+'\n')
+
+        with open(self.log_path+"/"+self.activity+"_accused.txt", "w") as fl :
+            fl.write(f.getvalue())
 
         return full_copy_dict, possible_copy_dict
 

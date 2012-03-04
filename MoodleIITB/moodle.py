@@ -72,11 +72,7 @@ if moodle.compare == 'true' :
         #cmp.traverse_and_compare()
         #cmp.save_logs()
         
-        ###initialize graph and its log directories.
-        #network = CreateGraph(cmp.src_path)
-        #network.draw_and_save_grapgh()
-
         # initialize NetworkPrograms class.
-        net = NetworkPrograms(cmp.log_dir)
-        #net.generate_plagiarism_graph()
+        net = NetworkPrograms(cmp.log_dir, i)
+        net.generate_plagiarism_graph()
         net.create_msg_dictionaries()
