@@ -202,7 +202,7 @@ class NetworkPrograms():
                     full_copy_dict[st1].append(match)
                     full_copy_dict[st2].append(match)
 
-                elif e_similarity_index[edge] >= 0.50 :
+                elif e_similarity_index[edge] >= 0.54 :
                     src, tgt =  edge
                     st1 = v_name[src]
                     st2 = v_name[tgt]
