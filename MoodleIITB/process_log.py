@@ -216,7 +216,7 @@ class NetworkPrograms():
                 # full_copy_dict
                 to_del = []
                 for i in possible_copy_dict :
-                    if len(possible_copy_dict[i]) >= 2 :
+                    if len(possible_copy_dict[i]) >= 4 :
                         for line in possible_copy_dict[i] :
                             full_copy_dict[i].append(line)
                         # remove this entry from possible copy.
