@@ -75,4 +75,4 @@ if moodle.compare == 'true' :
         # initialize NetworkPrograms class.
         net = NetworkPrograms(cmp.log_dir, i)
         net.generate_plagiarism_graph()
-        net.send_emails()
+        #net.send_emails()
