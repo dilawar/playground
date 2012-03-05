@@ -56,7 +56,7 @@ class SendEmails():
         for i in convict_dict : 
             tarfile_name = self.log_path+'/'+'_'.join(self.activity.split())\
                     +'_'+'_'.join(i.split())+'.tar'
-            email_id = dict_students[i]
+            email_id = dict_students[i][3]
             msg = ''
             #print tarfile_name
             with tarfile.open(tarfile_name, 'w:gz') as tar :
@@ -74,10 +74,14 @@ class SendEmails():
             HOST = 'smtp-auth.iitb.ac.in'
             message = MIMEMultipart()
             FROM = 'EE705-TA'
-            COMMMASPACE = ' ,'
-            TO = ['dilawar.rajput@gmail.com', 'dilawars@iitb.ac.in']
+            COMMMASPACE = ', '
+            TO = [email_id]
+            CC = ['dilawars@iitb.ac.in', 'nanditha@iitb.ac.in', \
+                    '08307r20@iitb.ac.in', '07d07022@iitb.ac.in' \
+                    , '10307009@iitb.ac.in', '07d07011@iitb.ac.in']
+
             message["From"] = "dilawars@iitb.ac.in"
-            message["To"] = COMMMASPACE.join(TO)
+            message["To"] = unicode(TO)
             message["Subject"] = "Attached files are very similar. Meet your instructor!"
             message["Date"] = formatdate(localtime=True)
 
@@ -106,13 +110,14 @@ class SendEmails():
             server.login(username, password)  # optional
             try:
                 print 'Sending email.'
-                failed = server.sendmail(FROM, TO, message.as_string())
-                server.close()
-            except Exception, e:
-                errorMsg = "Unable to send email. Error: %s" % str(e)  
+                TO = TO + CC
+                #failed = server.sendmail(FROM, TO, message.as_string())
+                #server.close()
+            except Exception, e: pass
+                #errorMsg = "Unable to send email. Error: %s" % str(e)  
                  
     
-    def send_emails_to_convicted(self, convict_dict, accused_dict):
+    def send_emails_to_accused(self, convict_dict, accused_dict):
 
         '''
         This function sends email to student who are warned of copying.
@@ -143,11 +148,11 @@ class SendEmails():
         for i in accused_dict : 
             tarfile_name = self.log_path+'/'+'_'.join(self.activity.split())\
                     +'_'+'_'.join(i.split())+'.tar'
-            email_id = dict_students[i]
+            email_id = dict_students[i][3]
             msg = ''
             #print tarfile_name
             with tarfile.open(tarfile_name, 'w:gz') as tar :
-                for entry in  convict_dict[i] :
+                for entry in accused_dict[i] :
                     # create an archive.
                     file1 = entry[0]
                     file2 = entry[1]
@@ -157,15 +162,20 @@ class SendEmails():
                     tar.add(self.src_path+file2, recursive=False, arcname=file2)
             tar.close()
 
-            COMMMASPACE = ' ,'
+            COMMMASPACE = ', '
             # Now construct the mail msg
             HOST = 'smtp-auth.iitb.ac.in'
             message = MIMEMultipart()
             FROM = 'EE705-TA'
-            TO = ['dilawar.iitb@gmail.com', 'dilawars@iitb.ac.in']
+            TO = [email_id]
+            CC = ['dilawars@iitb.ac.in', 'nanditha@iitb.ac.in', \
+                    '08307r20@iitb.ac.in', '07d07022@iitb.ac.in' \
+                    , '10307009@iitb.ac.in', '07d07011@iitb.ac.in']
+
             message["From"] = "dilawars@iitb.ac.in"
-            message["To"] = COMMMASPACE.join(TO)
-            message["Subject"] = "Attached files are very similar. Meet your instructor!"
+            message["To"] = unicode(TO)
+            message["CC"] = COMMMASPACE.join(CC)
+            message["Subject"] = "FYI : Attached files are similar. TA should verify."
             message["Date"] = formatdate(localtime=True)
 
             f = open('msg_accused', 'r')
@@ -189,12 +199,14 @@ class SendEmails():
 
             server = smtplib.SMTP(HOST, 25)
             server.starttls()
-            server.set_debuglevel(2)
+            server.set_debuglevel(1)
             server.login(username, password)  # optional
             try:
                 print 'Sending email.'
-                failed = server.sendmail(FROM, TO, message.as_string())
-                server.close()
-            except Exception, e:
-                errorMsg = "Unable to send email. Error: %s" % str(e)  
+                TO = TO + CC
+                print TO
+                #failed = server.sendmail(FROM, TO, message.as_string())
+                #server.close()
+            except Exception, e: pass
+                #errorMsg = "Unable to send email. Error: %s" % str(e)  
              
