@@ -64,7 +64,7 @@ class SendEmails():
                     # create an archive.
                     file1 = entry[0]
                     file2 = entry[1]
-                    msg = '\n\n |- {0}\n |- {1}\n |- MATCH INDEX {2}'\
+                    msg = msg + '\n\n |- {0}\n |- {1}\n |- MATCH INDEX {2}'\
                             .format(file1, file2, entry[2])
                     tar.add(self.src_path+file1, recursive=False, arcname=file1)
                     tar.add(self.src_path+file2, recursive=False, arcname=file2)
@@ -156,12 +156,13 @@ class SendEmails():
                     # create an archive.
                     file1 = entry[0]
                     file2 = entry[1]
-                    msg = '\n\n |- {0}\n |- {1}\n |- MATCH INDEX {2}'\
+                    msg = msg + '\n\n |- {0}\n |- {1}\n |- MATCH INDEX {2}'\
                             .format(file1, file2, entry[2])
                     tar.add(self.src_path+file1, recursive=False, arcname=file1)
                     tar.add(self.src_path+file2, recursive=False, arcname=file2)
             tar.close()
 
+            print msg
             COMMMASPACE = ', '
             # Now construct the mail msg
             HOST = 'smtp-auth.iitb.ac.in'
@@ -204,7 +205,6 @@ class SendEmails():
             try:
                 print 'Sending email.'
                 TO = TO + CC
-                print TO
                 failed = server.sendmail(FROM, TO, message.as_string())
                 server.close()
             except Exception, e: 

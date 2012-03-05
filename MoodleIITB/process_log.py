@@ -255,5 +255,5 @@ class NetworkPrograms():
     def send_emails(self):
         email = SendEmails(self.log_path, self.activity)
         convicted, accused = self.create_msg_dictionaries()
-        #email.send_emails_to_convicted(convicted, accused)
-        #email.send_emails_to_accused(convicted, accused)
+        email.send_emails_to_convicted(convicted, accused)
+        email.send_emails_to_accused(convicted, accused)
