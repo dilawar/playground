@@ -1,11 +1,10 @@
 from graph_tool.all import *
-from send_email import SendEmails
+from send_emails import SendEmails
 import collections as cl
 import pickle
 import os
 import pylab as pl
 import cStringIO
-import tarfile
 
 class NetworkPrograms():
 
@@ -256,4 +255,5 @@ class NetworkPrograms():
     def send_emails(self):
         email = SendEmails(self.log_path, self.activity)
         convicted, accused = self.create_msg_dictionaries()
-        email.send_email(convicted, accused)
+        email.send_emails_to_convicted(convicted, accused)
+        email.send_emails_to_accused(convicted, accused)
