@@ -111,10 +111,10 @@ class SendEmails():
             try:
                 print 'Sending email.'
                 TO = TO + CC
-                #failed = server.sendmail(FROM, TO, message.as_string())
-                #server.close()
-            except Exception, e: pass
-                #errorMsg = "Unable to send email. Error: %s" % str(e)  
+                failed = server.sendmail(FROM, TO, message.as_string())
+                server.close()
+            except Exception, e: 
+                errorMsg = "Unable to send email. Error: %s" % str(e)  
                  
     
     def send_emails_to_accused(self, convict_dict, accused_dict):
@@ -205,8 +205,8 @@ class SendEmails():
                 print 'Sending email.'
                 TO = TO + CC
                 print TO
-                #failed = server.sendmail(FROM, TO, message.as_string())
-                #server.close()
-            except Exception, e: pass
-                #errorMsg = "Unable to send email. Error: %s" % str(e)  
+                failed = server.sendmail(FROM, TO, message.as_string())
+                server.close()
+            except Exception, e: 
+                errorMsg = "Unable to send email. Error: %s" % str(e)  
              
