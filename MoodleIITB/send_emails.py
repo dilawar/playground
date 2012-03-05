@@ -74,9 +74,10 @@ class SendEmails():
             HOST = 'smtp-auth.iitb.ac.in'
             message = MIMEMultipart()
             FROM = 'EE705-TA'
-            TO = 'dilawar.rajput@gmail.com'
+            COMMMASPACE = ' ,'
+            TO = ['dilawar.rajput@gmail.com', 'dilawars@iitb.ac.in']
             message["From"] = "dilawars@iitb.ac.in"
-            message["To"] = "dilawar.rajput@gmail.com"
+            message["To"] = COMMMASPACE.join(TO)
             message["Subject"] = "Attached files are very similar. Meet your instructor!"
             message["Date"] = formatdate(localtime=True)
 
@@ -156,13 +157,14 @@ class SendEmails():
                     tar.add(self.src_path+file2, recursive=False, arcname=file2)
             tar.close()
 
+            COMMMASPACE = ' ,'
             # Now construct the mail msg
             HOST = 'smtp-auth.iitb.ac.in'
             message = MIMEMultipart()
             FROM = 'EE705-TA'
-            TO = 'dilawar.rajput@gmail.com'
+            TO = ['dilawar.iitb@gmail.com', 'dilawars@iitb.ac.in']
             message["From"] = "dilawars@iitb.ac.in"
-            message["To"] = "dilawar.rajput@gmail.com"
+            message["To"] = COMMMASPACE.join(TO)
             message["Subject"] = "Attached files are very similar. Meet your instructor!"
             message["Date"] = formatdate(localtime=True)
 
