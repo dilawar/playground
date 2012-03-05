@@ -23,9 +23,9 @@ from process_log import NetworkPrograms
 moodle = IitbMoodle()
 moodle.read_configuration()
 
-moodle.make_connection()
-moodle.get_course_page()
-moodle.download_data()
+#moodle.make_connection()
+#moodle.get_course_page()
+#moodle.download_data()
 print 'Total {0} assignments have been downloaded to {1}'\
         .format(moodle.num_assignment, moodle.root_dir)
 
@@ -68,11 +68,11 @@ if moodle.compare == 'true' :
     for i in moodle.activities :
         cmp = CompareProgram()
         # second argument, if set to True will backup and delete esisting stats. 
-        cmp.set_dir_path(moodle.root_dir+i, True)
-        cmp.traverse_and_compare()
-        cmp.save_logs()
+        cmp.set_dir_path(moodle.root_dir+i, False)
+        #cmp.traverse_and_compare()
+        #cmp.save_logs()
         
         # initialize NetworkPrograms class.
         net = NetworkPrograms(cmp.log_dir, i)
         net.generate_plagiarism_graph()
-        #net.send_emails()
+        net.send_emails()
