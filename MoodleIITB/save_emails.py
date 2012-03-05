@@ -14,7 +14,7 @@ from email.mime.text import MIMEText
 from email.Utils import formatdate
 from email import Encoders
 
-class SendEmails():
+class SaveEmails():
 
     def __init__(self, dir, activity_name):
         self.log_path = dir

@@ -1,5 +1,5 @@
 from graph_tool.all import *
-from send_emails import SendEmails
+from save_emails import SaveEmails
 import collections as cl
 import pickle
 import os
@@ -253,7 +253,7 @@ class NetworkPrograms():
 
     # now if we want to send emails to students, call this function.
     def send_emails(self):
-        email = SendEmails(self.log_path, self.activity)
+        email = SaveEmails(self.log_path, self.activity)
         convicted, accused = self.create_msg_dictionaries()
         email.save_emails_convicted(convicted, accused)
         email.save_emails_accused(convicted, accused)
