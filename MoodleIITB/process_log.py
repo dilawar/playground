@@ -1,5 +1,5 @@
 from graph_tool.all import *
-from msg_databse import CreateMsgAndDatabase
+from msg_database import CreateMsgAndDatabase
 import collections as cl
 import pickle
 import os
@@ -238,29 +238,6 @@ class NetworkPrograms():
         with open(self.log_path+"/"+self.activity+"_convicted.txt", "w") as fl :
             fl.write(f.getvalue())
         
-        # create database to be posted on moodle.
-        data1 = cStringIO.StringIO()
-        data1.write("Name, Matching files pairs, Match indices, Old Marks,\
-                New Marks, Resolved, Comments\n")
-        for i in full_copy_dict :
-            data1.write(unicode(i)+",")
-            for line in full_copy_dict[i] :
-                data1.write(unicode(line[0])+" : "+unicode(line[1])+"<br />")
-
-            data1.write(",")
-            for line in full_copy_dict[i] :
-                data1.write(unicode(line[2])+"<br />")
-
-            data1.write(","+'0')
-            data1.write(","+'0')
-            data1.write(","+'No')
-            data1.write(","+'None')
-            data1.write("\n")
-
-        with open(self.log_path+"/"+self.activity+"_moodle_database.csv", "w") as fl :
-            fl.write(data1.getvalue())
-
-
         f = cStringIO.StringIO()
         f.write("\n\nFollowing students may have copied. Verify manually\n")
         for i in possible_copy_dict :
@@ -276,7 +253,10 @@ class NetworkPrograms():
 
     # now if we want to send emails to students, call this function.
     def send_emails(self):
+        print '\n Creating messages and database for  {0} \
+        :\n'.format(self.activity)
         email = CreateMsgAndDatabase(self.log_path, self.activity)
         convicted, accused = self.create_msg_dictionaries()
         email.save_emails_convicted(convicted, accused)
         email.save_emails_accused(convicted, accused)
+        email.create_moodle_database(convicted, accused)

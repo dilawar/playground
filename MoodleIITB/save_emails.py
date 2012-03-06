@@ -3,7 +3,6 @@ import tarfile
 import smtplib
 import mimetypes
 import collections as cl
-import cStringIO
 from optparse import OptionParser
 from email import encoders
 from email.message import Message
@@ -158,7 +157,6 @@ class CreateMsgAndDatabase():
                         tar.add(self.src_path+file2, recursive=False, arcname=file2)
                 tar.close()
 
-                #print msg
                 COMMMASPACE = ', '
                 # Now construct the mail msg
                 HOST = 'smtp-auth.iitb.ac.in'
@@ -194,67 +192,7 @@ class CreateMsgAndDatabase():
                         'w') as email_msg :
                     email_msg.write(message.as_string())
                  
-    def create_moodle_database(self, convict_dict, accused_dict) :
-
-        print 'Creating database for convincted.'
-        # create database to be posted on moodle.
-        data1 = cStringIO.StringIO()
-        data1.write("Name, Matching files pairs, Match indices, Old Marks,\
-                New Marks, Resolved, Comments\n")
- 
-        if os.path.exists(self.grade_file) :
-            fl_grader = open(self.grade_file, "r")
-        else :
-            print 'File grades.txt (CSV) does not exists in {0}'\
-                    .format(self.down_dir)
-            sys.exit(32)
-
-        line1 = fl_grader.readline()
-        lst = line1.split(',')
-        act_idx = -1
-        
-        # get the first line and check for indx of assignment marks.
-        if lst.count('Assignment: '+self.activity) > 0 :
-            act_idx = lst.index('Assignment: '+self.activity)
-        else :
-            print ' File does not contain marks for {0}'.format(self.activity)
-            print '  Putting X ...'
-        
-        # create data_base of emails and marks. 
-        dict_students = cl.defaultdict(list)
-        
-        for line in fl_grader.readlines() :
-            ln = line.split(',')
-            if ln[1] == '': # if surname is not present.
-                key = ln[0]
-            else : # append surname.
-                key = ln[0]+' '+ln[1]
-
-            dict_students[key] = ln[2:] 
- 
-        for i in convict_dict :
-            data1.write(unicode(i)+",")
-            for line in convict_dict[i] :
-                data1.write(unicode(line[0])+" : "+unicode(line[1])+"<br />")
-
-            data1.write(",")
-            for line in convict_dict[i] :
-                data1.write(unicode(line[2])+"<br />")
-
-            if act_idx > 2 :
-                data1.write(","+dict_students[i][act_idx-2])
-            else :
-                data2.write(","+'NA')
-
-            data1.write(","+'0')
-            data1.write(","+'No')
-            data1.write(","+'None')
-            data1.write("\n")
-
-        with open(self.log_path+"/"+self.activity+"_moodle_database.csv", "w") as fl :
-            fl.write(data1.getvalue())
-
-
-
+    def create_moodle_database(self) :
+        pass
 
 
