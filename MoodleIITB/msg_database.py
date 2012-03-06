@@ -14,7 +14,7 @@ from email.mime.text import MIMEText
 from email.Utils import formatdate
 from email import Encoders
 
-class SaveEmails():
+class CreateMsgAndDatabase():
 
     def __init__(self, dir, activity_name):
         self.log_path = dir
@@ -23,22 +23,23 @@ class SaveEmails():
         self.student_dict = cl.defaultdict(list)
         self.src_path = dir.split('stats')[0]
         self.down_dir = dir.split(activity_name)[0]
- 
-
+        self.grade_file = self.down_dir+'/grades.txt'
+        
     def save_emails_convicted(self, convict_dict, accused_dict):
 
         '''
         This function sends email to student who should meet the instructors.
         '''
-        print 'Getting emails database. Make sure you have grades.txt (CSV) file your'
+        print 'Creating emails database. Make sure you have grades.txt (CSV) file your'
         print '{0}'.format(self.src_path)
 
-        if os.path.exists(self.down_dir+"/grades.txt") :
-            fl_grader = open(self.down_dir+"/grades.txt", "r")
+        if os.path.exists(self.grade_file) :
+            fl_grader = open(self.grade_file, "r")
         else :
             print 'File grades.txt (CSV) does not exists in {0}'\
                     .format(self.down_dir)
             sys.exit(32)
+
         
         # create data_base of emails and marks. 
         dict_students = cl.defaultdict(list)
@@ -117,8 +118,8 @@ class SaveEmails():
         print 'Getting emails database. Make sure you have grades.txt (CSV) file your'
         print '{0}'.format(self.src_path)
 
-        if os.path.exists(self.down_dir+"/grades.txt") :
-            fl_grader = open(self.down_dir+"/grades.txt", "r")
+        if os.path.exists(self.grade_file) :
+            fl_grader = open(self.grade_file, "r")
         else :
             print 'File grades.txt (CSV) does not exists in {0}'\
                     .format(self.down_dir)
@@ -192,3 +193,7 @@ class SaveEmails():
                         'w') as email_msg :
                     email_msg.write(message.as_string())
                  
+    def create_moodle_database(self) :
+        pass
+
+
