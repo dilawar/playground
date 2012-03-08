@@ -9,10 +9,13 @@ import re
 import difflib
 import sys
 import time
+import datetime
+import numpy
 import pickle
 import collections as cl
 import shutil
 import cStringIO
+from lang_vhdl import VHDL
  
 class CompareProgram():
     def __init__(self):
@@ -44,7 +47,9 @@ class CompareProgram():
             if os.path.exists(stat_dir):
                 if delFlag == True :
                     # create a backup with timestamp.
-                    shutil.copytree(stat_dir, stat_dir+'_'+unicode(time.time()))
+                    time = datetime.datetime.now()
+                    shutil.copytree(stat_dir, stat_dir+'_'\
+                            +unicode('_'.join(time.isoformat().split(':'))))
                     shutil.rmtree(dir+"/stats")
                     os.makedirs(dir+"/stats")
                 else : pass
@@ -145,14 +150,22 @@ class CompareProgram():
 
                     if len(text1) < 10 : pass
                     if len(text2) < 10 : pass
-                    s = difflib.SequenceMatcher(None, text1.lower(), text2.lower())
+
+                    if self.lang == 'vhdl' :
+                        vhdl = VHDL()
+                        text1, line1 = vhdl.fix_text(text1, self.lang)
+                        text2, line2  = vhdl.fix_text(text2, self.lang)
+                    else :
+                        pass
+
+                    s = difflib.SequenceMatcher(None, text1, text2)
                     lst = s.get_matching_blocks()
                     w = 0
                     for a, b, n in lst :
                         w = w + len(lst)*n
     
                     # there is no use of w < 100 file.
-                    if w > 10 :
+                    if line1 > 30 or line2 > 30 :
                         f_ratio = 0.00
                         f_ratio = float(len(text1.split()))/ float(len(text2.split()))
                         log = '{0}, {1}, {2}, {3}, {4}, {5} \n'.format(\
@@ -161,32 +174,76 @@ class CompareProgram():
                         self.log_list.append([f1.name, f2.name\
                                 , s.ratio() ,f_ratio, w, w/len(lst)])
 
-                    if s.ratio() > 0.27 and s.ratio() < 0.42  :
-                        print '   Mild copying is possible in following files'
-                        print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
-                                .format(s.ratio(), f1.name, f2.name)
-                        self.log_file_low.write(log)
-                    if s.ratio() >= 0.42 and s.ratio() < 0.53  :
-                        print '   Significant copying possible in files'
-                        print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
-                                .format(s.ratio(), f1.name, f2.name)
-                        self.log_file_med.write(log)
-                    if s.ratio() >= 0.53 and s.ratio() <= 0.62 :
-                        print '   *These two files matches significantly. Check manually.'
-                        print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
-                                .format(s.ratio(), f1.name, f2.name)
-                        self.log_file_hig.write(log)
+                        if s.ratio() > 0.27 and s.ratio() < 0.42  :
+                            print '   Mild copying is possible in following files'
+                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
+                                    .format(s.ratio(), f1.name, f2.name)
+                            self.log_file_low.write(log)
+                        if s.ratio() >= 0.42 and s.ratio() < 0.53  :
+                            print '   Significant copying possible in files'
+                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
+                                    .format(s.ratio(), f1.name, f2.name)
+                            self.log_file_med.write(log)
+                        if s.ratio() >= 0.53 and s.ratio() <= 0.62 :
+                            print '   *These two files matches significantly. Check manually.'
+                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
+                                    .format(s.ratio(), f1.name, f2.name)
+                            self.log_file_hig.write(log)
 
-                    if s.ratio() >= 0.62 :
-                        print '   *NOTICE : These files are copied!'
-                        print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
-                                .format(s.ratio(), f1.name, f2.name)
-                        self.log_file_exa.write(log)
+                        if s.ratio() >= 0.62 :
+                            print '   *NOTICE : These files are copied!'
+                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
+                                    .format(s.ratio(), f1.name, f2.name)
+                            self.log_file_exa.write(log)
 
-                    else : pass
-                        #print 'No significant match.'
-                        #print '{0} : {1} : {2}'.format(s.ratio(), f1.name, f2.name)
-    
+                        else : pass
+                            #print 'No significant match.'
+                            #print '{0} : {1} : {2}'.format(s.ratio(), f1.name, f2.name)
+
+                    # Handle small files. Divide s.ratio() by a suitable number.
+                    else :
+                        a = [10,12,15,20,25,30]
+                        b = [0.5,0.6,0.7,0.8,0.9,1.0]
+
+                        poly_fit = numpy.polyfit(a, b, 3)
+
+                        scaled_by = float(min(line1, line2))/30.0
+                        f_ratio = 0.00
+                        f_ratio = float(len(text1.split()))/ float(len(text2.split()))
+                        ratio = s.ratio() * numpy.polyval(poly_fit, min(line1, line2))
+                        log = '{0}, {1}, {2}, {3}, {4}, {5} \n'.format(\
+                            f_ratio , w, w/len(lst) ,ratio, f1.name, f2.name )
+                        self.log_file.write(log)
+                        self.log_list.append([f1.name, f2.name\
+                                , ratio ,f_ratio, w, w/len(lst)])
+
+                        if ratio > 0.27 and ratio< 0.42  :
+                            print '   Mild copying is possible in following files'
+                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
+                                    .format(ratio, f1.name, f2.name)
+                            self.log_file_low.write(log)
+                        if ratio >= 0.42 and ratio < 0.53  :
+                            print '   Significant copying possible in files'
+                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
+                                    .format(ratio, f1.name, f2.name)
+                            self.log_file_med.write(log)
+                        if ratio >= 0.53 and ratio <= 0.62 :
+                            print '   *These two files matches significantly. Check manually.'
+                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
+                                    .format(ratio, f1.name, f2.name)
+                            self.log_file_hig.write(log)
+
+                        if ratio >= 0.62 :
+                            print '   *NOTICE : These files are copied!'
+                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
+                                    .format(ratio, f1.name, f2.name)
+                            self.log_file_exa.write(log)
+
+                        else : pass
+                            #print 'No significant match.'
+                            #print '{0} : {1} : {2}'.format(ratio, f1.name, f2.name)
+
+        
 
     def save_logs(self):
         log_path = (self.log_name)
@@ -213,8 +270,6 @@ class CompareProgram():
         log_path = (self.log_list_pkl)
         with  open(log_path, 'wb') as list_pkl :
             pickle.dump(self.log_list, list_pkl)
-
-
 
 
     def traverse_and_compare(self):

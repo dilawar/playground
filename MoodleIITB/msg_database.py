@@ -241,10 +241,10 @@ class CreateMsgAndDatabase():
             for line in convict_dict[i] :
                 data1.write(unicode(line[2])+"<br />")
 
-            if act_idx > 2 :
+            if act_idx > 2 and len(dict_students[i]) > 2 :
                 data1.write(","+dict_students[i][act_idx-2])
             else :
-                data2.write(","+'NA')
+                data1.write(","+'NA')
 
             data1.write(","+'0')
             data1.write(","+'No')
