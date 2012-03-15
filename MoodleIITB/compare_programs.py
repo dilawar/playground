@@ -16,15 +16,16 @@ import collections as cl
 import shutil
 import cStringIO
 from lang_vhdl import VHDL
+from lang_verilog import Verilog
  
 class CompareProgram():
-    def __init__(self):
+    def __init__(self, lang):
         self.src_path = '.'
         self.log_dir = self.src_path+"/stats/"
         self.allfiles = []
         self.file_dict = cl.defaultdict(list)
         self.total_program = 0
-        self.lang = 'vhdl'
+        self.lang = lang
         self.log_name = self.src_path+"/stats.log"
         self.log_name_low = self.src_path+"/copy_low.log"
         self.log_name_med = self.src_path+"/copy_medium.log"
@@ -101,9 +102,17 @@ class CompareProgram():
                     if re.search(r'\w+\.vhd[l]?$', file):
                             path = dirpath+"/"+file
                             size = os.path.getsize(path)
-                            if size > 2 :
+                            if size > 20 :
                                 self.allfiles.append(path)
                                 count = count + 1
+                elif self.lang == 'verilog' :
+                    if re.search(r'\w+\.v$', file):
+                            path = dirpath+"/"+file
+                            size = os.path.getsize(path)
+                            if size > 20 :
+                                self.allfiles.append(path)
+                                count = count + 1
+
         self.total_program = count
         print "Total {0} programs".format(self.total_program)
 
@@ -143,18 +152,24 @@ class CompareProgram():
         #print ' Compare with {0}'.format(file)
         #print dict
         with open(file, 'r') as f1 :
+            textA = f1.read()
             for i in dict :
                 with open(i, 'r') as f2:
-                    text1 = f1.read()
-                    text2 = f2.read()
+                    textB = f2.read()
 
-                    if len(text1) < 10 : pass
-                    if len(text2) < 10 : pass
+                    if len(textA) < 10 : pass
+                    if len(textB) < 10 : pass
 
                     if self.lang == 'vhdl' :
                         vhdl = VHDL()
-                        text1, line1 = vhdl.fix_text(text1, self.lang)
-                        text2, line2  = vhdl.fix_text(text2, self.lang)
+                        text1, line1 = vhdl.fix_text(textA, self.lang)
+                        text2, line2  = vhdl.fix_text(textB, self.lang)
+                    
+                    elif self.lang == 'verilog' :
+                        verilog = Verilog()
+                        text1, line1 = verilog.fix_text(textA, self.lang)
+                        text2, line2  = verilog.fix_text(textB, self.lang)
+            
                     else :
                         pass
 
