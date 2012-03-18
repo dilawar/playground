@@ -149,10 +149,16 @@ class CompareProgram():
 
 
     def compare_with_programs(self, count,  file, dict):
+        '''
+        Dictionary dict contains all files submitted by a single student. File
+        'file' is compared with this dictionary.
+        
+        '''
         #print ' Compare with {0}'.format(file)
         #print dict
         with open(file, 'r') as f1 :
             textA = f1.read()
+            cnt = 0
             for i in dict :
                 with open(i, 'r') as f2:
                     textB = f2.read()
@@ -162,8 +168,8 @@ class CompareProgram():
 
                     if self.lang == 'vhdl' :
                         vhdl = VHDL()
-                        text1, line1 = vhdl.fix_text(textA, self.lang)
-                        text2, line2  = vhdl.fix_text(textB, self.lang)
+                        text1, line1, word_count1 = vhdl.fix_text(textA, self.lang)
+                        text2, line2, word_count2 = vhdl.fix_text(textB, self.lang)
                     
                     elif self.lang == 'verilog' :
                         verilog = Verilog()
@@ -179,8 +185,8 @@ class CompareProgram():
                     for a, b, n in lst :
                         w = w + len(lst)*n
     
-                    # there is no use of w < 100 file.
-                    if line1 > 30 or line2 > 30 :
+                    # there is no use of w < 200 file.
+                    if len(text1.split()) > 200 or len(text2.split()) > 200 :
                         f_ratio = 0.00
                         f_ratio = float(len(text1.split()))/ float(len(text2.split()))
                         log = '{0}, {1}, {2}, {3}, {4}, {5} \n'.format(\
@@ -217,8 +223,8 @@ class CompareProgram():
 
                     # Handle small files. Divide s.ratio() by a suitable number.
                     else :
-                        a = [10,12,15,20,25,30]
-                        b = [0.5,0.6,0.7,0.8,0.9,1.0]
+                        a = [100,150,200,250,300]
+                        b = [0.2,0.4,0.55,0.75,0.99]
 
                         poly_fit = numpy.polyfit(a, b, 3)
 
@@ -288,6 +294,11 @@ class CompareProgram():
 
 
     def traverse_and_compare(self):
+        ''' Take a file and compare it with all other files which have not been
+        compared with it before.
+        
+        '''
+
         self.init_log_streams()
         self.create_dict_of_program()
         cnt0 = 0
@@ -303,11 +314,11 @@ class CompareProgram():
                     if j <= i : pass
                     else :
                         lst.append(id2)
-                        cnt1 = cnt1 + len(self.file_dict[j])
+                        cnt1 += len(self.file_dict[j])
                         #print 'X', fl1, self.file_dict[j]
                         self.compare_with_programs(cnt0, fl1, self.file_dict[j])
                 comp[id1] = lst
-                #print 'For {0}, total {1} comparison'.format(fl1, cnt1)
-                cnt0 = cnt0 + cnt1
-        #print 'Total comparisions {0}'.format(cnt0)
+                cnt0 += cnt1
+            print '\n * For {0}, total {1} comparison * \n'.format(name1, cnt1)
         self.save_logs()   
+        print '\n == NOTICE : TOTAL {0} comparisons for this assignment == \n'.format(cnt0)

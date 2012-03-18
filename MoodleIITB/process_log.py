@@ -177,6 +177,7 @@ class NetworkPrograms():
         msg = cStringIO.StringIO()
         full_copy_dict = cl.defaultdict(list)
         possible_copy_dict = cl.defaultdict(list)
+        possible_copy_dict_ = cl.defaultdict(list)
         
         # get the graph.
         if not os.path.exists(self.log_path+"/full_graph.xml.gz"):
@@ -192,8 +193,8 @@ class NetworkPrograms():
         print 'Finding out highly mathcing content.'
         
         for edge in g.edges() :
-             if e_file_size_ratio[edge] > 0.25 and e_file_size_ratio[edge] < 4:
-                if e_similarity_index[edge] > 0.63 :
+             if e_file_size_ratio[edge] > 0.2 and e_file_size_ratio[edge] < 5:
+                if e_similarity_index[edge] > 0.67 :
                     src, tgt =  edge
                     st1 = v_name[src]
                     st2 = v_name[tgt]
@@ -202,7 +203,7 @@ class NetworkPrograms():
                     full_copy_dict[st1].append(match)
                     full_copy_dict[st2].append(match)
 
-                elif e_similarity_index[edge] >= 0.54 :
+                elif e_similarity_index[edge] >= 0.60 :
                     src, tgt =  edge
                     st1 = v_name[src]
                     st2 = v_name[tgt]
@@ -210,21 +211,45 @@ class NetworkPrograms():
                     match = [pair[0], pair[1], e_similarity_index[edge]]
                     possible_copy_dict[st1].append(match)
                     possible_copy_dict[st2].append(match)
+                elif e_similarity_index[edge] >= 0.55 :
+                    src, tgt = edge
+                    st1 = v_name[src]
+                    st2 = v_name[tgt]
+                    pair = e_file_pair[edge]
+                    match = [pair[0], pair[1], e_similarity_index[edge]]
+                    possible_copy_dict_[st1].append(match)
+                    possible_copy_dict_[st2].append(match)
                 else : pass
+            
+             else :
+                print '\n **** Files sizes differ by a factor of \
+                {0}.'.format(e_file_size_ratio[edge])
 
-                # if there are more than one file with 0.5 matching, send it to
+                # if there are more than one file with more than 0.6 matching, send it to
                 # full_copy_dict
                 to_del = []
                 for i in possible_copy_dict :
-                    if len(possible_copy_dict[i]) >= 4 :
+                    if len(possible_copy_dict[i]) >= 4 : # more than two files.
                         for line in possible_copy_dict[i] :
                             full_copy_dict[i].append(line)
                         # remove this entry from possible copy.
                         to_del.append(i)
                     else : pass
                 
+                to_del_ = []
+                for i in possible_copy_dict_ :
+                    if len(possible_copy_dict_[i]) >= 8 : # more than four files.
+                        for line in possible_copy_dict_[i] :
+                            full_copy_dict[i].append(line)
+                        # remove this entry from possible copy.
+                        to_del_.append(i)
+                    else : pass
+             
                 for i in to_del :
                     del(possible_copy_dict[i])
+
+                for i in to_del_ :
+                    del(possible_copy_dict_[i])
 
         # save a log file.
         f = cStringIO.StringIO()

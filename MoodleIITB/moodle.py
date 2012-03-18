@@ -23,11 +23,13 @@ from process_log import NetworkPrograms
 moodle = IitbMoodle()
 moodle.read_configuration()
 
-moodle.make_connection()
-moodle.get_course_page()
-moodle.download_data()
-print 'Total {0} assignments have been downloaded to {1}'\
+if moodle.download == "true" :
+    moodle.make_connection()
+    moodle.get_course_page()
+    moodle.download_data()
+    print 'Total {0} assignments have been downloaded to {1}'\
         .format(moodle.num_assignment, moodle.root_dir)
+else : pass
 
 lang = VHDL()
 lang.dirName(moodle.root_dir)

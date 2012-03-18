@@ -265,6 +265,6 @@ ARCHITECTURE stimulus OF testbench IS\n\tCOMPONENT ''')
                     processed_text += ' '+line.lower()
                     num_lines += 1
             
-        return processed_text, num_lines
+        return processed_text, num_lines, len(processed_text.split())
 
 

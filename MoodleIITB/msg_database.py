@@ -255,6 +255,3 @@ class CreateMsgAndDatabase():
             fl.write(data1.getvalue())
 
 
-
-
-
