@@ -234,7 +234,7 @@ class NetworkPrograms():
                 
                 to_del_ = []
                 for i in possible_copy_dict_ :
-                    if len(possible_copy_dict_[i]) >= 8 : # more than four files.
+                    if len(possible_copy_dict_[i]) >= 6 : # more than four files.
                         for line in possible_copy_dict_[i] :
                             full_copy_dict[i].append(line)
                         # remove this entry from possible copy.
