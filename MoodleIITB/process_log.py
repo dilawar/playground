@@ -221,10 +221,6 @@ class NetworkPrograms():
                     possible_copy_dict_[st2].append(match)
                 else : pass
             
-             else :
-                print '\n **** Files sizes differ by a factor of \
-                {0}.'.format(e_file_size_ratio[edge])
-
                 # if there are more than one file with more than 0.6 matching, send it to
                 # full_copy_dict
                 to_del = []
