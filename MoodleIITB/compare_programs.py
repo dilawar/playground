@@ -223,8 +223,8 @@ class CompareProgram():
 
                     # Handle small files. Divide s.ratio() by a suitable number.
                     else :
-                        a = [20,50,100,150,200,250,300]
-                        b = [0.5,0.6,0.8,0.88,0.89,0.95,0.99]
+                        a = [30,50,100,150,200,250,300]
+                        b = [0.7,0.81,0.85,0.88,0.89,0.95,0.99]
 
                         poly_fit = numpy.polyfit(a, b, 3)
 
