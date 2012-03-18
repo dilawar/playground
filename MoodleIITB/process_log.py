@@ -194,7 +194,7 @@ class NetworkPrograms():
         
         for edge in g.edges() :
              if e_file_size_ratio[edge] > 0.2 and e_file_size_ratio[edge] < 5:
-                if e_similarity_index[edge] > 0.65 :
+                if e_similarity_index[edge] > 0.627 :
                     src, tgt =  edge
                     st1 = v_name[src]
                     st2 = v_name[tgt]
