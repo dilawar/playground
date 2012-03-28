@@ -4,35 +4,63 @@ set realname = 'Dilawar Singh'
 set header_cache = ~/.mutt/cache/headers
 set message_cachedir = ~/.mutt/cache/bodies
 set certificate_file = ~.mutt/certificates
+set mailcap_path=$HOME/.mailcap
+set mime_forward=yes
+set mime_forward_rest=yes
+
 
 #
 ## where mails are stored
-set folder = ~/Mail/
+set folder = ~/Mail
+mailboxes =mairix-search
 mailboxes = +GPO
 mailboxes = +EE
-set record = ~/Mail/sent
+#set folder = "imaps://dilawars@imap.iitb.ac.in"
+set record = +sent
 set sort = threads
-set postponed = ~/Mail/drafts
+set postponed = +drafts
 set mbox_type = MailDir
 set content_type = "text"
-set signature = "~/Mail/sign.html"
+set signature = "~/Mail/sign.txt"
+set sig_on_top = no
 
-#message-hook ~A 'set pager=vim'
+##message-hook ~A 'set pager=vim'
 ## message-hook '~f rfs' 'set pager="less"+/^ subject: .*\""'
 
 ## this our send email client.
 set sendmail = "/usr/bin/msmtp"
 ## Editor
-set editor = "vim"
+set editor = "vim -c 'set spell spelllang=en syntax=mail ft=mail enc=utf-8' '+/^$'"
 ignore *
 unignore date from subject to cc
 #
 ### mutt option
 ###
-set folder_format = "%2C %t %N %8s %d %f"
+set folder_format = "%2C %t %N %12s %d %f"
+set read_inc=100
 set edit_headers = yes
+set from="dilawars@iitb.ac.in"
+set realname="Dilawar Singh"
+set use_from=yes
+set reverse_name
+alternates "dilawar@ee.iitb.ac.in|dilawars@iitb.ac.in"
+
 set askbcc = yes
 set text_flowed = yes
+set smart_wrap = yes
+set pager_stop = yes
+set pager_format = " %C - %[%H:%M] %.20v, %s%* %?H? [%H] ?"
+
+## reply
+set reply_self = no
+set indent_string = ">"
+set include = yes
+set attribution = "On %d, %n wrote:"
+set bounce_delivered = yes
+set quote_regexp = "^( {0,4}[>|:#]| {0,4}[a-z0-9]+[>|]+)+"
+# Folder options
+set copy = yes
+set move = no
 
 set abort_nosubject = ask-yes
 set abort_unmodified = ask-yes
@@ -41,39 +69,48 @@ set include = yes
 set metoo  = yes # send reply to myself.
 
 set alias_file = ~/.mutt/aliases
-set pager_index_lines = 10
+set pager_index_lines = 7
 source ~/.mutt/aliases
+source ~/.mutt/macros
+source ~/.mutt/gnupgp
+source ~/.mutt/ldap
 
-set hdrs
-my_hdr From: Dilawar 
-my_hdr X-Mailer: 'mutt -v| head -n 1'
-macro generic "1" ":set from 'Dilawar '"
+auto_view text/html
 
+alternative_order text/enriched text/plain text/html
+
+## macro of automatic save.
+macro attach W <save-entry><kill-line>/home/dilawar/Attachments/
+macro attach E <save-entry><kill-line>/home/dilawar/attachments/<enter>
+
+#set hdrs
+#my_hdr From: Dilawar <dilawars@iitb.ac.in>
+#my_hdr Organization: EE, IIT Bombay, http://www.ee.iitb.ac.in
+#my_hdr X-Mailer: 'mutt'
+#macro generic "1" ":set from 'Dilawar <dilawars@iitb.ac.in>'"
+#
 color   hdrdefault      brightcyan      default
-color   header          brightwhite     default "^from:"
-color   header          brightwhite     default   "^subject:"
-color   quoted          brightgreen     blue
-color   quoted          brightwhite     blue
-color   quoted          brightwhite     blue
+color   header          brightred       default "^from:"
+color   header          brightred       default "^subject:"
+color   quoted          brightgreen     default
+color   quoted          brightgreen     default
 color   signature       brightwhite     default
 
-color   indicator       blue            green
+color   indicator       blue            default
 
 color   error           red             default
 mono    error           bold
-color   status          default cyan
+color   status          cyan            default
 mono    status          bold
-color   tree            yellow          blue
+color   tree            yellow          default
 
-color   tilde           brightmagenta   blue
+color   tilde           brightmagenta   default
 color   body            red             default    "[-a-z_0-9.]+@[-a-z_0-9.]+"
 mono    body            bold                    "[-a-z_0-9.]+@[-a-z_0-9.]+"
 color   body            red             default   "^Good signature"
 mono    body            bold                    "^Good signature"
-color   body            brightwhite     red     "^Bad signature from.*"
+color   body            brightwhite     default     "^Bad signature from.*"
 mono    body            bold                    "^Bad signature from.*"
-color   normal          white            default
-color   message         red            white
+color   normal          white          default
+color   message         red            default
 color   attachment      red            blue
-
-
