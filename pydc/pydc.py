@@ -17,14 +17,17 @@ import DCWorker
 
 wnd = None
 
-print "+----------------------------------------------------------+"
-print "| pyDC                                                     |"
-print "| Direct Connect client written in Python.                 |"
-print "|                                                          |"
-print "| Written by Anakim Border <aborder@users.sourceforge.net> |"
-print "| Version 0.6                                              |"
-print "+----------------------------------------------------------+"
-print
+welcome = '''
++------------------------------------------------------------------+
+| iitbDC                                                           |
+| Direct Connect client written in Python.                         |
+|                                                                  |
+| Originally pyDC by Anakim Border <aborder@users.sourceforge.net> |
+| Maintained by Dilawar Singh <dilawar@ee.iitb.ac.in>              |
+| Version 0.62                                                     |
++------------------------------------------------------------------+
+'''
+print welcome
 
 class App(wxApp):
 	def OnInit(self):
