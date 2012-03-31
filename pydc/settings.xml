@@ -1,0 +1,17 @@
+<settings>
+	<nick>blahking</nick>
+	<connection>DSL</connection>
+	<description/>
+	<email/>
+  <download>/home/dilawar/Valknut/down</download>
+	<mode>active</mode>
+	<hublist>
+      <source>http://iitb.ac.in/hublist</source>
+	</hublist>
+<share>
+      <dir>/home/dilawar/Valknut/share</dir>
+	</share>
+  <ip>10.7.7.7</ip>
+	<port>412</port>
+	<slots>3</slots>
+</settings>
