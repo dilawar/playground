@@ -4,7 +4,7 @@
 # pyDC is released under the terms of GPL licence.
 
 from Util import *
-from wxPython.wx import *
+from wx import *
 import sys
 
 from DCHublistRetriever import *

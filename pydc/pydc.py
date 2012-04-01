@@ -47,11 +47,11 @@ class App(wxApp):
 
 		sys.modules['__main__'].hublist = []
 
-		wnd = MainWnd(None, -1, "pyDC")
-		self.SetTopWindow(wnd)
+		#wnd = MainWnd(None, -1, "pyDC")
+		#self.SetTopWindow(wnd)
 
 		#Start the show...
-		worker.start()
+    #worker.start()
 
 		return 1
 
