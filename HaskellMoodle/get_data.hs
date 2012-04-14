@@ -1,5 +1,6 @@
 import System.Directory
-import System.FilePath ((</>))
+import System.FilePath 
+import System.FilePath.GlobPattern
 import Control.Monad (forM, liftM)
 import qualified Data.Map as M
 
@@ -56,7 +57,7 @@ getContentRecursively topDir = do
     let properNames = filter (`notElem` [".", ".."]) names 
     paths <- forM properNames $ \name -> do 
         let path = topDir </> name 
-        isDirectory <- doesDirectoryExist path 
+        isDirectory <- doesDirectoryExist path  
         if isDirectory 
             then getContentRecursively path 
             else return [path]
@@ -67,18 +68,27 @@ getContentRecursively topDir = do
  -}
 getStudentFiles topDir = do 
     students <- studentList topDir
-    dirs <- forM students $ \name -> do 
+    let properStudents = filter (`notElem` [".", ".."]) students 
+    dirs <- forM properStudents $ \name -> do 
         let path = topDir </> name 
         return path 
     files <- forM dirs getContentRecursively
-    return files
-
+    return (concat files)
 
 {- 
  - Now from students each file, we need to filter out files of similar
  - extentions.
  -}
-getFilesWithExtention ext list = do 
-    file <- forM list $ (liftM . filter ) hasExtension ".vhd"
-    return file
+getFilesWithExtention :: [String] -> IO [FilePath] -> IO [FilePath]
+getFilesWithExtention pat listFiles = do 
+    list <- listFiles
+    let properFile = filter (\x -> match pat (takeExtension x)) list where
+        match xs fileExtension = or $ map (== fileExtension) xs
+    return properFile
 
+
+{- This function will list out all vhdl files. " -}
+listVHDL = do 
+    -- Note that a single * does not match directory separator / .
+    vhdlFiles <- getFilesWithExtention [".vhd",".vhdl"] (getStudentFiles homeDir)
+    return vhdlFiles
