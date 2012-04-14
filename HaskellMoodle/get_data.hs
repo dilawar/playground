@@ -9,13 +9,12 @@ homeDir = "/home/dilawar/Works/myrepo/Courses/VLSIDesignLab/Assignment-1 Submiss
 -- return Nothing.
 studentList dir = do 
     dirExists <- doesDirectoryExist dir
-    if dirExists then 
-        do
+    if dirExists 
+        then do
             stList <- getDirectoryContents dir
-            return (Just stList)
-        else 
-            do 
-                return Nothing
+            return stList
+        else do
+            return [""::FilePath]
             
 studentList1 dir =
     doesDirectoryExist dir >>= \x -> 
@@ -46,6 +45,10 @@ getStudentFiles dirs = do
                     getStudentFiles (return (Just xs))
 -}
 
+{-
+ - Following function is like unix find utility. It returns all files present
+ - in a directory (recursively).
+ -}
 getContentRecursively topDir = do 
     names <- getDirectoryContents topDir
     let properNames = filter (`notElem` [".", ".."]) names 
@@ -57,13 +60,13 @@ getContentRecursively topDir = do
             else return [path]
     return (concat paths)
 
+{- This function list all files present in a list of directory. Each directory
+ - belongs to a student. 
+ -}
 getStudentFiles topDir = do 
-    names <- stList
-    let properNames = filter (`notElem` [".", ".."]) names
-    paths <- forM properNames $ \dir -> do 
-        let path = topDir </> dir 
-        isDirectory <- doesDirectoryExist path 
-        if isDirectory 
-            then getContentRecursively path 
-            else return [path]
-    return (concat paths)
+    students <- studentList topDir
+    dirs <- forM students $ \name -> do 
+        let path = topDir </> name 
+        return path 
+    files <- forM dirs getContentRecursively
+    return files
