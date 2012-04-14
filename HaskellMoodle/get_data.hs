@@ -5,8 +5,10 @@ import qualified Data.Map as M
 
 homeDir = "/home/dilawar/Works/myrepo/Courses/VLSIDesignLab/Assignment-1 Submission/"
 
--- Get subdirectories of a dirctory. If the directory does not exists then
--- return Nothing.
+{- 
+ - Get subdirectories of a dirctory. If the directory does not exists then
+ - return an empty string. 
+ -}
 studentList dir = do 
     dirExists <- doesDirectoryExist dir
     if dirExists 
@@ -70,3 +72,13 @@ getStudentFiles topDir = do
         return path 
     files <- forM dirs getContentRecursively
     return files
+
+
+{- 
+ - Now from students each file, we need to filter out files of similar
+ - extentions.
+ -}
+getFilesWithExtention ext list = do 
+    file <- forM list $ (liftM . filter ) hasExtension ".vhd"
+    return file
+
