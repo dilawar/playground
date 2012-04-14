@@ -162,25 +162,37 @@ class IitbMoodle():
 
     def get_course_page(self):
 
-        self.course = self.br.follow_link(text_regex=self.course_key)
-        course_url = self.course.geturl()
-        [url, id ] = course_url.split('id=')
-        self.course_id = id
+        # We can handle both course name and id.
+        if self.course_key.isdigit() == False :
+            self.course = self.br.follow_link(text_regex=self.course_key)
+            course_url = self.course.geturl()
+            [url, id ] = course_url.split('id=')
+            self.course_id = id
+        else :
+            self.course = self.br.follow_link(url_regex=r"course.*"+self.course_key)
+            course_url = self.course.geturl()
+            self.course_id = self.course_key 
+
         print(" |- Acquiring course page ...")
 
     def goto_main_activity(self):
         self.activity_id = []
         if self.download == 'true':
             print (" |- Acquiring link of activity ... ")
-            print self.activity_name
+            #print self.activity_name
+            #print self.br.geturl()
+            #print self.br.title()
             activity_res = self.br.follow_link(text_regex=self.activity_name)
+            assert self.br.viewing_html()
+            print self.br.title()
+            print self.br.geturl()
             for act in self.activities :
+                print act
                 act_res = self.br.follow_link(text_regex=act)
                 act_url = act_res.geturl()
                 [url, act_id] = act_url.split('id=')
                 self.activity_id.append(act_id)
-
-                view_act_res = self.br.follow_link(text_regex=r".*(View).*[0-9]*(submitted).*")
+                view_act_res = self.br.follow_link(text_regex=r".*(View)(\s+)[0-9]*(\s+)(submitted).*")
                 self.fetch_activity_links(view_act_res)
                 self.download_files(act)
                 print("Successfully downloaded data for this activity!")
