@@ -1,3 +1,5 @@
+module GetPrograms where 
+
 import System.Directory
 import System.FilePath 
 import System.FilePath.GlobPattern
@@ -5,7 +7,6 @@ import Control.Monad (forM, liftM)
 import DilString
 import qualified Data.Map as M
 
-homeDir = "/home/dilawar/Works/myrepo/Courses/VLSIDesignLab/Assignment-1 Submission/"
 
 {- 
  - Get subdirectories of a dirctory. If the directory does not exists then
@@ -28,8 +29,9 @@ studentList1 dir =
             else 
                 return Nothing
         
-
+{-
 stList = do (studentList1 homeDir >>= \(Just list) -> return list)
+-}
 
 {-
 -- Now for each student we need to get all files and save them in a dictionary
@@ -51,17 +53,17 @@ getStudentFiles dirs = do
 
 {-
  - Following function is like unix find utility. It returns all files present
- - in a directory (recursively).
+ - in a directory (recursively). Arg id is an associated id with topDir.
  -}
-getContentRecursively topDir = do 
+getContentRecursively (id, topDir) = do 
     names <- getDirectoryContents topDir
     let properNames = filter (`notElem` [".", ".."]) names 
     paths <- forM properNames $ \name -> do 
         let path = topDir </> name 
         isDirectory <- doesDirectoryExist path  
         if isDirectory 
-            then getContentRecursively path 
-            else return [path]
+            then getContentRecursively (id, path)
+            else return [(id, path)]
     return (concat paths)
 
 {- This function list all files present in a list of directory. Each directory
@@ -73,9 +75,9 @@ getStudentFiles topDir = do
     let mapStudent = M.empty 
     dirs <- forM properStudents $ \name -> do 
         let path = topDir </> name 
-        return path 
-    files <- forM dirs getContentRecursively
-    return (concat files )
+        return (name, path) -- name is id for getContentRecursively function.
+    files <- forM dirs (getContentRecursively)
+    return (concat files)
 
 {-
 buildMap studentDataMap xs = foldr (insertIntoMap) (M.empty) xs where 
@@ -88,7 +90,7 @@ buildMap studentDataMap xs = foldr (insertIntoMap) (M.empty) xs where
  - Now from students each file, we need to filter out files of similar
  - extentions.
  -}
-
+{-
 getFilesWithExtention :: [String] -> IO [FilePath] -> IO [FilePath] -- (M.Map String FilePath)
 getFilesWithExtention pat listFiles = do 
    -- let mapPrograms = M.empty 
@@ -96,12 +98,21 @@ getFilesWithExtention pat listFiles = do
     let properFile = filter (\x -> match pat (takeExtension x)) list where
         match xs fileExtension = or $ map (== fileExtension) xs
     return (properFile)
+-}
+getFilesWithExtention :: [String] -> IO [(String, FilePath)] -> IO [(String, FilePath)] -- (M.Map String FilePath)
+getFilesWithExtention pat listFiles = do 
+   -- let mapPrograms = M.empty 
+    list <- listFiles
+    let properFile = filter (\(y,x) -> match pat (takeExtension x)) list where
+        match fileName fileExtension = or $ map (== fileExtension) fileName
+    return (properFile)
 
 
-{- This function will list out all vhdl files. " -}
-listPrograms = do 
+{- This function will list out all vhdl files in a Data.Map  " -}
+listPrograms pat topDir = do 
     -- Note that a single * does not match directory separator / .
-    let listfiles = getStudentFiles homeDir
-    vhdlFiles <- getFilesWithExtention [".vhd",".vhdl"] (listfiles)
-    return vhdlFiles
+    let listfiles = getStudentFiles topDir
+    vhdlFiles <- getFilesWithExtention pat (listfiles)
+    let mapFiles = M.fromListWith (\x y->x++":"++y) vhdlFiles where 
+    return mapFiles
 
