@@ -69,26 +69,48 @@ getContentRecursively topDir = do
 getStudentFiles topDir = do 
     students <- studentList topDir
     let properStudents = filter (`notElem` [".", ".."]) students 
+    let mapStudent = M.empty 
     dirs <- forM properStudents $ \name -> do 
         let path = topDir </> name 
         return path 
     files <- forM dirs getContentRecursively
-    return (concat files)
+--    buildMap mapStudent files 
+    return mapStudent
+{-
+buildMap mapStudent xs = foldr (insertIntoMap) mapStudent xs where 
+    insertIntoMap path = M.insertWith (getKey path) (getFile path)
+    getKey path = head (split homeDir path)
+    getFile path = split homeDir path
+-}
+split :: String -> String -> [String]
+split str pat = helper str pat [] [] where 
+    helper :: String -> String -> String -> String -> [String]
+    helper [] ys n m = [n] ++ []
+    helper xs [] n m = [n] ++ (split xs pat)
+    helper (x:xs) (y:ys) n m
+        | x /= y = helper (xs) pat ((n++m)++[x]) m
+        | otherwise = helper xs ys n (m++[y])
 
 {- 
  - Now from students each file, we need to filter out files of similar
  - extentions.
  -}
-getFilesWithExtention :: [String] -> IO [FilePath] -> IO [FilePath]
+ {-
+getFilesWithExtention :: [String] -> IO [FilePath] -> IO (M.Map String FilePath)
 getFilesWithExtention pat listFiles = do 
+    let mapPrograms = M.empty 
     list <- listFiles
     let properFile = filter (\x -> match pat (takeExtension x)) list where
         match xs fileExtension = or $ map (== fileExtension) xs
-    return properFile
-
+    return mapPrograms
+-}
 
 {- This function will list out all vhdl files. " -}
-listVHDL = do 
+{-
+listPrograms = do 
     -- Note that a single * does not match directory separator / .
-    vhdlFiles <- getFilesWithExtention [".vhd",".vhdl"] (getStudentFiles homeDir)
+    let listfiles = getStudentFiles homeDir
+    vhdlFiles <- getFilesWithExtention [".vhd",".vhdl"] listfiles
     return vhdlFiles
+
+-}
