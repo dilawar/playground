@@ -74,14 +74,20 @@ getStudentFiles topDir = do
         let path = topDir </> name 
         return path 
     files <- forM dirs getContentRecursively
---    buildMap mapStudent files 
+    buildMap mapStudent files 
     return mapStudent
-{-
+
 buildMap mapStudent xs = foldr (insertIntoMap) mapStudent xs where 
     insertIntoMap path = M.insertWith (getKey path) (getFile path)
     getKey path = head (split homeDir path)
     getFile path = split homeDir path
--}
+
+
+{-
+ - This function split a given string at another substring pat. Its behaviour is
+ - exactly like python split.
+ -}
+
 split :: String -> String -> [String]
 split str pat = helper str pat [] [] where 
     helper :: String -> String -> String -> String -> [String]
