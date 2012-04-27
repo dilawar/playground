@@ -248,13 +248,13 @@ class CompareProgram():
 #                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
 #                                    .format(ratio, f1.name, f2.name)
 #                            self.log_file_med.write(log)
-                        if ratio >= 0.53 and ratio <= 0.62 :
+                        if ratio >= 0.53 and ratio <= 0.59 :
                             print '   *These two files matches significantly. Check manually.'
                             print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
                                     .format(ratio, f1.name, f2.name)
                             self.log_file_hig.write(log)
 
-                        if ratio >= 0.62 :
+                        if ratio >= 0.59 :
                             print '   *NOTICE : These files are copied!'
                             print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
                                     .format(ratio, f1.name, f2.name)

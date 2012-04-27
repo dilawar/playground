@@ -194,7 +194,7 @@ class NetworkPrograms():
         
         for edge in g.edges() :
              if e_file_size_ratio[edge] > 0.2 and e_file_size_ratio[edge] < 5:
-                if e_similarity_index[edge] > 0.627 :
+                if e_similarity_index[edge] > 0.590 :
                     src, tgt =  edge
                     st1 = v_name[src]
                     st2 = v_name[tgt]
@@ -203,7 +203,7 @@ class NetworkPrograms():
                     full_copy_dict[st1].append(match)
                     full_copy_dict[st2].append(match)
 
-                elif e_similarity_index[edge] >= 0.60 :
+                elif e_similarity_index[edge] >= 0.55 :
                     src, tgt =  edge
                     st1 = v_name[src]
                     st2 = v_name[tgt]
@@ -211,7 +211,8 @@ class NetworkPrograms():
                     match = [pair[0], pair[1], e_similarity_index[edge]]
                     possible_copy_dict[st1].append(match)
                     possible_copy_dict[st2].append(match)
-                elif e_similarity_index[edge] >= 0.55 :
+                
+                elif e_similarity_index[edge] >= 0.50 :
                     src, tgt = edge
                     st1 = v_name[src]
                     st2 = v_name[tgt]
