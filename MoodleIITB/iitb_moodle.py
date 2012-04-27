@@ -290,5 +290,9 @@ class IitbMoodle():
             print " |- Extracting archive ...{0}".format(file)
             subprocess.call(["unrar", "x", "-o+", file], stdout=subprocess.PIPE)
                    
-
+        listing = glob.glob(path+'/*tar')
+        for file in listing:
+            print " |- Extracting archive ...{0}".format(file)
+            subprocess.call(["tar", "xvf", file], stdout=subprocess.PIPE)
+         
 
