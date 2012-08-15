@@ -17,6 +17,7 @@ import shutil
 import cStringIO
 from lang_vhdl import VHDL
 from lang_verilog import Verilog
+from lang_ctype import Ctype
  
 class CompareProgram():
     def __init__(self, lang):
@@ -96,6 +97,7 @@ class CompareProgram():
 
     def get_all_programs(self) :
         count = 0;
+        print "Searching {0} for programs\n".format(self.src_path)
         for dirpath, dirnames, filenames in os.walk(self.src_path) :
             for file in filenames :
                 if self.lang == 'vhdl' :
@@ -107,6 +109,14 @@ class CompareProgram():
                                 count = count + 1
                 elif self.lang == 'verilog' :
                     if re.search(r'\w+\.v$', file):
+                            path = dirpath+"/"+file
+                            size = os.path.getsize(path)
+                            if size > 20 :
+                                self.allfiles.append(path)
+                                count = count + 1
+                elif self.lang == 'ctype' :
+                    print "Searching for ctype programs .. "
+                    if re.search(r'\w+\.(c|cpp|cc|hh|h|hpp|txt)$', file):
                             path = dirpath+"/"+file
                             size = os.path.getsize(path)
                             if size > 20 :
@@ -176,6 +186,11 @@ class CompareProgram():
                         text1, line1 = verilog.fix_text(textA, self.lang)
                         text2, line2  = verilog.fix_text(textB, self.lang)
             
+                    elif self.lang == 'ctype' :
+                        ctype = Ctype()
+                        text1, line1 = ctype.fix_text(textA, self.lang)
+                        text2, line2  = ctype.fix_text(textB, self.lang)
+            
                     else :
                         pass
 
@@ -186,7 +201,10 @@ class CompareProgram():
                         w = w + len(lst)*n
     
                     # there is no use of w < 200 file.
-                    if len(text1.split()) > 200 or len(text2.split()) > 200 :
+                    if(len(text1.split()) < 3 or len(text2.split()) < 3) :
+                        pass
+
+                    elif len(text1.split()) > 200 or len(text2.split()) > 200 :
                         f_ratio = 0.00
                         f_ratio = float(len(text1.split()))/ float(len(text2.split()))
                         log = '{0}, {1}, {2}, {3}, {4}, {5} \n'.format(\

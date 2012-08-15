@@ -95,7 +95,7 @@ class NetworkPrograms():
         self.g.vertex_properties["v_name"] = v_name
 
         # Let's save this graph for posterity.
-        self.g.save(self.log_path+"/full_graph.xml.gz")
+        self.g.save(unicode(self.log_path+"/full_graph.xml.gz"))
 
         return v_dict, self.g
 
@@ -282,3 +282,10 @@ class NetworkPrograms():
         email.save_emails_convicted(convicted, accused)
         email.save_emails_accused(convicted, accused)
         email.create_moodle_database(convicted, accused)
+
+
+if __name__=="__main__" :
+    test = NetworkPrograms("/home/dilawar/", "a1")
+    test.log_path="/home/dilawar/a1/stats/";
+    test.generate_plagiarism_graph()
+
