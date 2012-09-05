@@ -59,4 +59,3 @@ class Ctype:
 
         return processed_text, num_lines
 
-
