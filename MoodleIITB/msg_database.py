@@ -1,4 +1,4 @@
-import os
+import os, sys
 import tarfile
 import smtplib
 import mimetypes

@@ -1,7 +1,7 @@
 from graph_tool.all import *
 from msg_database import CreateMsgAndDatabase
 import collections as cl
-import pickle
+import cPickle as pickle
 import os
 import pylab as pl
 import cStringIO
@@ -9,7 +9,7 @@ import cStringIO
 class NetworkPrograms():
 
     def __init__(self, dir, activity_name):
-        self.log_path = dir
+        self.log_path = str(dir)
         self.log_list = []
         self.activity = unicode(activity_name)
         self.student_dict = cl.defaultdict(list)
@@ -95,7 +95,8 @@ class NetworkPrograms():
         self.g.vertex_properties["v_name"] = v_name
 
         # Let's save this graph for posterity.
-        self.g.save(unicode(self.log_path+"/full_graph.xml.gz"))
+        #self.g.save(unicode("{0}/full_graph.xml.gz".format(self.log_path)))
+
 
         return v_dict, self.g
 
@@ -116,7 +117,7 @@ class NetworkPrograms():
                 , efilt= lambda e : e_similarity_index[e] > 0.60 \
                 )
 
-        graph_draw(g1 \
+        graphviz_draw(g1 \
                 #, vprops = {"label" :g.vertex_properties["v_name"]} \
                 , ecolor = e_similarity_index \
                 , size = (100,100) \
@@ -130,7 +131,7 @@ class NetworkPrograms():
                 , efilt= lambda e : e_similarity_index[e] > 0.48 \
                 )
 
-        graph_draw(g2 \
+        graphviz_draw(g2 \
                 #, vprops = {"label" :g.vertex_properties["v_name"]} \
                 , ecolor = e_similarity_index \
                 , size = (100,100) \
@@ -144,7 +145,7 @@ class NetworkPrograms():
                 , efilt= lambda e : e_similarity_index[e] > 0.35 \
                 )
 
-        graph_draw(g3 \
+        graphviz_draw(g3 \
                 #, vprops = {"label" :g.vertex_properties["v_name"]} \
                 , ecolor = e_similarity_index
                 , size = (100,100)
@@ -161,7 +162,7 @@ class NetworkPrograms():
 
         #pos = fruchterman_reingold_layout(g_all, n_iter = 1000)
         #pos = random_layout(g_all)
-        graph_draw(g_all \
+        graphviz_draw(g_all \
                 #, vprops = {"label" :g.vertex_properties["v_name"]} \
                 , ecolor = e_similarity_index
                 , size = (100,100)
@@ -285,7 +286,8 @@ class NetworkPrograms():
 
 
 if __name__=="__main__" :
-    test = NetworkPrograms("/home/dilawar/", "a1")
-    test.log_path="/home/dilawar/a1/stats/";
+    downDir = "/home/dilawar/Works/myrepo/Courses/2012Spring_AdvancedComputations/"
+    test = NetworkPrograms(downDir, "a1")
+    test.log_path=downDir+"/a1/stats";
     test.generate_plagiarism_graph()
 
