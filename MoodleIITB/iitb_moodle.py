@@ -116,7 +116,10 @@ class IitbMoodle():
                 elif key.split()[0] == 'proxy' :
                    self.proxy = val.split()[0]
 
-                elif key.split()[0] == 'language' :
+                elif key.split()[0] == 'langauge' :
+                   self.language = val.split()[0]
+
+                elif key.split()[0] == 'regex' :
                    self.language = val.split()[0]
 
                 elif key.split()[0] == 'compare' :
@@ -180,21 +183,21 @@ class IitbMoodle():
         if self.download == 'true':
             print (" |- Acquiring link of activity ... ")
             #print self.activity_name
-            #print self.br.geturl()
+            print self.br.geturl()
             #print self.br.title()
+            #for link in self.br.links() :
+            #    print link.text, link.url
             activity_res = self.br.follow_link(text_regex=self.activity_name)
             assert self.br.viewing_html()
             print self.br.title()
             print self.br.geturl()
+            
             for act in self.activities :
-                print act
                 act_res = self.br.follow_link(text_regex=act)
                 act_url = act_res.geturl()
                 [url, act_id] = act_url.split('id=')
                 self.activity_id.append(act_id)
-                view_act_res = self.br.follow_link(text_regex=r".*(View)(\s+)[0-9]*(\s+)(submitted).*")
-                self.fetch_activity_links(view_act_res)
-                self.download_files(act)
+                view_act_res = self.br.follow_link(text_regex=r".*(Download all).*")
                 print("Successfully downloaded data for this activity!")
                 self.br.open(activity_res.geturl())
             else:

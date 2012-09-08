@@ -20,13 +20,14 @@ from lang_verilog import Verilog
 from lang_ctype import Ctype
  
 class CompareProgram():
-    def __init__(self, lang):
+    def __init__(self, lang, regex):
         self.src_path = '.'
         self.log_dir = self.src_path+"/stats/"
         self.allfiles = []
         self.file_dict = cl.defaultdict(list)
         self.total_program = 0
         self.lang = lang
+        self.regex = regex
         self.log_name = self.src_path+"/stats.log"
         self.log_name_low = self.src_path+"/copy_low.log"
         self.log_name_med = self.src_path+"/copy_medium.log"
@@ -101,27 +102,18 @@ class CompareProgram():
         for dirpath, dirnames, filenames in os.walk(self.src_path) :
             for file in filenames :
                 if self.lang == 'vhdl' :
-                    if re.search(r'\w+\.vhd[l]?$', file):
-                            path = dirpath+"/"+file
-                            size = os.path.getsize(path)
-                            if size > 20 :
-                                self.allfiles.append(path)
-                                count = count + 1
+                    self.regex = '\w+\.vhd[l]?$'
                 elif self.lang == 'verilog' :
-                    if re.search(r'\w+\.v$', file):
-                            path = dirpath+"/"+file
-                            size = os.path.getsize(path)
-                            if size > 20 :
-                                self.allfiles.append(path)
-                                count = count + 1
+                    self.regex = '\w+\.v$'
                 elif self.lang == 'ctype' :
-                    print "Searching for ctype programs .. "
-                    if re.search(r'\w+\.(c|cpp|cc|hh|h|hpp|txt)$', file):
-                            path = dirpath+"/"+file
-                            size = os.path.getsize(path)
-                            if size > 20 :
-                                self.allfiles.append(path)
-                                count = count + 1
+                    self.regex = '\w+\.(c|cpp|cc|hh|h|hpp)$'
+
+                if re.search(self.regex, file):
+                        path = dirpath+"/"+file
+                        size = os.path.getsize(path)
+                        if size > 20 :
+                            self.allfiles.append(path)
+                            count = count + 1
 
         self.total_program = count
         print "Total {0} programs".format(self.total_program)
