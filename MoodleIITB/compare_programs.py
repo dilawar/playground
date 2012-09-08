@@ -101,29 +101,30 @@ class CompareProgram():
         count = 0;
         print "Searching {0} for programs\n".format(self.src_path)
         for dirpath, dirnames, filenames in os.walk(self.src_path) :
-            for file in filenames :
-                if self.lang == 'vhdl' :
-                    self.regex = '\w+\.vhd[l]?$'
-                elif self.lang == 'verilog' :
-                    self.regex = '\w+\.v$'
-                elif self.lang == 'ctype' :
-                    self.regex = '\w+\.(c|cpp|cc|hh|h|hpp)$'
+          for file in filenames :
+            if self.lang == 'vhdl' :
+              if(self.regex.strip() == "") :
+                self.regex = '\w+\.vhd[l]?$'
+            elif self.lang == 'verilog' :
+              if(self.regex.strip() == "") :
+                self.regex = '\w+\.v$'
+            elif self.lang == 'ctype' :
+              if(self.regex.strip() == "") :
+                self.regex = '\w+\.(c|cpp|cc|hh|h|hpp)$'
 
-                if re.search(self.regex, file):
-                        path = dirpath+"/"+file
-                        size = os.path.getsize(path)
-                        if size > 20 :
-                            self.allfiles.append(path)
-                            count = count + 1
-                elif self.lang == 'pdf' :
-                    if re.search(r'\w+\.(pdf)$', file) :
-                        path = dirpath+"/"+file 
-                        size = os.path.getsize(path)
-                        if size > 20 :
-                            self.allfiles.append(path)
-                            count = count + 1
-                else :
-                    print "NOTICE : This language is not supported. "
+            elif self.lang == 'pdf' :
+              if(self.regex.strip() == "") :
+                self.regex = '\w+\.(pdf)$'
+
+            else :
+              print "This language {0} is not supported.".format(self.lang)
+
+            if re.search(self.regex, file):
+              path = dirpath+"/"+file
+              size = os.path.getsize(path)
+              if size > 20 :
+                self.allfiles.append(path)
+                count = count + 1
 
         self.total_program = count
         print "Total {0} programs".format(self.total_program)

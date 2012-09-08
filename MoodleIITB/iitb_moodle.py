@@ -51,6 +51,7 @@ class IitbMoodle():
         self.proxy = "false"
         self.extract = 'true'
         self.language = 'vhdl'
+        self.regex = ''
         self.compile = 'false'
         self.compare = 'false'
         self.download = 'true'
@@ -66,7 +67,6 @@ class IitbMoodle():
             sys.exit(0)
 
         for line in f :
-            
             if line[0] == '#' :
                 pass
 
@@ -116,11 +116,11 @@ class IitbMoodle():
                 elif key.split()[0] == 'proxy' :
                    self.proxy = val.split()[0]
 
-                elif key.split()[0] == 'langauge' :
+                elif key.split()[0] == 'language' :
                    self.language = val.split()[0]
 
                 elif key.split()[0] == 'regex' :
-                   self.language = val.split()[0]
+                   self.regex = val.split()[0]
 
                 elif key.split()[0] == 'compare' :
                    self.compare = val.split()[0]
@@ -132,7 +132,7 @@ class IitbMoodle():
                    self.cxx = val.split()[0]
 
                 else :
-                     print ("Unknow configuration variable.. Ignoring.")
+                     print "Unknow configuration variable {0}..  Ignoring.".format(key.split()[0])
 
 
     def make_connection(self):
