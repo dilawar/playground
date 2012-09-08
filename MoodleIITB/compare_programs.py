@@ -18,6 +18,7 @@ import cStringIO
 from lang_vhdl import VHDL
 from lang_verilog import Verilog
 from lang_ctype import Ctype
+from lang_pdf import Pdf
  
 class CompareProgram():
     def __init__(self, lang, regex):
@@ -114,6 +115,15 @@ class CompareProgram():
                         if size > 20 :
                             self.allfiles.append(path)
                             count = count + 1
+                elif self.lang == 'pdf' :
+                    if re.search(r'\w+\.(pdf)$', file) :
+                        path = dirpath+"/"+file 
+                        size = os.path.getsize(path)
+                        if size > 20 :
+                            self.allfiles.append(path)
+                            count = count + 1
+                else :
+                    print "NOTICE : This language is not supported. "
 
         self.total_program = count
         print "Total {0} programs".format(self.total_program)
@@ -183,8 +193,13 @@ class CompareProgram():
                         text1, line1 = ctype.fix_text(textA, self.lang)
                         text2, line2  = ctype.fix_text(textB, self.lang)
             
+                    elif self.lang == 'pdf' :
+                        pdf = Pdf()
+                        text1, line1 = pdf.fix_text(file, self.lang)
+                        text2, line2 = pdf.fix_text(i, self.lang)
+
                     else :
-                        pass
+                        print "This language is not supported."
 
                     s = difflib.SequenceMatcher(None, text1, text2)
                     lst = s.get_matching_blocks()
