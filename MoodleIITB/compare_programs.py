@@ -202,6 +202,9 @@ class CompareProgram():
                     else :
                         print "This language is not supported."
 
+                    print " ++ Comparing {0}:{2} <-> {1} : {3}".format(f1.name.split('/').pop()
+                                   , f2.name.split('/').pop()
+                                   , len(textA), len(textB))
                     s = difflib.SequenceMatcher(None, text1, text2)
                     lst = s.get_matching_blocks()
                     w = 0
@@ -341,7 +344,6 @@ class CompareProgram():
                     else :
                         lst.append(id2)
                         cnt1 += len(self.file_dict[j])
-                        #print 'X', fl1, self.file_dict[j]
                         self.compare_with_programs(cnt0, fl1, self.file_dict[j])
                 comp[id1] = lst
                 cnt0 += cnt1
