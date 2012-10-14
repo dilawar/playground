@@ -176,122 +176,126 @@ class CompareProgram():
                 with open(i, 'r') as f2:
                     textB = f2.read()
 
-                    if len(textA) < 10 : pass
-                    if len(textB) < 10 : pass
+                    lenTextA = len(textA)
+                    lenTextB = len(textB)
 
-                    if self.lang == 'vhdl' :
-                        vhdl = VHDL()
-                        text1, line1, word_count1 = vhdl.fix_text(textA, self.lang)
-                        text2, line2, word_count2 = vhdl.fix_text(textB, self.lang)
-                    
-                    elif self.lang == 'verilog' :
-                        verilog = Verilog()
-                        text1, line1 = verilog.fix_text(textA, self.lang)
-                        text2, line2  = verilog.fix_text(textB, self.lang)
-            
-                    elif self.lang == 'ctype' :
-                        ctype = Ctype()
-                        text1, line1 = ctype.fix_text(textA, self.lang)
-                        text2, line2  = ctype.fix_text(textB, self.lang)
-            
-                    elif self.lang == 'pdf' :
-                        pdf = Pdf()
-                        text1, line1 = pdf.fix_text(file, self.lang)
-                        text2, line2 = pdf.fix_text(i, self.lang)
-
+                    if lenTextA < 10 : pass
+                    elif lenTextB < 10 : pass
+                    elif float(lenTextA)/lenTextB < 0.2 or lenTextA/lenTextB  > 50.0
                     else :
-                        print "This language is not supported."
+                      if self.lang == 'vhdl' :
+                          vhdl = VHDL()
+                          text1, line1, word_count1 = vhdl.fix_text(textA, self.lang)
+                          text2, line2, word_count2 = vhdl.fix_text(textB, self.lang)
+                      
+                      elif self.lang == 'verilog' :
+                          verilog = Verilog()
+                          text1, line1 = verilog.fix_text(textA, self.lang)
+                          text2, line2  = verilog.fix_text(textB, self.lang)
+              
+                      elif self.lang == 'ctype' :
+                          ctype = Ctype()
+                          text1, line1 = ctype.fix_text(textA, self.lang)
+                          text2, line2  = ctype.fix_text(textB, self.lang)
+              
+                      elif self.lang == 'pdf' :
+                          pdf = Pdf()
+                          text1, line1 = pdf.fix_text(file, self.lang)
+                          text2, line2 = pdf.fix_text(i, self.lang)
 
-                    print " ++ Comparing {0}:{2} <-> {1} : {3}".format(f1.name.split('/').pop()
-                                   , f2.name.split('/').pop()
-                                   , len(textA), len(textB))
-                    s = difflib.SequenceMatcher(None, text1, text2)
-                    lst = s.get_matching_blocks()
-                    w = 0
-                    for a, b, n in lst :
-                        w = w + len(lst)*n
-    
-                    # there is no use of w < 200 file.
-                    if(len(text1.split()) < 3 or len(text2.split()) < 3) :
-                        pass
+                      else :
+                          print "This language is not supported."
 
-                    elif len(text1.split()) > 200 or len(text2.split()) > 200 :
-                        f_ratio = 0.00
-                        f_ratio = float(len(text1.split()))/ float(len(text2.split()))
-                        log = '{0}, {1}, {2}, {3}, {4}, {5} \n'.format(\
-                            f_ratio , w, w/len(lst) ,s.ratio(), f1.name, f2.name )
-                        self.log_file.write(log)
-                        self.log_list.append([f1.name, f2.name\
-                                , s.ratio() ,f_ratio, w, w/len(lst)])
+                      print " ++ Comparing {0}:{2} <-> {1} : {3}".format(f1.name.split('/').pop()
+                                     , f2.name.split('/').pop()
+                                     , len(textA), len(textB))
+                      s = difflib.SequenceMatcher(None, text1, text2)
+                      lst = s.get_matching_blocks()
+                      w = 0
+                      for a, b, n in lst :
+                          w = w + len(lst)*n
+      
+                      # there is no use of w < 200 file.
+                      if(len(text1.split()) < 3 or len(text2.split()) < 3) :
+                          pass
 
-#                        if s.ratio() > 0.27 and s.ratio() < 0.42  :
-#                            print '   Mild copying is possible in following files'
-#                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
-#                                    .format(s.ratio(), f1.name, f2.name)
-#                            self.log_file_low.write(log)
-#                        if s.ratio() >= 0.42 and s.ratio() < 0.53  :
-#                            print '   Significant copying possible in files'
-#                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
-#                                    .format(s.ratio(), f1.name, f2.name)
-#                            self.log_file_med.write(log)
-                        if s.ratio() >= 0.53 and s.ratio() <= 0.62 :
-                            print '   *These two files matches significantly. Check manually.'
-                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
-                                    .format(s.ratio(), f1.name, f2.name)
-                            self.log_file_hig.write(log)
+                      elif len(text1.split()) > 200 or len(text2.split()) > 200 :
+                          f_ratio = 0.00
+                          f_ratio = float(len(text1.split()))/ float(len(text2.split()))
+                          log = '{0}, {1}, {2}, {3}, {4}, {5} \n'.format(\
+                              f_ratio , w, w/len(lst) ,s.ratio(), f1.name, f2.name )
+                          self.log_file.write(log)
+                          self.log_list.append([f1.name, f2.name\
+                                  , s.ratio() ,f_ratio, w, w/len(lst)])
 
-                        if s.ratio() >= 0.62 :
-                            print '   *NOTICE : These files are copied!'
-                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
-                                    .format(s.ratio(), f1.name, f2.name)
-                            self.log_file_exa.write(log)
+  #                        if s.ratio() > 0.27 and s.ratio() < 0.42  :
+  #                            print '   Mild copying is possible in following files'
+  #                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
+  #                                    .format(s.ratio(), f1.name, f2.name)
+  #                            self.log_file_low.write(log)
+  #                        if s.ratio() >= 0.42 and s.ratio() < 0.53  :
+  #                            print '   Significant copying possible in files'
+  #                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
+  #                                    .format(s.ratio(), f1.name, f2.name)
+  #                            self.log_file_med.write(log)
+                          if s.ratio() >= 0.53 and s.ratio() <= 0.62 :
+                              print '   *These two files matches significantly. Check manually.'
+                              print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
+                                      .format(s.ratio(), f1.name, f2.name)
+                              self.log_file_hig.write(log)
 
-                        else : pass
-                            #print 'No significant match.'
-                            #print '{0} : {1} : {2}'.format(s.ratio(), f1.name, f2.name)
+                          if s.ratio() >= 0.62 :
+                              print '   *NOTICE : These files are copied!'
+                              print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
+                                      .format(s.ratio(), f1.name, f2.name)
+                              self.log_file_exa.write(log)
 
-                    # Handle small files. Divide s.ratio() by a suitable number.
-                    else :
-                        a = [30,50,100,150,200,250,300]
-                        b = [0.7,0.81,0.85,0.88,0.89,0.95,0.99]
+                          else : pass
+                              #print 'No significant match.'
+                              #print '{0} : {1} : {2}'.format(s.ratio(), f1.name, f2.name)
 
-                        poly_fit = numpy.polyfit(a, b, 3)
+                      # Handle small files. Divide s.ratio() by a suitable number.
+                      else :
+                          a = [30,50,100,150,200,250,300]
+                          b = [0.7,0.81,0.85,0.88,0.89,0.95,0.99]
 
-                        scaled_by = float(min(line1, line2))/30.0
-                        f_ratio = 0.00
-                        f_ratio = float(len(text1.split()))/ float(len(text2.split()))
-                        ratio = s.ratio() * numpy.polyval(poly_fit, min(line1, line2))
-                        log = '{0}, {1}, {2}, {3}, {4}, {5} \n'.format(\
-                            f_ratio , w, w/len(lst) ,ratio, f1.name, f2.name )
-                        self.log_file.write(log)
-                        self.log_list.append([f1.name, f2.name\
-                                , ratio ,f_ratio, w, w/len(lst)])
+                          poly_fit = numpy.polyfit(a, b, 3)
 
-#                        if ratio > 0.27 and ratio< 0.42  :
-#                            print '   Mild copying is possible in following files'
-#                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
-#                                    .format(ratio, f1.name, f2.name)
-#                            self.log_file_low.write(log)
-#                        if ratio >= 0.42 and ratio < 0.53  :
-#                            print '   Significant copying possible in files'
-#                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
-#                                    .format(ratio, f1.name, f2.name)
-#                            self.log_file_med.write(log)
-                        if ratio >= 0.53 and ratio <= 0.59 :
-                            print '   *These two files matches significantly. Check manually.'
-                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
-                                    .format(ratio, f1.name, f2.name)
-                            self.log_file_hig.write(log)
+                          scaled_by = float(min(line1, line2))/30.0
+                          f_ratio = 0.00
+                          f_ratio = float(len(text1.split()))/ float(len(text2.split()))
+                          ratio = s.ratio() * numpy.polyval(poly_fit, min(line1, line2))
+                          log = '{0}, {1}, {2}, {3}, {4}, {5} \n'.format(\
+                              f_ratio , w, w/len(lst) ,ratio, f1.name, f2.name )
+                          self.log_file.write(log)
+                          self.log_list.append([f1.name, f2.name\
+                                  , ratio ,f_ratio, w, w/len(lst)])
 
-                        if ratio >= 0.59 :
-                            print '   *NOTICE : These files are copied!'
-                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
-                                    .format(ratio, f1.name, f2.name)
-                            self.log_file_exa.write(log)
+  #                        if ratio > 0.27 and ratio< 0.42  :
+  #                            print '   Mild copying is possible in following files'
+  #                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
+  #                                    .format(ratio, f1.name, f2.name)
+  #                            self.log_file_low.write(log)
+  #                        if ratio >= 0.42 and ratio < 0.53  :
+  #                            print '   Significant copying possible in files'
+  #                            print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
+  #                                    .format(ratio, f1.name, f2.name)
+  #                            self.log_file_med.write(log)
+                          if ratio >= 0.53 and ratio <= 0.59 :
+                              print '   *These two files matches significantly. Check manually.'
+                              print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
+                                      .format(ratio, f1.name, f2.name)
+                              self.log_file_hig.write(log)
 
-                        else : pass
-                            #print 'No significant match.'
-                            #print '{0} : {1} : {2}'.format(ratio, f1.name, f2.name)
+                          if ratio >= 0.59 :
+                              print '   *NOTICE : These files are copied!'
+                              print '   |- {1}\n   |- {2}\n   ++MATCH INDEX: {0} \n'\
+                                      .format(ratio, f1.name, f2.name)
+                              self.log_file_exa.write(log)
+
+                          else : pass
+                              #print 'No significant match.'
+                              #print '{0} : {1} : {2}'.format(ratio, f1.name, f2.name)
 
         
 
