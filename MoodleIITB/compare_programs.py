@@ -179,10 +179,7 @@ class CompareProgram():
                     lenTextA = len(textA)
                     lenTextB = len(textB)
 
-                    if lenTextA < 10 : pass
-                    elif lenTextB < 10 : pass
-                    elif float(lenTextA)/lenTextB < 0.2 or lenTextA/lenTextB  > 50.0
-                    else :
+                    if float(lenTextA)/lenTextB > 0.2 or lenTextA/lenTextB  < 50 :
                       if self.lang == 'vhdl' :
                           vhdl = VHDL()
                           text1, line1, word_count1 = vhdl.fix_text(textA, self.lang)
