@@ -3,11 +3,12 @@ import ComparePrograms as CP
 import Data.Map as M
 import Control.Monad (liftM)
 
-homeDir = "/home/dilawar/Works/myrepo/Courses/VLSIDesignLab/Assignment-1 Submission/"
+homeDir = "/home/dilawar/Works/hpc21/2012ee677/Assignment01/Submissions"
 
 main = do
-  myVHDLPrograms <- listPrograms [".vhd", ".vhdl"] homeDir
-  let result = CP.processPrograms myVHDLPrograms
+  myPrograms <- listPrograms [".py"] homeDir
+  print myPrograms
+  let result = CP.processPrograms myPrograms
   print (length result)
   putStrLn "Done"
 
