@@ -113,6 +113,6 @@ listPrograms pat topDir = do
     -- Note that a single * does not match directory separator / .
     let listfiles = getStudentFiles topDir
     vhdlFiles <- getFilesWithExtention pat (listfiles)
-    let mapFiles = M.fromListWith (\x y->x++":"++y) vhdlFiles where 
+    let mapFiles = M.fromListWith (\x y->x++"<->"++y) vhdlFiles
     return mapFiles
 
