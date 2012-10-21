@@ -2,7 +2,7 @@ module GetPrograms where
 
 import System.Directory
 import System.FilePath 
-import System.FilePath.GlobPattern
+import Text.Regex.Posix
 import Control.Monad (forM, liftM)
 import DilString
 import qualified Data.Map as M
@@ -35,27 +35,6 @@ studentList1 dir =
             else 
                 return Nothing
         
-{-
-stList = do (studentList1 homeDir >>= \(Just list) -> return list)
--}
-
-{-
--- Now for each student we need to get all files and save them in a dictionary
-getStudentFiles dirs = do 
-    setCurrentDirectory homeDir
-    ds <- dirs 
-    if (ds == Nothing) then do 
-        return Nothing 
-        else do 
-            let Just (x:xs) = ds
-            if xs == [] then  do
-                files <- getDirectoryContents x
-                return $ Just [(x, files)]
-                else do
-                    files <- getDirectoryContents x
-                    return $ Just [(x, files)]
-                    getStudentFiles (return (Just xs))
--}
 
 {-
  - Following function is like unix find utility. It returns all files present
@@ -96,21 +75,12 @@ buildMap studentDataMap xs = foldr (insertIntoMap) (M.empty) xs where
  - Now from students each file, we need to filter out files of similar
  - extentions.
  -}
-{-
-getFilesWithExtention :: [String] -> IO [FilePath] -> IO [FilePath] -- (M.Map String FilePath)
-getFilesWithExtention pat listFiles = do 
+getFilesWithPattern :: String -> IO [(String, FilePath)] -> IO [(String, FilePath)] -- (M.Map String FilePath)
+getFilesWithPattern pat listFiles = do 
    -- let mapPrograms = M.empty 
     list <- listFiles
-    let properFile = filter (\x -> match pat (takeExtension x)) list where
-        match xs fileExtension = or $ map (== fileExtension) xs
-    return (properFile)
--}
-getFilesWithExtention :: [String] -> IO [(String, FilePath)] -> IO [(String, FilePath)] -- (M.Map String FilePath)
-getFilesWithExtention pat listFiles = do 
-   -- let mapPrograms = M.empty 
-    list <- listFiles
-    let properFile = filter (\(y,x) -> match pat (takeExtension x)) list where
-        match fileName fileExtension = or $ map (== fileExtension) fileName
+    let properFile = filter (\(y,x) -> ((=~) (takeFileName x) pat::Bool)) list
+    print properFile
     return (properFile)
 
 
@@ -118,16 +88,15 @@ getFilesWithExtention pat listFiles = do
 listPrograms pat topDir = do 
     -- Note that a single * does not match directory separator / .
     let listfiles = getStudentFiles topDir
-    vhdlFiles <- getFilesWithExtention pat (listfiles)
-    let mapFiles = M.fromListWith (\x y->x++"<->"++y) vhdlFiles
-    let message =  "Total "++show (M.size mapFiles)++" programs found."
-    putStrLn message
+    files <- getFilesWithPattern pat (listfiles)
+    print files
+    let mapFiles = M.fromListWith (\x y->x++"<->"++y) files
     return mapFiles
 
 {- get all programs according to the list -}
 getAllPrograms global 
     | lang == "python" = do 
-                            programs <- listPrograms ["*.py"] dir
+                            programs <- listPrograms ".*py" dir
                             return programs
     | otherwise = do 
                     putStrLn "This langauge is not supported."
