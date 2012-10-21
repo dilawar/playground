@@ -1,6 +1,8 @@
-module GetPrograms where 
+module GetPrograms (
+  getAllPrograms 
+)
+where 
 
-import System.Directory
 import System.FilePath 
 import Text.Regex.Posix
 import Control.Monad (forM, liftM)
@@ -80,7 +82,6 @@ getFilesWithPattern pat listFiles = do
    -- let mapPrograms = M.empty 
     list <- listFiles
     let properFile = filter (\(y,x) -> ((=~) (takeFileName x) pat::Bool)) list
-    print properFile
     return (properFile)
 
 
@@ -89,14 +90,16 @@ listPrograms pat topDir = do
     -- Note that a single * does not match directory separator / .
     let listfiles = getStudentFiles topDir
     files <- getFilesWithPattern pat (listfiles)
-    print files
     let mapFiles = M.fromListWith (\x y->x++"<->"++y) files
     return mapFiles
 
 {- get all programs according to the list -}
 getAllPrograms global 
+    | (length regex) > 1 = do 
+                            programs <- listPrograms regex dir 
+                            return programs
     | lang == "python" = do 
-                            programs <- listPrograms ".*py" dir
+                            programs <- listPrograms "(.*py$)" dir
                             return programs
     | otherwise = do 
                     putStrLn "This langauge is not supported."
@@ -104,3 +107,5 @@ getAllPrograms global
     where 
         lang = forceEither $ CF.get global "DEFAULT" "language" 
         dir = forceEither $ CF.get global "DEFAULT" "dir"
+        regex = forceEither $ CF.get global "DEFAULT" "regex"
+

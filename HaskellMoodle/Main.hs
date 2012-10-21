@@ -23,4 +23,3 @@ main = do
   let f = (head progsToCompare)
   result <- CP.compareTwoPrograms f
   putStrLn "Over"
-
