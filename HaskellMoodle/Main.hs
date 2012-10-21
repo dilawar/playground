@@ -21,5 +21,5 @@ main = do
   putStrLn messgae
   -- Compare any two programs and verify the result.
   let f = (head progsToCompare)
-  result <- CP.compareTwoPrograms f
+  result <- CP.compareTwoPrograms f global
   putStrLn "Over"
