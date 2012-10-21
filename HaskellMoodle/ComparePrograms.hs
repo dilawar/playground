@@ -1,6 +1,8 @@
 module ComparePrograms where 
+import System.IO
 import Data.Map (toList)
 import Data.List.Split (splitOn)
+--import Language as L
 
 processPrograms programsMap = compareProgLists (toList programsMap)
 
@@ -16,6 +18,12 @@ compareListOfPrograms :: [String] -> [String] -> [(String, String)]
 compareListOfPrograms [] _ = []
 compareListOfPrograms _ [] = []
 compareListOfPrograms (p1:p1s) p2s
-  = (map (\y -> compareTwoPrograms p1 y) p2s ++ compareListOfPrograms p1s p2s)
+  = (map (\y -> programToCompare p1 y) p2s ++ compareListOfPrograms p1s p2s)
+    where programToCompare p1 p2 = (p1, p2)
 
-compareTwoPrograms p1 p2 = (p1, p2)
+
+compareTwoPrograms (f1, f2) = do 
+  prog1 <- readFile f1
+  prog2 <- readFile f2
+
+  putStrLn "Comparing two programs"
