@@ -7,6 +7,7 @@ import Data.List.Split (splitOn)
 processPrograms programsMap = compareProgLists (toList programsMap)
 
 compareProgLists :: [(String, String)] -> [(String, String)]
+compareProgLists [] = []
 compareProgLists (x:[]) = [] 
 compareProgLists (x:xs) = concat (map (\y -> compareTwoStudents x y) xs) ++ compareProgLists xs
   where 

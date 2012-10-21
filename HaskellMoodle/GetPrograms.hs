@@ -6,6 +6,12 @@ import System.FilePath.GlobPattern
 import Control.Monad (forM, liftM)
 import DilString
 import qualified Data.Map as M
+import Data.Either.Utils (forceEither)
+import System.Directory 
+import Control.Monad (liftM)
+import Control.Monad.Error 
+import Data.ConfigFile as CF
+
 
 
 {- 
@@ -114,5 +120,18 @@ listPrograms pat topDir = do
     let listfiles = getStudentFiles topDir
     vhdlFiles <- getFilesWithExtention pat (listfiles)
     let mapFiles = M.fromListWith (\x y->x++"<->"++y) vhdlFiles
+    let message =  "Total "++show (M.size mapFiles)++" programs found."
+    putStrLn message
     return mapFiles
 
+{- get all programs according to the list -}
+getAllPrograms global 
+    | lang == "python" = do 
+                            programs <- listPrograms ["*.py"] dir
+                            return programs
+    | otherwise = do 
+                    putStrLn "This langauge is not supported."
+                    return $ M.fromList [] 
+    where 
+        lang = forceEither $ CF.get global "DEFAULT" "language" 
+        dir = forceEither $ CF.get global "DEFAULT" "dir"

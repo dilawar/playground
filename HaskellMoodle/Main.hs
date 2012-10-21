@@ -1,20 +1,26 @@
 module Sniffer where 
-import Global as G
-import Configuration as C
-import GetPrograms
+import GetPrograms as GP
 import ComparePrograms as CP
 import Data.Map as M
+import Data.Either.Utils (forceEither)
 import System.Directory 
 import Control.Monad (liftM)
+import Control.Monad.Error 
+import Data.ConfigFile as CF
 
-homeDir = "/home/dilawar/Works/hpc21/2012ee677/Assignment01/Submissions"
 main = do
+  -- Get the home directory. We have configuration file here.
   home <- getHomeDirectory
-  C.parseConfigFile (home++"/.snifferrc")
-  myPrograms <- listPrograms [".py"] homeDir
+  -- read the configuration file.
+  val <- CF.readfile CF.emptyCP (home++"/.snifferrc")
+  let global = forceEither val
+  -- Now get all the programs in directory
+  myPrograms <- GP.getAllPrograms global
   let progsToCompare = CP.processPrograms myPrograms
+  let messgae =  " ++ Total "++show (length progsToCompare)++" comparisons." 
+  putStrLn messgae
+  -- Compare any two programs and verify the result.
   let f = (head progsToCompare)
   result <- CP.compareTwoPrograms f
   putStrLn "Over"
-
 
