@@ -1,0 +1,13 @@
+# Default option
+language = python
+dir = /home/dilawar/Works/hpc21/2012ee677/Assignment01/Submissions/
+regex = .*py$ 
+
+# Should we compare words or characters. Currently only words are supported.
+# Characters would need a great deal of computation power.
+words = yes 
+
+# Database : Use sqlite3
+database = sqlite
+
+# 
