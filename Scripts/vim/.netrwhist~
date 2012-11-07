@@ -1,5 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =3
-let g:netrw_dirhist_1='/home/dilawar/Works/gitRepo/Cources/FunctionalProgramming/Examples'
-let g:netrw_dirhist_2='/home/dilawar/Works/gitRepo/Cources/Seminar'
-let g:netrw_dirhist_3='/home/dilawar/Works/gitRepo/Cources/Seminar/DD_MODEL'
