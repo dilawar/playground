@@ -1,0 +1,11 @@
+Last updated on : Jan 21, 2012
+
+Active :
+  1. 10.109.141.120
+  2. 10.4.70.70
+  3. 10.26.2.201
+  4. 10.8.100.33
+  5. 10.8.20.21 [Usually not active]
+
+Dead hubs :
+
