@@ -1,11 +1,25 @@
-Last updated on : Jan 21, 2012
+Last updated on : Jan 31, 2012
 
 Active :
-  1. 10.109.141.120
-  2. 10.4.70.70
-  3. 10.26.2.201
-  4. 10.8.100.33
-  5. 10.8.20.21 [Usually not active]
+   
+   10.109.141.120 [ Min share size 10GB ]
+   10.26.2.201
+   10.13.11.2 [ Min share size 10GB ]
+   10.8.100.33
+   10.8.20.21 [Usually not active]
+   10.129.34.54 [ Requires sharing of some GB ]
+   10.4.71.72 
 
 Dead hubs :
 
+  Vanity	10.6.171.18:411
+  gladiator	10.13.40.2:411
+  FREEDOM	10.6.131.109:411
+  Social_Network	10.4.70.70:411
+  Booze	10.2.212.85:411
+  LIONSGATE	10.5.132.23:412
+  alcatrazzz	10.7.40.97:411
+  Open	10.6.10.7:411 
+
+
+Note : If you find some discrepency, report issue to github. 
