@@ -73,5 +73,31 @@
 \section{Introduction}
   
   Consider the following piece of hardware.
+ 
+  \begin{figure}[h]
+    \input{/home/dilawar/Scripts/tikz/circuit_macros.tex}
+    \begin{center}
+      \begin{tikzpicture}[circuit logic US]
+        %\dflipflop{(c.center)}{2}{2}{``DFF''};
+        %% Draw the combinational logic.
+        \matrix[column sep=7mm]
+        {
+          \node (reset) {reset}; & & & & \\
+          \node (a) {a}; & \node[and gate] (a1) {}; &  & & \\ 
+          \node (b) {b};  & \node[not gate] (n1) {};& \node[or gate] (o1) {}; & & \\
+          \node (clk) {clk};  &  & & \\
+        };
+        % \dflipflop{(clk)}{1}{1}{dff};
+        % \draw (reset) -| (dff_reset);
+        \draw (a) -- ++(right:5mm) |- (a1.input 1);
+        \draw (b) -- ++(right:5mm) |- (a1.input 2);
+        \draw (b) -- ++(right:5mm) |- (n1.input);
+        \draw (n1.output) -| (o1.input 2);
+        \draw (a1.output) -- ++(right:5mm) |- (o1.input 1);
+      \end{tikzpicture}
+    \end{center}
+    \caption{A small toy circuit. Describe it in proto-RTL.}
+    \label{fig:circuit}
+  \end{figure}
 
 \end{document}          
