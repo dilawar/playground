@@ -142,14 +142,39 @@
   \end{tabular}
 \end{table}
 
+
 \section{Entity-Architecture pair in VHDL}
   
-A digital system in VHDL is described by \textbf{entity-architecture} pair.
+In VHDL, any digital system is described by \textbf{entity-architecture} pair.
 \textbf{Entity} describes what a system recieves as input nd what it generates
-as output. \textbf{Architecture} describes how the system is going to operate on
-input to generate output. If an analogy is to be drawn with C/C++ langauges, it
-can be said that entity are like function declarations while architecture are
-like function definitions. Enough talk! Let's see some code.
+as output. \textbf{Architecture} describes how the system operates on input to
+generate it's output. If an analogy is to be drawn with C/C++ langauges, it can
+be said that entity are like function declarations while architecture are like
+function definitions. Enough philosophies! Let's see some code.
 
+\lstinputlisting[language=vhdl, firstline=7, lastline=17]{../GHDLDemo/demo.vhd}
 
+And now we have to write the \textbf{architecture} of this entity. There are two
+style of writing architecture. One is called \textbf{structural} and other is
+\textbf{behavioural}. If we already know the components (as we do for this
+system) it is straightforward to write the structural description. When we do
+not know the components and their arrangements (in most of the case we do not
+know), we write behavioural description. 
+
+\begin{remark}[Structral vs behaviour]
+  Structural architecture describes \emph{what is connected with what}. In our
+  system we have three gates connected with each other and their output is
+  reflected to \texttt{out} at each rising edge of clock (D-flip flop will
+  ensure that.). Behavioural architecture describes \emph{what happens when}
+  which can be described by the following equation.
+
+  \begin{equation}
+  out = 
+  \begin{cases}
+    (a \land b) \lor \neg b & \quad \text{on rising edge of clock and reset
+    is unset}\\
+    \text{no change} & \text{otherwise} 
+  \end{cases}
+  \end{equation}
+\end{remark}
 \end{document}          
