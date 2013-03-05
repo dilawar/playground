@@ -72,7 +72,12 @@
 
 \section{Introduction}
   
-  Consider the following piece of hardware.
+ Let's begin with a toy. One excercise is obvious : \emph{Write its equivalent
+ proto-RTL description.} Later, we can simply translate this proto-RTL
+ description to VHDL (or any other HDL). We can do it by hand or better, we can
+ write a computer program to automate the coversion.
+
+ In this tutorial, we'll describe this circuit directly in VHDL.
  
   \begin{figure}[h]
     \input{/home/dilawar/Scripts/tikz/circuit_macros.tex}
@@ -82,22 +87,69 @@
         %% Draw the combinational logic.
         \matrix[column sep=7mm]
         {
-          \node (reset) {reset}; & & & & \\
-          \node (a) {a}; & \node[and gate] (a1) {}; &  & & \\ 
-          \node (b) {b};  & \node[not gate] (n1) {};& \node[or gate] (o1) {}; & & \\
-          \node (clk) {clk};  &  & & \\
+          \node (reset) {reset}; & & &  \\
+          \node (a) {a}; & \node[and gate] (a1) {}; &  &  \\ 
+          \node (b) {b};  & \node[not gate] (n1) {};& \node[or gate] (o1) {}; \\
+          \node (clk) {clk};  &  &  \\
         };
-        % \dflipflop{(clk)}{1}{1}{dff};
-        % \draw (reset) -| (dff_reset);
+        \node (dffNode) at ($(o1.east)+(1,-2)$) {};
+        \dflipflop{(dffNode.center)}{1.5}{1.5}{dff};
+        \draw (reset) -| (dff_reset);
         \draw (a) -- ++(right:5mm) |- (a1.input 1);
         \draw (b) -- ++(right:5mm) |- (a1.input 2);
         \draw (b) -- ++(right:5mm) |- (n1.input);
         \draw (n1.output) -| (o1.input 2);
         \draw (a1.output) -- ++(right:5mm) |- (o1.input 1);
+        \draw (o1.output) -- ++(right:5mm) |- (dff_d);
+        \draw (clk) -- ++(right:5mm) |- (dff_clock);
+        \draw (dff_q) -- ++(right:10mm) node at ++(0,0) [above] {out};
       \end{tikzpicture}
     \end{center}
-    \caption{A small toy circuit. Describe it in proto-RTL.}
+
+    \caption{A small logic circuit. This represents one of the most commonly
+    found hardware block : some combinational logic attached to the input of
+    flip-flop.  We have D-type flip-flop on the right. Unused pins are
+    \texttt{S} (set), $\bar{Q}$, and \texttt{CE} (clock-enable).}
+ 
     \label{fig:circuit}
+ 
   \end{figure}
+
+\paragraph{}
+
+  While describing a hardware in VHDL, one needs to know the input and ouput
+  (hereafter, \textbf{port}) of the system. We have \texttt{a}, \texttt{b},
+  \texttt{clk}, and \texttt{reset} as input to (input port of) this system and
+  \texttt{out} as the output (port) of this system shown in figure
+  \ref{fig:circuit}. Immediately after this we ask
+  the \textbf{type} of ports. We assume that all ports in this system have data-type
+  \textbf{bit} \footnote{See the types available in VHDL language. VHDL type
+  system is stronger than Verilog. Why should it matter?}.
+
+  Till now, we have the following information about the system :
+
+  \begin{table}[h]
+    \centering
+  \begin{tabular}{c|c|c}
+    Port & Direction & Type \\
+    \hline 
+    a & in & bit \\
+    b & in & bit \\ 
+    clk & in & bit \\ 
+    reset & in & bit \\ 
+    out & out & bit \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\section{Entity-Architecture pair in VHDL}
+  
+A digital system in VHDL is described by \textbf{entity-architecture} pair.
+\textbf{Entity} describes what a system recieves as input nd what it generates
+as output. \textbf{Architecture} describes how the system is going to operate on
+input to generate output. If an analogy is to be drawn with C/C++ langauges, it
+can be said that entity are like function declarations while architecture are
+like function definitions. Enough talk! Let's see some code.
+
 
 \end{document}          
