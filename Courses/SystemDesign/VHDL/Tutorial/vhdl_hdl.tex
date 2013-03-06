@@ -162,6 +162,7 @@ not know the components and their arrangements (in most of the case we do not
 know), we write behavioural description. 
 
 \begin{remark}[Structral vs behaviour]
+ 
   Structural architecture describes \emph{what is connected with what}. In our
   system we have three gates connected with each other and their output is
   reflected to \texttt{out} at each rising edge of clock (D-flip flop will
@@ -177,4 +178,25 @@ know), we write behavioural description.
   \end{cases}
   \end{equation}
 \end{remark}
+
+\paragraph{Structural architecture}
+  Now let's see how to write the structural architecture.
+
+  \lstinputlisting[language=vhdl
+  , caption = We do not define the architecture of components used in this code.
+  Each component again has \textbf{entity-architecture} pair. We can write those
+  in different files and compile that file separately using ghdl. How to do it
+  is available in ghdl manual. 
+  , firstline=20, lastline=65]{../GHDLDemo/demo.vhd}
+
+  \paragraph{Behavioural architecture}
+
+  This is a more natural way to describe the hardware. Most of the time we think
+  in terms of behaviour of the circuit. 
+ 
+  \lstinputlisting[language=vhdl
+  , caption = Behavioural architecture
+  , firstline=66, lastline=200]{../GHDLDemo/demo.vhd}
+
+
 \end{document}          
