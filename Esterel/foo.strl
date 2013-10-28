@@ -1,0 +1,11 @@
+module Foo :
+    input A, B, Clock;
+    output O;
+
+    loop
+        [ await A || await B ];
+        emit O
+    each Clock
+
+end module
+
