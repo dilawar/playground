@@ -1,10 +1,7 @@
 module Main where 
-
-import Types as T
+import Devices as D
 
 main = do 
-    let c = Circuit
-    let r = defR { dname = "a1", dvalue = 1.0 }
     putStrLn "Done"
 
 
