@@ -1,0 +1,14 @@
+r1 = Resistor {
+    value = 1e6
+    , comment = "Da da da "
+    }
+
+c1 = Capacitor {
+    value = 1e9
+    , init = 0.1
+    , comment = "Its a capacitor"
+    }
+
+// Add them in parallel
+//subc = parallel r1 r2
+//sub1 = series r1  r2

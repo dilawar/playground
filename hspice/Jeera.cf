@@ -1,0 +1,19 @@
+{- This is BNF grammar -}
+
+entrypoints Design;
+
+Design. Design ::= [DeviceDecl] ;
+
+DeviceDecl. DeviceDecl ::= DeviceType "{" [Assignment] "}" ;
+terminator nonempty DeviceDecl ";";
+
+rules DeviceType ::= "Registor" | "Capacitor" | "Inductance" | "Voltage";
+
+-- Assignment rule
+Assignment. Assignment ::= IDENT "=" IDENT;
+separator Assignment ";";
+
+token IDENT ( letter | '_') (letter | digit | '_'| '$')* ;
+-- comments 
+comment "//";
+comment "/*" "*/";
