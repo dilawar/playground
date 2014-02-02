@@ -35,9 +35,6 @@ two sequences of digits separated by a decimal point, optionally
 followed by an unsigned or negative exponent.
 
 
-Integer literals \nonterminal{Int}\ are nonempty sequences of digits.
-
-
 
 
 \subsection*{Reserved words and symbols}
@@ -103,7 +100,6 @@ All other symbols are terminals.\\
 {\nonterminal{Rvalue}} & {\arrow}  &{\nonterminal{Ident}}  \\
  & {\delimit}  &{\nonterminal{Double}}  \\
  & {\delimit}  &{\nonterminal{Ident}}  \\
- & {\delimit}  &{\nonterminal{Integer}}  \\
 \end{tabular}\\
 
 

@@ -4,16 +4,20 @@ entrypoints Design;
 
 Design. Design ::= [DeviceDecl] ;
 
-DeviceDecl. DeviceDecl ::= DeviceType "{" [Assignment] "}" ;
+DeviceDecl. DeviceDecl ::= InstanceName "=" DeviceType "{" [Assignment] "}" ;
 terminator nonempty DeviceDecl ";";
 
-rules DeviceType ::= "Registor" | "Capacitor" | "Inductance" | "Voltage";
+rules DeviceType ::= "Resistor" | "Capacitor" | "Inductance" | "Voltage";
+
+-- Instance
+InstanceName. InstanceName ::= Ident;
 
 -- Assignment rule
-Assignment. Assignment ::= IDENT "=" IDENT;
-separator Assignment ";";
+Assignment. Assignment ::= Ident "=" Rvalue;
+separator nonempty Assignment ",";
 
-token IDENT ( letter | '_') (letter | digit | '_'| '$')* ;
+rules Rvalue ::= Ident | Double | Ident | Integer; 
+
 -- comments 
 comment "//";
 comment "/*" "*/";

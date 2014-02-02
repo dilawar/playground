@@ -46,7 +46,6 @@ transRvalue :: Rvalue -> Result
 transRvalue x = case x of
   RvalueIdent id  -> failure x
   RvalueDouble d  -> failure x
-  RvalueInteger n  -> failure x
 
 
 

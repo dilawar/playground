@@ -121,7 +121,6 @@ instance Print Rvalue where
   prt i e = case e of
    RvalueIdent id -> prPrec i 0 (concatD [prt 0 id])
    RvalueDouble d -> prPrec i 0 (concatD [prt 0 d])
-   RvalueInteger n -> prPrec i 0 (concatD [prt 0 n])
 
 
 

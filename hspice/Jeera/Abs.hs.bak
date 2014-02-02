@@ -30,6 +30,5 @@ data Assignment =
 data Rvalue =
    RvalueIdent Ident
  | RvalueDouble Double
- | RvalueInteger Integer
   deriving (Eq,Ord,Show)
 

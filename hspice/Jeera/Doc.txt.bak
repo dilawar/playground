@@ -23,9 +23,6 @@ two sequences of digits separated by a decimal point, optionally
 followed by an unsigned or negative exponent.
 
 
-Integer literals //Integer// are nonempty sequences of digits.
-
-
 
 
 ===Reserved words and symbols===
@@ -62,6 +59,5 @@ All other symbols are terminals.
   | //Rvalue// | -> | //Ident// 
   |  |  **|**  | //Double// 
   |  |  **|**  | //Ident// 
-  |  |  **|**  | //Integer// 
 
 

@@ -27,7 +27,6 @@ import Jeera.ErrM
 
 L_ident  { PT _ (TV $$) }
 L_doubl  { PT _ (TD $$) }
-L_integ  { PT _ (TI $$) }
 L_err    { _ }
 
 
@@ -35,7 +34,6 @@ L_err    { _ }
 
 Ident   :: { Ident }   : L_ident  { Ident $1 }
 Double  :: { Double }  : L_doubl  { (read ( $1)) :: Double }
-Integer :: { Integer } : L_integ  { (read ( $1)) :: Integer }
 
 Design :: { Design }
 Design : ListDeviceDecl { Design $1 } 
@@ -74,7 +72,6 @@ Rvalue :: { Rvalue }
 Rvalue : Ident { RvalueIdent $1 } 
   | Double { RvalueDouble $1 }
   | Ident { RvalueIdent $1 }
-  | Integer { RvalueInteger $1 }
 
 
 
