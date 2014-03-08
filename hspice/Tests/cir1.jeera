@@ -1,0 +1,5 @@
+* A jeera script
+r1 = resistor { name = r1 , value = 1e06 };
+r2 = resistor { name = r2 , value = 1e-06 };
+n1 = r1 || r2 ;
+n2 = r1 -- r2; 
