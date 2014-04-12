@@ -59,7 +59,6 @@ int main()
             , callocTime
             , mallocTime
           );
-    printf("Whole execution took: %ld\n", clock());
     return 0;
 }
 
