@@ -22,13 +22,13 @@ using namespace std;
 
 class A
 {
-    A()
-    {
-        ;
-    }
+    public:
+        A()
+        {
+        }
 
-    void printA()
-    {
-        cerr << "A " << endl;
-    }
+        void printA()
+        {
+            cerr << "A " << endl;
+        }
 };

@@ -1,0 +1,50 @@
+<cython_debug version="1.0">
+  <Module c_filename="/home/dilawar/Work/GITHUB/MyPublic/Cython/setup.cpp" filename="/home/dilawar/Work/GITHUB/MyPublic/Cython/setup.py" module_name="setup">
+    <Functions>
+      <Function cname="initsetup" is_initmodule_function="True" lineno="1" name="setup" pf_cname="" qualified_name="">
+        <Locals>
+          <LocalVar cname="__pyx_v_5setup_cythonize" lineno="2" name="cythonize" qualified_name="setup.cythonize" type="PythonObject"/>
+          <LocalVar cname="__pyx_v_5setup___builtins__" lineno="0" name="__builtins__" qualified_name="setup.__builtins__" type="PythonObject"/>
+          <LocalVar cname="__pyx_v_5setup___file__" lineno="0" name="__file__" qualified_name="setup.__file__" type="PythonObject"/>
+          <LocalVar cname="__pyx_v_5setup___doc__" lineno="0" name="__doc__" qualified_name="setup.__doc__" type="PythonObject"/>
+          <LocalVar cname="__pyx_v_5setup___path__" lineno="0" name="__path__" qualified_name="setup.__path__" type="PythonObject"/>
+          <LocalVar cname="__test__" lineno="1" name="__test__" qualified_name="setup.__test__" type="PythonObject"/>
+          <LocalVar cname="__pyx_v_5setup___name__" lineno="0" name="__name__" qualified_name="setup.__name__" type="PythonObject"/>
+          <LocalVar cname="__pyx_v_5setup_setup" lineno="1" name="setup" qualified_name="setup.setup" type="PythonObject"/>
+        </Locals>
+        <Arguments/>
+        <StepIntoFunctions/>
+      </Function>
+      <Function cname="PyInit_setup" is_initmodule_function="True" lineno="1" name="setup" pf_cname="" qualified_name="">
+        <Locals>
+          <LocalVar cname="__pyx_v_5setup_cythonize" lineno="2" name="cythonize" qualified_name="setup.cythonize" type="PythonObject"/>
+          <LocalVar cname="__pyx_v_5setup___builtins__" lineno="0" name="__builtins__" qualified_name="setup.__builtins__" type="PythonObject"/>
+          <LocalVar cname="__pyx_v_5setup___file__" lineno="0" name="__file__" qualified_name="setup.__file__" type="PythonObject"/>
+          <LocalVar cname="__pyx_v_5setup___doc__" lineno="0" name="__doc__" qualified_name="setup.__doc__" type="PythonObject"/>
+          <LocalVar cname="__pyx_v_5setup___path__" lineno="0" name="__path__" qualified_name="setup.__path__" type="PythonObject"/>
+          <LocalVar cname="__test__" lineno="1" name="__test__" qualified_name="setup.__test__" type="PythonObject"/>
+          <LocalVar cname="__pyx_v_5setup___name__" lineno="0" name="__name__" qualified_name="setup.__name__" type="PythonObject"/>
+          <LocalVar cname="__pyx_v_5setup_setup" lineno="1" name="setup" qualified_name="setup.setup" type="PythonObject"/>
+        </Locals>
+        <Arguments/>
+        <StepIntoFunctions/>
+      </Function>
+    </Functions>
+    <Globals>
+      <LocalVar cname="__pyx_v_5setup_setup" lineno="1" name="setup" qualified_name="setup.setup" type="PythonObject"/>
+      <LocalVar cname="__pyx_v_5setup_cythonize" lineno="2" name="cythonize" qualified_name="setup.cythonize" type="PythonObject"/>
+      <LocalVar cname="__pyx_v_5setup___builtins__" lineno="0" name="__builtins__" qualified_name="setup.__builtins__" type="PythonObject"/>
+      <LocalVar cname="__pyx_v_5setup___file__" lineno="0" name="__file__" qualified_name="setup.__file__" type="PythonObject"/>
+      <LocalVar cname="__pyx_v_5setup___path__" lineno="0" name="__path__" qualified_name="setup.__path__" type="PythonObject"/>
+      <LocalVar cname="__test__" lineno="1" name="__test__" qualified_name="setup.__test__" type="PythonObject"/>
+      <LocalVar cname="__pyx_v_5setup___name__" lineno="0" name="__name__" qualified_name="setup.__name__" type="PythonObject"/>
+      <LocalVar cname="__pyx_v_5setup___doc__" lineno="0" name="__doc__" qualified_name="setup.__doc__" type="PythonObject"/>
+    </Globals>
+    <LineNumberMapping>
+      <LineNumber c_linenos="840 841 842 843 844 845 846 847 848 849 850 851 852 853 854 855 856 857 858 927 928 929 930 931 932 933 934 935 936 937 938 939 940 941 942 943 944 945 946 947 948 949 950 951 952 953 954 955 956 957" cython_lineno="1"/>
+      <LineNumber c_linenos="859 860 861 862 863 864 865 866 867 868 869 870 871 872 873 874 875 876 877 878" cython_lineno="2"/>
+      <LineNumber c_linenos="727 728 729 730 731 732 733 734 735 736 737 738 739 740 741 742 743 879 880 881 882 883 884 885 886 887 888 889 890 891 892 893 894 908 909 910 911 912 913 914 915 916 917 918 919 920 921 922 923 924 925 926" cython_lineno="4"/>
+      <LineNumber c_linenos="895 896 897 898 899 900 901 902 903 904 905 906 907" cython_lineno="6"/>
+    </LineNumberMapping>
+  </Module>
+</cython_debug>

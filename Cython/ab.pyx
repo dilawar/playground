@@ -1,12 +1,12 @@
-# distutils: langauge = c++
-include "a.pxd"
-include "b.pxd"
+# distutils: language = c++
+# distutils: extra_compiler_args = -DCYTHON
+cimport b as _b
 
-cdef class B:
-    cdef B *thisptr
+cdef class PyB:
+    cdef _b.B *thisptr
 
     def __cinit__(self):
-        self.thisptr = new B()
+        self.thisptr = new _b.B()
 
     def __dealloc__(self):
         del self.thisptr

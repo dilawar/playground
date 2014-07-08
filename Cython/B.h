@@ -24,13 +24,14 @@ using namespace std;
 
 class B
 {
-    B()
-    {
-        ;
-    }
+    public:
+        B()
+        {
+            ;
+        }
 
-    void printB(A& a)
-    {
-        cerr << "B " << endl;
-    }
+        void printB(A& a)
+        {
+            cerr << "B " << endl;
+        }
 };
