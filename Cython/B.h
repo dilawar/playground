@@ -27,11 +27,19 @@ class B
     public:
         B()
         {
-            ;
+            cout << "Creating B" << endl;
         }
 
         void printB(A& a)
         {
             cerr << "B " << endl;
         }
+
+        A* getA(void)
+        {
+            return a;
+        }
+
+    private:
+        A* a;
 };
