@@ -19,6 +19,7 @@
  */
 
 #include <iostream>
+#include <cstdlib>
 
 using namespace std;
 
@@ -27,12 +28,20 @@ class A
     public:
         A()
         {
-            cout << "Creating A" << endl;
+            a = rand() % 1000;
+            cout << "Creating A wit a = " << a << endl;
         }
 
         void printA()
         {
             cerr << "A " << endl;
         }
+
+        int get()
+        {
+            return a;
+        }
+        
+        int a;
 };
 #endif   /* ----- #ifndef A_INC  ----- */
