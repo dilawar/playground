@@ -1,3 +1,5 @@
+#ifndef  B_INC
+#define  B_INC
 /*
  * ==============================================================================
  *
@@ -17,8 +19,7 @@
  */
 
 #include <iostream>
-
-class A;
+#include "A.h"
 
 using namespace std;
 
@@ -35,11 +36,12 @@ class B
             cerr << "B " << endl;
         }
 
-        A* getA(void)
+        A& getA(void)
         {
             return a;
         }
 
     private:
-        A* a;
+        A a;
 };
+#endif   /* ----- #ifndef B_INC  ----- */

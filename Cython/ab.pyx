@@ -14,7 +14,7 @@ cdef class PyB:
 
     # Now how to get A.
     def getA(self):
-        cdef _a.A* retA
+        cdef _a.A retA
         retA = self.thisptr.getA()
     
     # This is a pure python function.

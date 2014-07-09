@@ -1,3 +1,5 @@
+#ifndef  A_INC
+#define  A_INC
 /*
  * ==============================================================================
  *
@@ -25,6 +27,7 @@ class A
     public:
         A()
         {
+            cout << "Creating A" << endl;
         }
 
         void printA()
@@ -32,3 +35,4 @@ class A
             cerr << "A " << endl;
         }
 };
+#endif   /* ----- #ifndef A_INC  ----- */
