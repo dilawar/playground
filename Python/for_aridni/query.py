@@ -36,11 +36,12 @@ def query(qFile, dbFile):
         for i, row in enumerate(qF):
             if i == 0: continue
             queris = row.split(',')
-            for q in queris:
-                q = q[0:3]
+            for qu in queris:
+                q = qu[0:3]
                 for s in uniqueDb:
                     if not q: continue
-                    if q.upper() in s:
+                    if q.upper() in s[0:3]:
+                        print("For query %s, %s found" % (qu, s))
                         found[q].add(s)
 
     with open('match.csv', 'w') as outF:
