@@ -17,8 +17,11 @@ import re
 import os
 import sys
 import csv
+from collections import defaultdict 
 
 db = list()
+found = defaultdict(set)
+
 
 def query(qFile, dbFile):
     with open(dbFile, "r") as dbF:
@@ -34,8 +37,17 @@ def query(qFile, dbFile):
             if i == 0: continue
             queris = row.split(',')
             for q in queris:
-                if "%s"%q.upper() in uniqueDb:
-                    print("[MATCH] %s found" % q)
+                q = q[0:3]
+                for s in uniqueDb:
+                    if not q: continue
+                    if q.upper() in s:
+                        found[q].add(s)
+
+    with open('match.csv', 'w') as outF:
+        for k in found:
+            outF.write(k+",")
+            outF.write(",".join(found[k]))
+            outF.write("\n")
 
 def main():
     dbFile = sys.argv[1]
