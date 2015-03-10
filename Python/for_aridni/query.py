@@ -45,6 +45,7 @@ def query(qFile, dbFile):
                         found[q].add(s)
 
     with open('match.csv', 'w') as outF:
+        outF.write("query,results\n")
         for k in found:
             outF.write(k+",")
             outF.write(",".join(found[k]))
