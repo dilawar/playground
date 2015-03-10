@@ -34,7 +34,7 @@ def query(qFile, dbFile):
             if i == 0: continue
             queris = row.split(',')
             for q in queris:
-                if "V$%s"%q.upper() in uniqueDb:
+                if "%s"%q.upper() in uniqueDb:
                     print("[MATCH] %s found" % q)
 
 def main():
