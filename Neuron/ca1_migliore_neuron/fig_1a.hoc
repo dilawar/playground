@@ -53,7 +53,7 @@ g.label(0.6,0.05,"dist apical (400um)")
 g.xaxis(1)
 g.begin()
 xpanel("")
-xbutton("run Fig.1A", "runu()")
+xbutton("run Fig.1A", "run()")
 xpanel()
 b.intercept(0)
 b.map()
@@ -158,8 +158,4 @@ proc run() {
 	while(t<tstop) { step()}
 }
 
-
-proc runu() {
-run()
-}
 
