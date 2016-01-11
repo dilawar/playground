@@ -36,7 +36,7 @@ ax1.set_xlabel('Time (sec)')
 ax2 = fig_.add_subplot(2, 1, 2)
 ax2.set_title('Purkinje cells')
 # Inset for raw data.
-save_video_ = False
+save_video_ = True
 writer_ = None
 
 axes_ = { 'video' : ax2, 'activity' : ax1 }
@@ -110,17 +110,21 @@ def animate(i):
 def animate_together( ):
     global ani_, cap_
     global save_video_
+    global args_
+    global frames_
+    nframes = 180
     ani_ = anim.FuncAnimation(
             fig_
             , animate
-            , interval = 1
+            , frames = nframes
+            , interval = 25
             , init_func=init
             , blit = False
             )
 
     if save_video_:
         print("Writing to video file output.mp4")
-        ani_.save('output.mp4', fps=10, extra_args=['-vcodec', 'libx264'])
+        ani_.save('output.mp4', fps=args_['fps']) #, extra_args=['-vcodec', 'libx264'])
     plt.show( )
 
 def main( **kwargs ):
