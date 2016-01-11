@@ -28,13 +28,16 @@ import frame_reader as fr
 data_ = None
 cap_ = None
 fig_ = plt.figure()
+fig_.patch.set_facecolor('black')
 fps_ = 0.0
 
 ax1 = fig_.add_subplot(2, 1, 1)
-ax1.set_title('Motor recording')
-ax1.set_xlabel('Time (sec)')
+ax1.set_title('Motor recording', color='white')
+ax1.set_xlabel('Time (sec)', color = 'white')
+ax1.tick_params(axis='x', colors='white')
 ax2 = fig_.add_subplot(2, 1, 2)
-ax2.set_title('Purkinje cells')
+ax2.set_title('Purkinje cells', color='white')
+ax2.tick_params(axis='x', colors='white')
 # Inset for raw data.
 save_video_ = True
 writer_ = None
