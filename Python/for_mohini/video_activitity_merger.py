@@ -122,7 +122,7 @@ def animate_together( ):
             , frames = nframes
             , interval = 25
             , init_func=init
-            , blit = False
+            , blit = True
             )
 
     if save_video_:
