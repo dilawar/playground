@@ -27,28 +27,30 @@ import frame_reader as fr
 
 data_ = None
 cap_ = None
-fig_ = plt.figure()
+fig_ = plt.figure( figsize = (15, 10) )
 fig_.patch.set_facecolor('black')
 fps_ = 0.0
 
-ax1 = fig_.add_subplot(2, 1, 1)
+ax1 = fig_.add_subplot(2, 1, 1, axisbg = 'black')
 ax1.set_title('Motor recording', color='white')
 ax1.set_xlabel('Time (sec)', color = 'white')
 ax1.tick_params(axis='x', colors='white')
-ax2 = fig_.add_subplot(2, 1, 2)
+ax2 = fig_.add_subplot(2, 1, 2, axisbg = 'black')
 ax2.set_title('Purkinje cells', color='white')
 ax2.tick_params(axis='x', colors='white')
 # Inset for raw data.
-save_video_ = True
+save_video_ = 1 # True
 writer_ = None
 
 axes_ = { 'video' : ax2, 'activity' : ax1 }
 lines_ = {}
-lines_["video"] = ax2.imshow( np.zeros((100,100)), vmax=255, cmap = plt.gray(), animated = True)
+lines_["video"] = ax2.imshow( np.zeros((100,100)), vmax=255 )
 lines_['activity'] = ax1.plot([], [], color = 'blue')[0]
 
 time_template_ = 'Time = %.1f s'
-time_text_ = fig_.text(0.05, 0.9, '', transform=axes_['video'].transAxes)
+time_text_ = fig_.text(0.05, 0.9, '', transform=axes_['video'].transAxes
+        , color = 'white'
+        )
 
 t_ = []
 y_ = []
@@ -108,6 +110,7 @@ def animate(i):
     start, stop = int((i-5)*stride_), int(i * stride_)
     y = y_[:stop]
     lines_['activity'].set_data( np.arange(len(y)) / float(stride_ * fps_), y)
+    time_text_ = '%s sec ' % (fps_ * i )
     return lines_.values(), time_text_
 
 def animate_together( ):
@@ -122,12 +125,17 @@ def animate_together( ):
             , frames = nframes
             , interval = 25
             , init_func=init
-            , blit = True
+            , blit = False
             )
 
     if save_video_:
-        print("Writing to video file output.mp4")
-        ani_.save('output.mp4', fps=args_['fps']) #, extra_args=['-vcodec', 'libx264'])
+        outfile = 'output.mp4'
+        print("Writing to video file %s" % outfile)
+        ani_.save(outfile,  fps=args_['fps']
+                , savefig_kwargs = { 'transparent' : True 
+                    , 'facecolor' : 'black'
+                    }
+                ) 
     plt.show( )
 
 def main( **kwargs ):
