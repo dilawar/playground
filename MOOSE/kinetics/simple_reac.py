@@ -6,18 +6,18 @@ tables_ = {}
 
 def add_molecule( name, num ):
     p = moose.Pool( '/compt/%s' % name )
-    compts_[name] = p
     p.concInit = num
     t = moose.Table2( '/table%s' % name )
     moose.connect( t, 'requestOut', p, 'getConc' )
     tables_[name] = t
+    compts_[name] = p
     return p
 
 compt = moose.CubeMesh('/compt')
-compt.volume = 1e-8
+compt.volume = 1
 
 a = add_molecule( 'a', 1e-5 )
-b = add_molecule( 'b', 1e-5 )
+b = add_molecule( 'b', 2e-5 )
 c = add_molecule( 'c', 1e-6 )
 
 r = moose.Reac( '/compt/reac' )
