@@ -14,7 +14,7 @@ def add_molecule( name, num ):
     return p
 
 compt = moose.CubeMesh('/compt')
-compt.volume = 1e-3
+compt.volume = 1e-8
 
 a = add_molecule( 'a', 1e-5 )
 b = add_molecule( 'b', 1e-5 )
@@ -25,13 +25,16 @@ r.Kf = 1
 r.Kb = 1
 
 moose.connect( r, 'sub', a, 'reac' ) 
-# moose.connect( r, 'sub', a, 'reac' ) 
-# moose.connect( r, 'sub', b, 'reac' ) 
-# moose.connect( r, 'sub', b, 'reac' ) 
 moose.connect( r, 'sub', b, 'reac' ) 
 moose.connect( r, 'prd', c, 'reac' )
 
+stoich = moose.Stoich( '/stoich' )
+stoich.compartment = compt
+solver = moose.Ksolve( '/compt/solver' )
+stoich.ksolve = solver
+stoich.path = '/compt/##'
+
 moose.reinit()
-moose.start(1)
+moose.start(100)
 
 mu.plotRecords( tables_ )
