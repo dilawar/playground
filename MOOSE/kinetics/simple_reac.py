@@ -16,9 +16,9 @@ def add_molecule( name, num ):
 compt = moose.CubeMesh('/compt')
 compt.volume = 1
 
-a = add_molecule( 'a', 1e-5 )
-b = add_molecule( 'b', 2e-5 )
-c = add_molecule( 'c', 1e-6 )
+a = add_molecule( 'a', 1e-1 )
+b = add_molecule( 'b', 2e-1 )
+c = add_molecule( 'c', 1e-3 )
 
 r = moose.Reac( '/compt/reac' )
 r.Kf = 1
