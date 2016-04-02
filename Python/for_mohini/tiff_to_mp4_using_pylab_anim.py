@@ -118,7 +118,7 @@ def animate_together( ):
             )
 
     if save_video_:
-        outfile = 'output.mp4'
+        outfile = "%s.mp4" % args_['video']
         print("Writing to video file %s" % outfile)
         ani_.save(outfile,  fps=args_['fps']
 		, writer = 'avconv'
