@@ -1,0 +1,58 @@
+%%=====================================================================================
+%%
+%%       Filename:  wncc.tex
+%%
+%%    Description:  
+%%
+%%        Version:  1.0
+%%        Created:  04/17/2016
+%%       Revision:  none
+%%
+%%         Author:  Dilawar Singh (), dilawars@ncbs.res.in
+%%   Organization:  NCBS Bangalore
+%%      Copyright:  Copyright (c) 2016, Dilawar Singh
+%%
+%%          Notes:  
+%%                
+%%=====================================================================================
+
+\documentclass[crop,tikz]{standalone}
+\usetikzlibrary{positioning}
+\begin{document}
+
+% Here we go.
+% Ruben is from tikzexample.
+
+\def\arete{3}   
+\def\epaisseur{5}   
+\def\rayon{2}
+
+\newcommand{\ruban}{(0,0)
+  ++(0:0.57735*\arete-0.57735*\epaisseur+2*\rayon)
+  ++(-30:\epaisseur-1.73205*\rayon)
+  arc (60:0:\rayon)   -- ++(90:\epaisseur)
+  arc (0:60:\rayon)   -- ++(150:\arete)
+  arc (60:120:\rayon) -- ++(210:\epaisseur)
+  arc (120:60:\rayon) -- cycle}
+   
+\begin{tikzpicture}[very thick,top color=white,bottom color=gray]
+  \shadedraw \ruban;
+  \shadedraw [rotate=120] \ruban;
+  \shadedraw [rotate=-120] \ruban;
+  \draw (-60:4) node[scale=5,rotate=30]{$< \ldots >$};
+  \draw (180:4) node[scale=3,rotate=-90]{$(\lambda x \rightarrow x ^ 2) a$ };
+  \clip (0,-6) rectangle (6,6);
+  \shadedraw  \ruban;
+  \draw[align=left] (60:4) node [black!80,xscale=-2,yscale=2,rotate=30]{
+          \scriptsize 
+          \textbf{do} \{ \\
+              \ldots  \\
+              \} \textbf{while} \{ \\
+              \ldots 
+          \}
+      };
+\end{tikzpicture}
+
+
+\end{document}
+
