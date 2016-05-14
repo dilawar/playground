@@ -132,6 +132,7 @@ def animate_together( ):
         outfile = 'output.mp4'
         print("Writing to video file %s" % outfile)
         ani_.save(outfile,  fps=args_['fps']
+                , dpi = 100
                 , savefig_kwargs = { 'transparent' : True 
                     , 'facecolor' : 'black'
                     }
