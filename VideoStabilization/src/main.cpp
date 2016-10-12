@@ -47,8 +47,8 @@ Modification log:
 #include "videoio.hpp"
 #include "motion_stabilizer.hpp"
 
-#define FOURCC_CODEC CV_FOURCC( 'D', 'I', 'V', 'X' )
-//#define FOURCC_CODEC CV_FOURCC( 'M', 'J', 'P', 'G' )
+//#define FOURCC_CODEC CV_FOURCC( 'D', 'I', 'V', 'X' )
+#define FOURCC_CODEC CV_FOURCC( 'M', 'J', 'P', 'G' )
 
 using namespace std;
 using namespace cv;
@@ -110,10 +110,10 @@ int main(int argc, char **argv)
         for( size_t i = 0; i < stablizedFrames.size(); i ++ )
         {
             outputVideo << stablizedFrames[i];
-            imshow( "input frame", frames[i] );
-            imshow( "corrected frame", stablizedFrames[i] );
-            waitKey( 100 );
-            cout << " Playing frame " << i << endl;
+            //imshow( "input frame", frames[i] );
+            //imshow( "corrected frame", stablizedFrames[i] );
+            //waitKey( 100 );
+            //cout << " Playing frame " << i << endl;
         }
         outputVideo.release( );
         cout << "Wrote corrected output to " << outfileName << endl;
