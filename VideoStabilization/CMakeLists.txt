@@ -23,3 +23,8 @@ target_link_libraries( videostab
     #${GSL_LIBRARIES}
     ${OPENCV_LIBRARIES}
     )
+
+install( targets videostab 
+    RUNTIME DESTINATION bin
+    )
+
