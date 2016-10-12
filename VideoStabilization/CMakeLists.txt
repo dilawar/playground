@@ -16,7 +16,7 @@ find_package( TIFF REQUIRED )
 #find_package( GSL REQUIRED )
 
 
-add_executable(videostab ./videostab.cpp)
+add_executable(videostab src/main.cpp)
 
 target_link_libraries( videostab  
     ${TIFF_LIBRARIES}
