@@ -39,7 +39,6 @@ Modification log:
         - 
 */
  
-#include <opencv2/videoio.hpp>
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <cassert>

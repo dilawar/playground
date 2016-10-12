@@ -21,7 +21,6 @@
 #define  videoio_INC
 
 #include <tiffio.h>
-#include <opencv2/videoio.hpp>
 #include <opencv2/opencv.hpp>
 
 using namespace std;

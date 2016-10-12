@@ -21,8 +21,9 @@ SET(OPENCV_COMPONENTS
 	ml
 	objdetect
 	ts
-	#video
+	video
         videoio
+        videostab
         imgcodecs
 )
 

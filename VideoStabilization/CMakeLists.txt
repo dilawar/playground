@@ -10,7 +10,8 @@ add_definitions( -std=c++11 -Wall )
 set(CMAKE_BUILD_TYPE Release )
 
 find_package( OPENCV REQUIRED COMPONENTS 
-    core highgui imgcodecs videoio imgproc calib3d video
+    core highgui imgproc calib3d 
+    video
     )
 find_package( TIFF REQUIRED )
 
