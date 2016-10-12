@@ -47,7 +47,8 @@ Modification log:
 #include "videoio.hpp"
 #include "motion_stabilizer.hpp"
 
-#define FOURCC_CODEC CV_FOURCC_DEFAULT
+#define FOURCC_CODEC CV_FOURCC( 'D', 'I', 'V', 'X' )
+//#define FOURCC_CODEC CV_FOURCC( 'M', 'J', 'P', 'G' )
 
 using namespace std;
 using namespace cv;
@@ -84,47 +85,65 @@ int main(int argc, char **argv)
     read_frames( infile, frames, vInfo );
 
     vector< Mat_<unsigned char> > stablizedFrames;
-    stabilize( frames, stablizedFrames, false );
+    stabilize( frames, stablizedFrames );
     std::cout << "Corrected frames " << stablizedFrames.size() << std::endl;
 
+
+    /*-----------------------------------------------------------------------------
+     *  Write results to files.
+     *-----------------------------------------------------------------------------*/
     const string outfileName = argv[2];
-    size_t fps = 15;
-    VideoWriter outputVideo;                                        // Open the output
+    double fps = 15.0;
+
+    // Open the output
+    VideoWriter outputVideo; 
     // Write both video onto combined. Good for debugging.
     VideoWriter combinedVideo;
-
-    Size frameSize( vInfo.width, vInfo.height );
-    outputVideo.open(outfileName, FOURCC_CODEC, fps, frameSize, true);
 
     /*-----------------------------------------------------------------------------
      * Write corrected video to a avi file.
      *-----------------------------------------------------------------------------*/
-    if (!outputVideo.isOpened())
+    Size frameSize( vInfo.width, vInfo.height );
+    outputVideo.open(outfileName, FOURCC_CODEC, fps, frameSize, true);
+    if (outputVideo.isOpened())
+    {
+        for( size_t i = 0; i < stablizedFrames.size(); i ++ )
+        {
+            outputVideo << stablizedFrames[i];
+            imshow( "input frame", frames[i] );
+            imshow( "corrected frame", stablizedFrames[i] );
+            waitKey( 100 );
+            cout << " Playing frame " << i << endl;
+        }
+        outputVideo.release( );
+        cout << "Wrote corrected output to " << outfileName << endl;
+    }
+    else 
     {
         cout  << "Could not open the output video for write: " << outfileName << endl;
         return -1;
     }
-    for( size_t i = 0; i < stablizedFrames.size() -1; i ++ )
-        outputVideo.write( frames[i] );
-    outputVideo.release( );
 
 
     /*-----------------------------------------------------------------------------
      *  Write corrected video and non-corrected video to combined.
      *-----------------------------------------------------------------------------*/
     Size combinedSize( 2*vInfo.width, vInfo.height);
-    combinedVideo.open("combined.avi", FOURCC_CODEC, fps, combinedSize, true);
-    Mat combined;
-    for (size_t i = 0; i < stablizedFrames.size( ); i++) 
+    string combinedVideofileName = "__combined.avi";
+    combinedVideo.open( combinedVideofileName, FOURCC_CODEC, fps, combinedSize, true);
+    if( combinedVideo.isOpened() )
     {
-        hconcat( frames[i], stablizedFrames[i], combined );
-        combinedVideo.write( combined );
+        for (size_t i = 0; i < stablizedFrames.size( ); i++) 
+        {
+            Mat combined;
+            hconcat( frames[i], stablizedFrames[i], combined );
+            cout << combined.rows << " " << combined.cols << endl;
+            combinedVideo << combined;
+        }
+        combinedVideo.release( );
     }
-
-    combinedVideo.release( );
-
-    std::cout << "Wrote modified video to " << outfileName << std::endl;
-    std::cout << "Wrote input and modified video to combined.avi" << std::endl;
+    else
+        cout << "Could not write to " << combinedVideofileName << endl;
 
     return 0;
 }

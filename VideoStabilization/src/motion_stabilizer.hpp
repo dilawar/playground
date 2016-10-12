@@ -67,20 +67,21 @@ struct Trajectory
 
 template< typename pixal_type_t>
 void stabilize( vector< Mat_<pixal_type_t> >& frames
-                , vector<Mat_<pixal_type_t> >& result 
-                , bool debug = false
-        )
+        , vector<Mat_<pixal_type_t> >& result )
 {
     // For further analysis
+#ifdef DEBUG
     ofstream out_transform("__prev_to_cur_transformation.txt");
     ofstream out_trajectory("__trajectory.txt");
     ofstream out_smoothed_trajectory("__smoothed_trajectory.txt");
     ofstream out_new_transform("__new_prev_to_cur_transformation.txt");
+#endif
 
     // Step 1 - Get previous to current frame transformation (dx, dy, da) for all frames
     vector <TransformParam> prev_to_cur_transform; // previous to current
     Mat last_T;
     Mat curGrey, prevGrey;
+
     for (size_t k = 1; k < frames.size(); k++)
     {
         prevGrey = frames[k-1];
@@ -124,14 +125,18 @@ void stabilize( vector< Mat_<pixal_type_t> >& frames
 
         prev_to_cur_transform.push_back(TransformParam(dx, dy, da));
 
-        if( debug )
-            out_transform << k << " " << dx << " " << dy << " " << da << endl;
+#ifdef  DEBUG
+        out_transform << k << " " << dx << " " << dy << " " << da << endl;
+#endif     /* -----  not DEBUG  ----- */
+
 
         curGrey.copyTo(prevGrey);
 
-        if( debug )
-            cout << "[DEBUG] Frame: " << k << "/" << frames.size()
-                 << " - good optical flow: " << prev_corner2.size() << endl;
+#ifdef DBEUG
+        cout << "[DEBUG] Frame: " << k << "/" << frames.size()
+            << " - good optical flow: " << prev_corner2.size() << endl;
+#endif 
+
     }
 
     // Step 2 - Accumulate the transformations to get the image trajectory
@@ -151,8 +156,9 @@ void stabilize( vector< Mat_<pixal_type_t> >& frames
 
         trajectory.push_back(Trajectory(x,y,a));
 
-        if( debug )
-            out_trajectory << (i+1) << " " << x << " " << y << " " << a << endl;
+#ifdef DEBUG
+        out_trajectory << (i+1) << " " << x << " " << y << " " << a << endl;
+#endif
     }
 
     // Step 3 - Smooth out the trajectory using an averaging window
@@ -183,9 +189,10 @@ void stabilize( vector< Mat_<pixal_type_t> >& frames
 
         smoothed_trajectory.push_back(Trajectory(avg_x, avg_y, avg_a));
 
-        if( debug )
-            out_smoothed_trajectory << (i+1) << " " << avg_x
+#ifdef DEBUG
+        out_smoothed_trajectory << (i+1) << " " << avg_x
                                     << " " << avg_y << " " << avg_a << endl;
+#endif 
     }
 
     // Step 4 - Generate new set of previous to current transform, such that the
@@ -214,8 +221,9 @@ void stabilize( vector< Mat_<pixal_type_t> >& frames
 
         new_prev_to_cur_transform.push_back(TransformParam(dx, dy, da));
 
-        if( debug )
-            out_new_transform << (i+1) << " " << dx << " " << dy << " " << da << endl;
+#ifdef DEBUG
+        out_new_transform << (i+1) << " " << dx << " " << dy << " " << da << endl;
+#endif
     }
 
     // Step 5 - Apply the new transformation to the video
@@ -227,9 +235,7 @@ void stabilize( vector< Mat_<pixal_type_t> >& frames
 
     for( size_t k = 0; k < frames.size() -1; k ++ )
     {
-        // don't process the very last frame, no valid transform
-        curGrey = frames[0];
-
+        curGrey = frames[k];
         T.at<double>(0,0) = cos(new_prev_to_cur_transform[k].da);
         T.at<double>(0,1) = -sin(new_prev_to_cur_transform[k].da);
         T.at<double>(1,0) = sin(new_prev_to_cur_transform[k].da);
@@ -248,24 +254,7 @@ void stabilize( vector< Mat_<pixal_type_t> >& frames
 
         // Resize cur2 back to cur size, for better side by side comparison
         resize(cur2, cur2, curGrey.size());
-
-        // Now draw the original and stablised side by side for coolness
-        Mat canvas = Mat::zeros(curGrey.rows, curGrey.cols*2+10, curGrey.type());
-
-        curGrey.copyTo(canvas(Range::all(), Range(0, cur2.cols)));
-        cur2.copyTo(canvas(Range::all(), Range(cur2.cols+10, cur2.cols*2+10)));
-
-#if 1
-        // If too big to fit on the screen, then scale it down by 2, hopefully it'll fit :)
-        if(canvas.cols > 1920)
-        {
-            resize(canvas, canvas, Size(canvas.cols/2, canvas.rows/2));
-        }
-#endif
         result.push_back( cur2 );
-        assert( canvas.rows == canvasSize.height );
-        assert( canvas.cols == canvasSize.width );
-        //write_to_video( canvasVideo, canvas);
     }
 }
 

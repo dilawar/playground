@@ -7,7 +7,7 @@ set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 
 add_definitions( -std=c++11 -Wall )
 
-set(CMAKE_BUILD_TYPE Release )
+set(CMAKE_BUILD_TYPE Debug )
 
 find_package( OPENCV REQUIRED COMPONENTS 
     core highgui imgproc calib3d 

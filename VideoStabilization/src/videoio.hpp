@@ -96,13 +96,13 @@ void get_frames_from_avi( const string& filename
         return;
     }
 
-    Mat cur, curGrey;
 
     vidInfo.width = (int) inputVideo.get(CV_CAP_PROP_FRAME_WIDTH);
     vidInfo.height = (int) inputVideo.get(CV_CAP_PROP_FRAME_HEIGHT);
 
     while(true) 
     {
+        Mat cur, curGrey;
         inputVideo >> cur;
         if(cur.data == NULL) {
             break;
@@ -127,9 +127,6 @@ void read_frames( const string& filename
     string::size_type pAt = filename.find_last_of('.');       
     string ext = filename.substr( pAt+1 );
     std::cout << "[INFO] Extenstion of file " << ext << std::endl;
-
-    Size frameSize;
-    size_t fps = 15;
 
     if( ext == "tif" || ext == "tiff" )
     {
