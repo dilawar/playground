@@ -28,8 +28,8 @@ def main( ):
         ret, frame = cap.read()
         if ret:
             N += 1
-            # cv2.imshow( 'frame', frame )
-            # cv2.waitKey( 1 )
+            cv2.imshow( 'frame', frame )
+            cv2.waitKey( 1 )
         fps = N / ( time.time() - start  )
         if N % 100:
             print("FPS=%f" % fps)

@@ -67,10 +67,22 @@ struct Trajectory
     double a; // angle
 };
 
+
+void write_to_video( VideoWriter& vid, const Mat&  frame )
+{
+    try {
+        vid.write( frame );
+    }
+    catch( exception e )
+    {
+        std::cout << "Failed to write this frame" << std::endl;
+    }
+}
+
 int main(int argc, char **argv)
 {
-    if(argc < 2) {
-        cout << "./VideoStab [video.avi]" << endl;
+    if(argc < 3) {
+        cout << "./videostab input.avi output.avi" << endl;
         return 0;
     }
 
@@ -80,24 +92,55 @@ int main(int argc, char **argv)
     ofstream out_smoothed_trajectory("smoothed_trajectory.txt");
     ofstream out_new_transform("new_prev_to_cur_transformation.txt");
 
-    VideoCapture cap(argv[1]);
-    assert(cap.isOpened());
+
+    // Step 0. Prepare output file.
+    string source( argv[1] );                   /* Input file */
+    VideoCapture inputVideo( source.c_str() );
+    assert(inputVideo.isOpened());
 
     Mat cur, cur_grey;
     Mat prev, prev_grey;
 
-    cap >> prev;
+    inputVideo >> prev;
     cvtColor(prev, prev_grey, COLOR_BGR2GRAY);
+
+
+    string::size_type pAt = source.find_last_of('.');       
+    const string NAME = argv[2];
+    int ex = static_cast<int>(inputVideo.get(CV_CAP_PROP_FOURCC)); 
+
+    // Transform from int to char via Bitwise operators
+    char EXT[] = {(char)(ex & 0XFF) , (char)((ex & 0XFF00) >> 8),(char)((ex & 0XFF0000) >> 16),(char)((ex & 0XFF000000) >> 24), 0};
+    std::cout << "[INFO] Input code type " << EXT << std::endl;
+
+    Size S = Size((int) inputVideo.get(CV_CAP_PROP_FRAME_WIDTH),    // Acquire input size
+                  (int) inputVideo.get(CV_CAP_PROP_FRAME_HEIGHT));
+
+    VideoWriter outputVideo;                                        // Open the output
+
+    // Write both video onto canvas. Good for debugging.
+    VideoWriter canvasVideo;
+
+    outputVideo.open(NAME, ex, inputVideo.get(CV_CAP_PROP_FPS), S, true);
+
+    Size canvasSize = Size( 2*S.width+10, S.height);
+    canvasVideo.open("canvas.avi", ex, inputVideo.get(CV_CAP_PROP_FPS), canvasSize, true);
+
+    if (!outputVideo.isOpened())
+    {
+        cout  << "Could not open the output video for write: " << NAME << endl;
+        return -1;
+    }
 
     // Step 1 - Get previous to current frame transformation (dx, dy, da) for all frames
     vector <TransformParam> prev_to_cur_transform; // previous to current
 
     int k=1;
-    int max_frames = cap.get(CV_CAP_PROP_FRAME_COUNT);
+    size_t max_frames = inputVideo.get(CV_CAP_PROP_FRAME_COUNT);
     Mat last_T;
 
     while(true) {
-        cap >> cur;
+        inputVideo >> cur;
 
         if(cur.data == NULL) {
             break;
@@ -223,14 +266,15 @@ int main(int argc, char **argv)
     }
 
     // Step 5 - Apply the new transformation to the video
-    cap.set(CV_CAP_PROP_POS_FRAMES, 0);
+    inputVideo.set(CV_CAP_PROP_POS_FRAMES, 0);
     Mat T(2,3,CV_64F);
 
     int vert_border = HORIZONTAL_BORDER_CROP * prev.rows / prev.cols; // get the aspect ratio correct
 
-    k=0;
-    while(k < max_frames-1) { // don't process the very last frame, no valid transform
-        cap >> cur;
+    for( size_t k = 0; k < max_frames -1; k ++ )
+    { 
+        // don't process the very last frame, no valid transform
+        inputVideo >> cur;
 
         if(cur.data == NULL) {
             break;
@@ -259,21 +303,25 @@ int main(int argc, char **argv)
         cur.copyTo(canvas(Range::all(), Range(0, cur2.cols)));
         cur2.copyTo(canvas(Range::all(), Range(cur2.cols+10, cur2.cols*2+10)));
 
+#if 1
         // If too big to fit on the screen, then scale it down by 2, hopefully it'll fit :)
         if(canvas.cols > 1920) {
             resize(canvas, canvas, Size(canvas.cols/2, canvas.rows/2));
         }
+#endif
 
-        imshow("before and after", canvas);
+        write_to_video( outputVideo, cur2 );
 
-        //char str[256];
-        //sprintf(str, "images/%08d.jpg", k);
-        //imwrite(str, canvas);
-
-        waitKey(20);
-
-        k++;
+        assert( canvas.rows == canvasSize.height );
+        assert( canvas.cols == canvasSize.width );
+        write_to_video( canvasVideo, canvas);
     }
+
+    outputVideo.release( );
+    canvasVideo.release( );
+
+    std::cout << "Wrote modified video to " << NAME << std::endl;
+    std::cout << "Wrote input and modified video to canvas.avi" << std::endl;
 
     return 0;
 }

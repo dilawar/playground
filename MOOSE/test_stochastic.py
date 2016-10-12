@@ -43,27 +43,29 @@ species['d'].nInit = 1.0
 
 r1 = moose.Reac( '%s/reac' % cyl.path )
 
-f1 = moose.Function( '/cyl/f1' )
-f1.expr = '10.0+sin(100*t)'
-moose.connect( f1, 'valueOut', r1, 'setNumKf' )
-r1.numKb = 10.0
+# f1 = moose.Function( '/cyl/f1' )
+# f1.expr = '10.0+0.1*sin(100*t)'
+# moose.connect( f1, 'valueOut', r1, 'setNumKf' )
+# r1.numKb = 10.0
 
 moose.connect( r1, 'sub', species['a'], 'reac')
 # moose.connect( r1, 'sub', species['a'], 'reac')
 # moose.connect( r1, 'sub', species['b'], 'reac')
 moose.connect( r1, 'sub', species['b'], 'reac')
+# moose.connect( r1, 'prd', species['b'], 'reac')
 moose.connect( r1, 'prd', species['c'], 'reac')
 # moose.connect( r1, 'prd', species['d'], 'reac')
 moose.connect( r1, 'prd', species['d'], 'reac')
 
 stoich = moose.Stoich( '%s/stoich' % cyl.path )
-gsolve = moose.Gsolve( '%s/gsolve' % cyl.path )
-stoich.ksolve = gsolve
+solve = moose.Gsolve( '%s/gsolve' % cyl.path )
+# solve = moose.Ksolve( '%s/ksolve' % cyl.path )
+stoich.ksolve = solve
 stoich.compartment = cyl
 stoich.path = '%s/##' % cyl.path
 
 moose.reinit()
-moose.start( 100000, 1 )
+moose.start( 10**7, 1 )
 # mu.plotRecords( tables, subplots = True, outfile = "result.png" )
 plots = []
 for i, tab in enumerate(tables):

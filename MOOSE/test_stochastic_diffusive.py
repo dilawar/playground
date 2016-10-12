@@ -28,9 +28,9 @@ except Exception as e:
     pass
 
 cyl = moose.CylMesh( '/cyl' )
-cyl.r0 = cyl.r1 = 1e-6
-cyl.x1 = 10e-6
-cyl.diffLength = cyl.r1 / 10
+cyl.r0 = cyl.r1 = 500e-9
+cyl.x1 = 1000e-9
+cyl.diffLength = cyl.r1 / 4.0
 
 species = {}
 tables = {}
@@ -48,12 +48,12 @@ species['d'].nInit = 1.0
 r1 = moose.Reac( '%s/reac' % cyl.path )
 
 moose.connect( r1, 'sub', species['a'], 'reac')
-# moose.connect( r1, 'sub', species['a'], 'reac')
-# moose.connect( r1, 'sub', species['b'], 'reac')
+moose.connect( r1, 'sub', species['a'], 'reac')
 moose.connect( r1, 'sub', species['b'], 'reac')
-# moose.connect( r1, 'prd', species['b'], 'reac')
+moose.connect( r1, 'sub', species['b'], 'reac')
+moose.connect( r1, 'prd', species['b'], 'reac')
 moose.connect( r1, 'prd', species['c'], 'reac')
-# moose.connect( r1, 'prd', species['d'], 'reac')
+moose.connect( r1, 'prd', species['d'], 'reac')
 moose.connect( r1, 'prd', species['d'], 'reac')
 
 stoich = moose.Stoich( '%s/stoich' % cyl.path )
@@ -65,7 +65,7 @@ stoich.dsolve = dsolve
 stoich.compartment = cyl
 stoich.path = '%s/##' % cyl.path
 moose.reinit()
-simtime = 10 ** 6
+simtime = 100 * 365 * 24 * 3600.0
 print( '[INFO] Running for %f' % simtime )
 moose.start( simtime, 1 )
 # mu.plotRecords( tables, subplots = True, outfile = "result.png" )
