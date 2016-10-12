@@ -24,9 +24,13 @@ Modification log:
 #include <cassert>
 #include <cmath>
 #include <fstream>
+#include <tiffio.h>
 
 using namespace std;
 using namespace cv;
+
+typedef unsigned char pixal_type_t;
+typedef Mat matrix_type_t;
 
 // This video stablisation smooths the global trajectory using a sliding average window
 
@@ -68,6 +72,53 @@ struct Trajectory
 };
 
 
+Size get_data_from_tifffile( const string filename, vector<matrix_type_t>& frames )
+{
+    TIFF *tif = TIFFOpen( filename.c_str(), "r");
+    long sls = TIFFScanlineSize( tif );
+    void* raster;
+    raster = _TIFFmalloc( sls );
+
+    Size s;
+
+    if (tif) {
+	int dircount = 0;
+        // Iterate over each frame now.
+	do 
+        {
+	    dircount++;
+            uint32 w, h;
+            size_t npixals;
+
+            TIFFGetField( tif, TIFFTAG_IMAGEWIDTH, &w);
+            TIFFGetField( tif, TIFFTAG_IMAGELENGTH, &h);
+            npixals = w * h;
+
+            s.width = w;
+            s.height = h;
+
+
+            // Unsigned values in tiff.
+            matrix_type_t image(1, npixals, CV_16U );
+            pixal_type_t* scanline;
+
+            for (size_t i = 0; i < h; i++) 
+            {
+                TIFFReadScanline( tif, raster, i, 0 );
+                scanline = image.ptr(i);
+                memcpy(raster, scanline, sls);
+            }
+            frames.push_back( image );
+
+	} while (TIFFReadDirectory(tif));
+    }
+    printf( "[INFO] Done reading %d images from %s\n"
+            , frames.size(), filename.c_str() 
+            );
+    TIFFClose(tif);
+    return s;
+}
+
 void write_to_video( VideoWriter& vid, const Mat&  frame )
 {
     try {
@@ -79,10 +130,29 @@ void write_to_video( VideoWriter& vid, const Mat&  frame )
     }
 }
 
+Size get_data_from_avi( const string filename, vector< matrix_type_t >& frames)
+{
+    VideoCapture inputVideo( filename.c_str() );
+    assert(inputVideo.isOpened());
+    Mat cur, curGrey;
+    while(true) 
+    {
+        inputVideo >> cur;
+        if(cur.data == NULL) {
+            break;
+        }
+        cvtColor(cur, curGrey, COLOR_BGR2GRAY);
+        frames.push_back( curGrey );
+    }
+    Size S = Size((int) inputVideo.get(CV_CAP_PROP_FRAME_WIDTH),    // Acquire input size
+            (int) inputVideo.get(CV_CAP_PROP_FRAME_HEIGHT));
+    return S;
+}
+
 int main(int argc, char **argv)
 {
     if(argc < 3) {
-        cout << "./videostab input.avi output.avi" << endl;
+        cout << "./videostab input_file output_file" << endl;
         return 0;
     }
 
@@ -95,40 +165,43 @@ int main(int argc, char **argv)
 
     // Step 0. Prepare output file.
     string source( argv[1] );                   /* Input file */
-    VideoCapture inputVideo( source.c_str() );
-    assert(inputVideo.isOpened());
-
-    Mat cur, cur_grey;
-    Mat prev, prev_grey;
-
-    inputVideo >> prev;
-    cvtColor(prev, prev_grey, COLOR_BGR2GRAY);
-
 
     string::size_type pAt = source.find_last_of('.');       
-    const string NAME = argv[2];
-    int ex = static_cast<int>(inputVideo.get(CV_CAP_PROP_FOURCC)); 
+    string ext = source.substr( pAt+1 );
+    std::cout << "[INFO] Extenstion of file " << ext << std::endl;
 
-    // Transform from int to char via Bitwise operators
-    char EXT[] = {(char)(ex & 0XFF) , (char)((ex & 0XFF00) >> 8),(char)((ex & 0XFF0000) >> 16),(char)((ex & 0XFF000000) >> 24), 0};
-    std::cout << "[INFO] Input code type " << EXT << std::endl;
+    vector< matrix_type_t > frames;
 
-    Size S = Size((int) inputVideo.get(CV_CAP_PROP_FRAME_WIDTH),    // Acquire input size
-                  (int) inputVideo.get(CV_CAP_PROP_FRAME_HEIGHT));
+    Size frameSize;
+    size_t fps = 15;
+
+    if( ext == "tif" || ext == "tiff" )
+    {
+        std::cout << "[INFO] Got a tiff file" << std::endl;
+        frameSize = get_data_from_tifffile( source, frames );
+    }
+    else if( ext == "avi" )
+    {
+        std::cout << "[INFO] Got a avi file" << std::endl;
+        frameSize = get_data_from_avi( source, frames );
+    }
+
+    const string outfileName = argv[2];
+
 
     VideoWriter outputVideo;                                        // Open the output
 
     // Write both video onto canvas. Good for debugging.
     VideoWriter canvasVideo;
 
-    outputVideo.open(NAME, ex, inputVideo.get(CV_CAP_PROP_FPS), S, true);
+    outputVideo.open(outfileName, CV_FOURCC('D', 'I', 'V', 'X'), fps, frameSize, true);
 
-    Size canvasSize = Size( 2*S.width+10, S.height);
-    canvasVideo.open("canvas.avi", ex, inputVideo.get(CV_CAP_PROP_FPS), canvasSize, true);
+    Size canvasSize = Size( 2*frameSize.width+10, frameSize.height);
+    canvasVideo.open("canvas.avi", CV_FOURCC( 'D', 'I', 'V', 'X' ), fps, canvasSize, true);
 
     if (!outputVideo.isOpened())
     {
-        cout  << "Could not open the output video for write: " << NAME << endl;
+        cout  << "Could not open the output video for write: " << outfileName << endl;
         return -1;
     }
 
@@ -136,26 +209,20 @@ int main(int argc, char **argv)
     vector <TransformParam> prev_to_cur_transform; // previous to current
 
     int k=1;
-    size_t max_frames = inputVideo.get(CV_CAP_PROP_FRAME_COUNT);
     Mat last_T;
-
-    while(true) {
-        inputVideo >> cur;
-
-        if(cur.data == NULL) {
-            break;
-        }
-
-        cvtColor(cur, cur_grey, COLOR_BGR2GRAY);
-
+    Mat curGrey, prevGrey;
+    for (size_t i = 1; i < frames.size(); i++) 
+    {
+        prevGrey = frames[i-1];
+        curGrey = frames[i];
         // vector from prev to cur
         vector <Point2f> prev_corner, cur_corner;
         vector <Point2f> prev_corner2, cur_corner2;
         vector <uchar> status;
         vector <float> err;
 
-        goodFeaturesToTrack(prev_grey, prev_corner, 200, 0.01, 30);
-        calcOpticalFlowPyrLK(prev_grey, cur_grey, prev_corner, cur_corner, status, err);
+        goodFeaturesToTrack(prevGrey, prev_corner, 200, 0.01, 30);
+        calcOpticalFlowPyrLK(prevGrey, curGrey, prev_corner, cur_corner, status, err);
 
         // weed out bad matches
         for(size_t i=0; i < status.size(); i++) {
@@ -184,10 +251,9 @@ int main(int argc, char **argv)
 
         out_transform << k << " " << dx << " " << dy << " " << da << endl;
 
-        cur.copyTo(prev);
-        cur_grey.copyTo(prev_grey);
+        curGrey.copyTo(prevGrey);
 
-        cout << "Frame: " << k << "/" << max_frames << " - good optical flow: " << prev_corner2.size() << endl;
+        cout << "Frame: " << k << "/" << frames.size() << " - good optical flow: " << prev_corner2.size() << endl;
         k++;
     }
 
@@ -200,7 +266,8 @@ int main(int argc, char **argv)
 
     vector <Trajectory> trajectory; // trajectory at all frames
 
-    for(size_t i=0; i < prev_to_cur_transform.size(); i++) {
+    for(size_t i=0; i < prev_to_cur_transform.size(); i++) 
+    {
         x += prev_to_cur_transform[i].dx;
         y += prev_to_cur_transform[i].dy;
         a += prev_to_cur_transform[i].da;
@@ -266,19 +333,16 @@ int main(int argc, char **argv)
     }
 
     // Step 5 - Apply the new transformation to the video
-    inputVideo.set(CV_CAP_PROP_POS_FRAMES, 0);
+    //inputVideo.set(CV_CAP_PROP_POS_FRAMES, 0);
     Mat T(2,3,CV_64F);
 
-    int vert_border = HORIZONTAL_BORDER_CROP * prev.rows / prev.cols; // get the aspect ratio correct
+    // get the aspect ratio correct
+    int vert_border = HORIZONTAL_BORDER_CROP * prevGrey.rows / prevGrey.cols; 
 
-    for( size_t k = 0; k < max_frames -1; k ++ )
+    for( size_t k = 0; k < frames.size() -1; k ++ )
     { 
         // don't process the very last frame, no valid transform
-        inputVideo >> cur;
-
-        if(cur.data == NULL) {
-            break;
-        }
+        curGrey = frames[0];
 
         T.at<double>(0,0) = cos(new_prev_to_cur_transform[k].da);
         T.at<double>(0,1) = -sin(new_prev_to_cur_transform[k].da);
@@ -290,17 +354,17 @@ int main(int argc, char **argv)
 
         Mat cur2;
 
-        warpAffine(cur, cur2, T, cur.size());
+        warpAffine(curGrey, cur2, T, curGrey.size());
 
         cur2 = cur2(Range(vert_border, cur2.rows-vert_border), Range(HORIZONTAL_BORDER_CROP, cur2.cols-HORIZONTAL_BORDER_CROP));
 
         // Resize cur2 back to cur size, for better side by side comparison
-        resize(cur2, cur2, cur.size());
+        resize(cur2, cur2, curGrey.size());
 
         // Now draw the original and stablised side by side for coolness
-        Mat canvas = Mat::zeros(cur.rows, cur.cols*2+10, cur.type());
+        Mat canvas = Mat::zeros(curGrey.rows, curGrey.cols*2+10, curGrey.type());
 
-        cur.copyTo(canvas(Range::all(), Range(0, cur2.cols)));
+        curGrey.copyTo(canvas(Range::all(), Range(0, cur2.cols)));
         cur2.copyTo(canvas(Range::all(), Range(cur2.cols+10, cur2.cols*2+10)));
 
 #if 1
@@ -320,7 +384,7 @@ int main(int argc, char **argv)
     outputVideo.release( );
     canvasVideo.release( );
 
-    std::cout << "Wrote modified video to " << NAME << std::endl;
+    std::cout << "Wrote modified video to " << outfileName << std::endl;
     std::cout << "Wrote input and modified video to canvas.avi" << std::endl;
 
     return 0;

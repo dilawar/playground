@@ -12,14 +12,14 @@ set(CMAKE_BUILD_TYPE Release )
 find_package( OPENCV REQUIRED 
     COMPONENTS core highgui imgcodecs videoio imgproc calib3d video
     )
-#find_package( TIFF REQUIRED )
+find_package( TIFF REQUIRED )
 #find_package( GSL REQUIRED )
 
 
 add_executable(videostab ./videostab.cpp)
 
 target_link_libraries( videostab  
-    #${TIFF_LIBRARIES}
+    ${TIFF_LIBRARIES}
     #${GSL_LIBRARIES}
     ${OPENCV_LIBRARIES}
     )
