@@ -15,8 +15,10 @@ ilt2(F,s,t):=block([ff],
         ff:map(factor,%%),
         if atom(ff) or op(ff)#"+" then ilt1(ff)
         else map(ilt1,ff)
-   )$
+        )$
 
 lap1 : laplace( exp( t- a) ^ 2 / 0.01, t, s );
-ilt2( lap1, s,t);
+sol : ilt2( lap1, s,t)$
+bfloat( ev( sol, t = 2 ) );
+
 
