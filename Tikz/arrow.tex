@@ -1,0 +1,59 @@
+%%=====================================================================================
+%%
+%%       Filename:  arrow.tex
+%%
+%%    Description:  
+%%
+%%        Version:  1.0
+%%        Created:  05/04/2017
+%%       Revision:  none
+%%
+%%         Author:  Dilawar Singh (), dilawars@ncbs.res.in
+%%   Organization:  NCBS Bangalore
+%%      Copyright:  Copyright (c) 2017, Dilawar Singh
+%%
+%%          Notes:  
+%%                
+%%=====================================================================================
+
+\RequirePackage{luatex85}
+\documentclass[crop,tikz]{standalone}
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usetikzlibrary{arrows,arrows.meta}
+\begin{document}
+
+\pgfdeclarearrow{
+    name = foo,
+    parameters = { \the\pgfarrowlength },
+    setup code = {
+        % The different end values:
+        \pgfarrowssettipend{.25\pgfarrowlength}
+        \pgfarrowssetlineend{-.25\pgfarrowlength}
+        \pgfarrowssetvisualbackend{-.5\pgfarrowlength}
+        \pgfarrowssetbackend{-.75\pgfarrowlength}
+        % The hull
+        \pgfarrowshullpoint{.25\pgfarrowlength}{0pt}
+        \pgfarrowshullpoint{-.75\pgfarrowlength}{.5\pgfarrowlength}
+        \pgfarrowshullpoint{-.75\pgfarrowlength}{-.5\pgfarrowlength}
+        % Saves: Only the length:
+        \pgfarrowssavethe\pgfarrowlength
+    },
+    drawing code = {
+        \pgfsetdash{}
+        \pgftext[left]{$X$}
+        \pgfusepathqfill
+    },
+    defaults = {length=4}
+}
+
+\begin{tikzpicture}[scale=1, every node/.style={} ]
+    \node[thick] at (0,0) {+};
+    \draw[gray!20] (-5,-5) grid (5,5);
+    \draw[foo-foo] (0,0) -- (3cm,0);
+    %\draw[-foo] (0,1) -- (10cm,1);
+\end{tikzpicture}    
+
+\end{document}
+
+    
