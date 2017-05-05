@@ -21,7 +21,7 @@
 \usepackage{pgfplots}
 \usetikzlibrary{shapes,arrows,arrows.meta}
 \usetikzlibrary{calc,positioning,shadings}
-\usetikzlibrary{decorations,decorations.shapes}
+\usetikzlibrary{decorations,decorations.shapes,decorations.markings}
 
 % \ACTINDIMER{name}{pos}{radius}{rotation}
 \newcommand\ACTINDIMER[4] {
@@ -37,8 +37,8 @@
     \end{scope}
 }
 
-\begin{document}
 
+\begin{document}
 % membrane is made of lipid bilayer.
 \begin{tikzpicture}[scale=1 , every node/.style={} ]
     % Draw helical path.
@@ -46,8 +46,19 @@
     \foreach \i in {1,2,...,20}
     {
         \pgfmathsetmacro\x{\i*2*\r}
-        \ACTINDIMER{a\i}{(\x mm,0)}{1}{20*\i}
+        \ACTINDIMER{a\i}{(\x mm,\i mm)}{1}{20*\i}
     }
+
+    %% \path[ smooth
+    %%         , decorate
+    %%         , decoration={markings,
+    %%             mark=between positions 0 and 1 step 0.05
+    %%             with { 
+    %%                 \node[minimum size=\r mm,shading=ball,circle] {}; 
+    %%                 \node[minimum size=\r mm,shading=ball,circle,yshift=2*\r mm] {}; 
+    %%             }
+    %%             }
+    %%     ] (2,0) -- (5,1) -- (10,0);
 
 \end{tikzpicture}    
 
