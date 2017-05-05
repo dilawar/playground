@@ -1,47 +1,32 @@
-/*
- * =====================================================================================
- *
- *       Filename:  twisted.asy
- *
- *    Description:   This one is from asymptote gallery.
- *
- *        Version:  1.0
- *        Created:  05/02/2017 01:46:57 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  Dilawar Singh (), dilawars@ncbs.res.in
- *   Organization:  NCBS Bangalore
- *
- * =====================================================================================
- */
-import graph3;  
-import palette; 
- 
-size(300,300,keepAspect=true);  
- 
-real w=0.4;
+import graph3; 
+import palette;
 
-real f(triple t) {return sin(t.x);} 
-triple f1(pair t) {return (cos(t.x)-2cos(w*t.y),sin(t.x)-2sin(w*t.y),t.y);}
-triple f2(pair t) {return (cos(t.x)+2cos(w*t.y),sin(t.x)+2sin(w*t.y),t.y);}
-triple f3(pair t) {return (cos(t.x)+2sin(w*t.y),sin(t.x)-2cos(w*t.y),t.y);}
-triple f4(pair t) {return (cos(t.x)-2sin(w*t.y),sin(t.x)+2cos(w*t.y),t.y);}
+import solids;
+size(7cm,0);
 
-surface s1=surface(f1,(0,0),(2pi,10),8,8,Spline); 
-surface s2=surface(f2,(0,0),(2pi,10),8,8,Spline); 
-surface s3=surface(f3,(0,0),(2pi,10),8,8,Spline); 
-surface s4=surface(f4,(0,0),(2pi,10),8,8,Spline); 
+currentprojection=perspective(camera=(5,-4,2));
+viewportmargin=(.5cm,.5cm);
+currentlight=White;
 
-pen[] Rainbow=Rainbow();
-s1.colors(palette(s1.map(f),Rainbow)); 
-s2.colors(palette(s2.map(f),Rainbow)); 
-s3.colors(palette(s3.map(f),Rainbow)); 
-s4.colors(palette(s4.map(f),Rainbow)); 
+triple f(pair p){
+  real x=1+cos(p.x);
+  real y=sin(p.x);
+  real z=p.y*sqrt(4.0001-x^2-y^2);
+  return (x,y,z);
+}
+triple g(pair p, real k){
+  real x=1+cos(p.x);
+  real y=p.y*sin(p.x);
+  real z=k*sqrt(4.0001-x^2-y^2);
+  return (x,y,z);
+}
+triple g1(pair p){ return g(p,1); }
+triple gm1(pair p){ return g(p,-1); }
 
-defaultrender.merge=true;
+int n=100;
+pen stylo = yellow, stylo2 = red;
+draw(surface(f,(0,-1),(2pi,1),n),stylo);
+//draw(surface(g1,(0,-1),(2pi,1),n),stylo2);
+//draw(surface(gm1,(0,-1),(2pi,1),n),stylo2);
 
-draw(s1); 
-draw(s2);
-draw(s3);
-draw(s4);
+

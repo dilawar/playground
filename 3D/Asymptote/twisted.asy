@@ -3,7 +3,7 @@
  *
  *       Filename:  twisted.asy
  *
- *    Description:  
+ *    Description:   This one is from asymptote gallery.
  *
  *        Version:  1.0
  *        Created:  05/02/2017 01:46:57 PM

@@ -1,5 +1,5 @@
-all : twisted.png 
+all : twisted.png channel.png
 	echo "All done"
 
 %.png : %.asy
-	asy -f $@ $<
+	asy -f png $<
