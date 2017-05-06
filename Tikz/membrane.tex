@@ -32,34 +32,46 @@
     \global\let#1\pgfmathresult  
 }
 
-% \ACTINDIMER{name}{pos}{radius}{rotation}
-\newcommand\ACTINDIMER[4] 
+% \ACTINDIMER{name}{pos}{radius}{rotation}{rotation plane}
+\newcommand\ACTINDIMER[5] 
 {
     \pgfmathsetmacro{\r}{#3}
     \pgfmathsetmacro{\angle}{mod(#4,360)}
     \pgfmathsetmacro{\yshift}{\r*cos(\angle)}
-    \begin{scope}[ ]
+    %\pgfmathsetmacro{\xshift}{cos(#5)*cos(\angle)}
+    \pgfmathsetmacro{\xshift}{0}
+    \pgfmathsetmacro{\planeR}{360-#5}
+    \begin{scope}[rotate=\planeR]
         \edef\ballColor{white}
         \node[inner sep=0pt] (#1) at #2 { };
         % Upto 180 degree draw one actin primer above then draw it below.
         \ifdim \angle pt > 180 pt
-            \node[shading=ball,ball color=\ballColor,circle,minimum size=2*\r mm,inner sep=0] 
+            \node[transform shape,shading=ball,ball color=\ballColor,circle,minimum size=2*\r mm,inner sep=0] 
                 (#1_up) at ([yshift=-\yshift mm]#1) { };
-            \node[shading=ball,ball color=\ballColor,circle,minimum size=2*\r mm,inner sep=0] 
-                (#1_down) at ([yshift=\yshift mm]#1) { };
+            \node[transform shape,shading=ball,ball color=\ballColor,circle,minimum size=2*\r mm,inner sep=0] 
+                (#1_down) at ([xshift=\xshift mm,yshift=\yshift mm]#1) { };
         \else
-            \node[shading=ball,ball color=\ballColor,circle,minimum size=2*\r mm,inner sep=0] 
+            \node[transform shape,shading=ball,ball color=\ballColor,circle,minimum size=2*\r mm,inner sep=0] 
                 (#1_down) at ([yshift=\yshift mm]#1) { };
-            \node[shading=ball,ball color=\ballColor,circle,minimum size=2*\r mm,inner sep=0] 
-                (#1_up) at ([yshift=-\yshift mm]#1) { };
+            \node[transform shape,shading=ball,ball color=\ballColor,circle,minimum size=2*\r mm,inner sep=0] 
+                (#1_up) at ([xshift=\xshift mm,yshift=-\yshift mm]#1) { };
         \fi
     \end{scope}
 }
 
 % \ACTIN{name}{start_point}{directional point}{radius}{number of dimers}
 \newcommand\ACTIN[5] {
+    \pgfmathsetmacro\r{#4}
     \pgfextractangle\angle{#2}{#3}
-    \node {\angle};
+    \coordinate (start) at (#2);
+    \coordinate (current) at (#2);
+    \node at (start) {\angle};
+    \foreach \i in {1,2,...,#5}
+    {
+        \coordinate (current) at ([shift=(\angle:2*\r mm)]current);
+        %\node at (current) {\i};
+        \ACTINDIMER{a\i}{(current)}{\r}{20*\i}{#5}
+    }
 }
 
 
@@ -74,12 +86,12 @@
     \foreach \i in {1,2,...,20}
     {
         \pgfmathsetmacro\x{\i*2*\r}
-        \ACTINDIMER{a\i}{(\x mm,0)}{1}{20*\i}
+        \ACTINDIMER{a\i}{(\x mm,0)}{\r}{20*\i}{0}
     }
 
-    \node (s1) at (3,0) { };
+    \node (s1) at (2,3) { };
     \node (s2) at (5,1) { };
-    \ACTIN{a1}{s1}{s2}{20}
+    \ACTIN{a1}{s1}{s2}{\r}{20}
 
 \end{tikzpicture}    
 
