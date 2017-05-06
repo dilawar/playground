@@ -17,48 +17,69 @@
 %%=====================================================================================
 
 \RequirePackage{luatex85}
+
 \documentclass[crop,tikz]{standalone}
 \usepackage{pgfplots}
+\usepackage{ifthen}
 \usetikzlibrary{shapes,arrows,arrows.meta}
 \usetikzlibrary{calc,positioning,shadings}
 \usetikzlibrary{decorations,decorations.shapes,decorations.markings}
 
+% Extract angle between two points.
+\newcommand{\pgfextractangle}[3]{%
+    \pgfmathanglebetweenpoints{\pgfpointanchor{#2}{center}}
+                              {\pgfpointanchor{#3}{center}}
+    \global\let#1\pgfmathresult  
+}
+
 % \ACTINDIMER{name}{pos}{radius}{rotation}
-\newcommand\ACTINDIMER[4] {
+\newcommand\ACTINDIMER[4] 
+{
     \pgfmathsetmacro{\r}{#3}
-    \pgfmathsetmacro{\yshift}{\r*cos(#4)}
+    \pgfmathsetmacro{\angle}{mod(#4,360)}
+    \pgfmathsetmacro{\yshift}{\r*cos(\angle)}
     \begin{scope}[ ]
         \edef\ballColor{white}
         \node[inner sep=0pt] (#1) at #2 { };
-        \node[shading=ball,ball color=\ballColor,circle,minimum size=2*\r mm,inner sep=0] 
-            (#1_up) at ([yshift=\yshift mm]#1) {};
-        \node[shading=ball,ball color=\ballColor,circle,minimum size=2*\r mm,inner sep=0] 
-            (#1_down) at ([yshift=-\yshift mm]#1) { };
+        % Upto 180 degree draw one actin primer above then draw it below.
+        \ifdim \angle pt > 180 pt
+            \node[shading=ball,ball color=\ballColor,circle,minimum size=2*\r mm,inner sep=0] 
+                (#1_up) at ([yshift=-\yshift mm]#1) { };
+            \node[shading=ball,ball color=\ballColor,circle,minimum size=2*\r mm,inner sep=0] 
+                (#1_down) at ([yshift=\yshift mm]#1) { };
+        \else
+            \node[shading=ball,ball color=\ballColor,circle,minimum size=2*\r mm,inner sep=0] 
+                (#1_down) at ([yshift=\yshift mm]#1) { };
+            \node[shading=ball,ball color=\ballColor,circle,minimum size=2*\r mm,inner sep=0] 
+                (#1_up) at ([yshift=-\yshift mm]#1) { };
+        \fi
     \end{scope}
+}
+
+% \ACTIN{name}{start_point}{directional point}{radius}{number of dimers}
+\newcommand\ACTIN[5] {
+    \pgfextractangle\angle{#2}{#3}
+    \node {\angle};
 }
 
 
 \begin{document}
+
 % membrane is made of lipid bilayer.
 \begin{tikzpicture}[scale=1 , every node/.style={} ]
+
     % Draw helical path.
-    \edef\r{1}        % Radius of actin.
+    % Radius of actin.
+    \edef\r{1}
     \foreach \i in {1,2,...,20}
     {
         \pgfmathsetmacro\x{\i*2*\r}
-        \ACTINDIMER{a\i}{(\x mm,\i mm)}{1}{20*\i}
+        \ACTINDIMER{a\i}{(\x mm,0)}{1}{20*\i}
     }
 
-    %% \path[ smooth
-    %%         , decorate
-    %%         , decoration={markings,
-    %%             mark=between positions 0 and 1 step 0.05
-    %%             with { 
-    %%                 \node[minimum size=\r mm,shading=ball,circle] {}; 
-    %%                 \node[minimum size=\r mm,shading=ball,circle,yshift=2*\r mm] {}; 
-    %%             }
-    %%             }
-    %%     ] (2,0) -- (5,1) -- (10,0);
+    \node (s1) at (3,0) { };
+    \node (s2) at (5,1) { };
+    \ACTIN{a1}{s1}{s2}{20}
 
 \end{tikzpicture}    
 
