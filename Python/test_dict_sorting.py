@@ -60,6 +60,8 @@ d_ = dict(zip(range(100),range(100)))
 
 def main( ):
     import timeit
+    xvec = [ ]
+    yvec = [ ]
     for mI in range( 7 ):
         methodName = "sbv%d" % mI
         cmd = "for ii in range(10000):  %s(d_, reverse=True)" % methodName 
@@ -68,6 +70,12 @@ def main( ):
                 , setup="from __main__ import %s, d_" % methodName 
                 )
         print( "%s took %.4f seconds on average (N=%d)" % (methodName, t / N, N ) )
+        xvec.append( methodName )
+        yvec.append( t )
+    with open( "results.txt", "w" ) as f:
+        for x, y in zip( xvec, yvec ):
+            f.write( "%s %s\n" % (x, y) )
+    print( "Done writing results to results.txt" )
 
 if __name__ == '__main__':
     main()
