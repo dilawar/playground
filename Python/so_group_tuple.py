@@ -23,16 +23,16 @@ def group_pm2ring( a ):
     return b
 
 def main( ):
-    N = 10**6
-    a = [ (random.randint(1, 20), random.randint(1, 10000)) for i in range(N) ]
-    a = sorted( a )
-    t = time.time( )
-    r1 = group_coldspeed( a )
-    print( 'Time taken %f' % (time.time( ) - t ) )
-    t = time.time( )
-    r2 = group_pm2ring( a )
-    print( 'Time taken %f' % (time.time( ) - t ) )
-    assert r1 == r2
+    for i in range( 1, 7 ):
+        N = 10 ** i
+        a = [ (random.randint(1, 20), random.randint(1, 10000)) for i in range(N) ]
+        a = sorted( a )
+        times = [ ]
+        for method in [ group_coldspeed , group_pm2ring ]:
+            t = time.time( )
+            r1 = method( a )
+            times.append( '%.4f' % (time.time( ) - t ))
+        print( str(N) + ' ' +  ' '.join(times) )
 
 
 if __name__ == '__main__':
