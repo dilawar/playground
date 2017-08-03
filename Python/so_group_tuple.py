@@ -18,12 +18,13 @@ def group_coldspeed( a ):
     return list( o.items( ) )
 
 def group_pm2ring( a ):
-    b = [(k, list(list(zip(*g))[1])) for 
-            k, g in itertools.groupby(a, operator.itemgetter(0))]
+    # b = [(k, list(list(zip(*g))[1])) for 
+            # k, g in itertools.groupby(a, operator.itemgetter(0))]
+    b =  [(k, [x for _, x in g]) for k, g in itertools.groupby(a, operator.itemgetter(0))]
     return b
 
 def main( ):
-    for i in range( 1, 7 ):
+    for i in range( 1, 8 ):
         N = 10 ** i
         a = [ (random.randint(1, 20), random.randint(1, 10000)) for i in range(N) ]
         a = sorted( a )
@@ -31,8 +32,8 @@ def main( ):
         for method in [ group_coldspeed , group_pm2ring ]:
             t = time.time( )
             r1 = method( a )
-            times.append( '%.4f' % (time.time( ) - t ))
-        print( str(N) + ' ' +  ' '.join(times) )
+            times.append((time.time( ) - t ))
+        print( N, times, times[0] / times[1] )
 
 
 if __name__ == '__main__':
