@@ -23,7 +23,7 @@ def group_pm2ring( a ):
     return b
 
 def main( ):
-    N = 10000
+    N = 100000
     a = [ (random.randint(1, 20), random.randint(1, 10000)) for i in range(N) ]
     a = sorted( a )
     t = time.time( )
