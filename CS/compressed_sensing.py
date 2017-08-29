@@ -50,6 +50,7 @@ def main( ):
     # compressed recovery.
     x0 = np.dot( A.T,  y )
     res = l1eq_pd( x0, A, [ ], y )
+    print( 'Error:', np.linalg.norm( res - x0 ) )
     ax3.plot( res, label = 'reconstructed' )
     ax3.legend(loc='best', framealpha=0.4)
 

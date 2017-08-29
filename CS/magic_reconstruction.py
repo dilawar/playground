@@ -1,5 +1,6 @@
 """magic_reconstruction.py: 
 
+    still not working.
 """
     
 __author__           = "Dilawar Singh"
@@ -40,7 +41,7 @@ ax4 = plt.subplot2grid( gridSize, (1,1), colspan = 1 )
 ax5 = plt.subplot2grid( gridSize, (2,0), colspan = 1 )
 ax6 = plt.subplot2grid( gridSize, (2,1), colspan = 1 )
 
-N, k = 5000, 200
+N, k = 5000, 500
 t = np.arange( 0, 1/8.0, 1.0 / 40000  )
 atone = np.sin( 1394 * math.pi * t ) + np.sin( 3266 * math.pi * t )
 
@@ -55,37 +56,37 @@ ax2.set_xlim( [0, 600 ])
 
 # random sampling
 sampleI = np.random.choice( range( len( atone ) ), k )
-samples = atone[ sampleI ]
+b = atone[ sampleI ]
 dctSamples = atoneDct[ sampleI ]
-ax3.plot( samples )
-ax3.set_title( 'b, %s samples' % k )
+#  ax3.plot( b )
+#  ax3.set_title( 'b, %s samples' % k )
 
 D = scipy.fftpack.dct( np.eye(N, N) )
 A = D[ sampleI, : ]
-fig = ax4.imshow( A, aspect = 'auto' )
-ax4.set_title( 'A, underdetermined in DCT domain' )
-plt.colorbar( fig, ax = ax4 )
+# fig = ax4.imshow( A, aspect = 'auto' )
+#  ax4.set_title( 'A, underdetermined in DCT domain' )
+#  plt.colorbar( fig, ax = ax4 )
 
 # l2 solution.
-b = np.matrix( samples )
 print( 'Solving Ax = b using L2 norm. Moore-Penrose inverse' )
-b1 = scipy.linalg.pinv( A ) * b.T
+b1 = np.dot( scipy.linalg.pinv( A ), b )
 
-
-ax5.plot( b1 )
-ax5.set_xlim( [0, 600 ] )
-ax5.set_title( 'x = $A^+$ * b, $L_2$ norm' )
+ax3.plot( b1 )
+ax3.set_xlim( [0, 600 ] )
+ax3.set_title( '$\phi$ = $A^+$ * b, $L_2$ norm' )
 
 # compressed sensing solution.
 print( atoneDct.shape, A.shape, b.shape )
-x0 =  atoneDct
-y = np.matrix( b.T )
-#  print( "x0: %s, y: %s, A:%s" % (x0.shape, y.shape, A.shape) )
-bcs = l1eq_pd( x0, A, np.array([]), y )
-print( 'Error', np.linalg.norm( bcs - x0 ) )
-ax6.plot( bcs )
-ax6.set_xlim( [0, 600 ] )
-ax6.set_title( 'x = minimize l1(x); $Ax=b$ ' )
+x0 =  np.dot( A.T, b )
+bcs = l1eq_pd( x0, A, [ ], b )
+print( 'Error', np.linalg.norm( x0 - bcs ) )
+ax4.plot( bcs )
+ax4.set_xlim( [0, 600 ] )
+ax4.set_title( '$\phi$ = minimize l1(x); $Ax=b$ ' )
+
+# reconstruction.
+ax5.plot( t, scipy.fftpack.idct( b1 ) )
+ax6.plot( t, scipy.fftpack.idct( bcs ) )
 
 plt.tight_layout( pad = 2 )
 plt.savefig( 'magic_reconstruction.png' )
