@@ -26,11 +26,15 @@ def sparse_signal( ):
     x[100] = 11
     x[151] = -5
     x[180 ] = 3
+    np.savetxt( "_signal.dat", x )
     return x
 
 def obtain_random_measurements( x, k):
     A = np.random.randn( k, N )
-    return A, np.dot( A, x )
+    np.savetxt( "_measurement_matrix.dat", A )
+    y = np.dot( A, x )
+    np.savetxt( "_measurements.dat", y )
+    return A, y
 
 def main( ):
     gridSize = (3, 1)
@@ -50,6 +54,7 @@ def main( ):
     # compressed recovery.
     x0 = np.dot( A.T,  y )
     res = l1eq_pd( x0, A, [ ], y )
+    np.savetxt( '_result.dat', res )
     print( 'Error:', np.linalg.norm( res - x0 ) )
     ax3.plot( res, label = 'reconstructed' )
     ax3.legend(loc='best', framealpha=0.4)

@@ -1,0 +1,19 @@
+\RequirePackage{luatex85,shellesc}
+\documentclass[crop,tikz]{standalone}
+\usepackage{pgfplots}
+\begin{document}
+
+\begin{tikzpicture}[scale=1]
+    \begin{axis}[
+    xlabel=Index,ylabel=Value
+    , grid style={draw=gray!20}
+    , title style={at={(0,1)},align=right}
+    , title = Sparse Signal
+    ]
+    \addplot [color=blue] gnuplot [ raw gnuplot ] {
+        plot "./_signal.dat" using 0:1 with lines
+    };
+    \end{axis}
+\end{tikzpicture}
+
+\end{document}
