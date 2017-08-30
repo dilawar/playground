@@ -90,7 +90,7 @@ ax5.set_title( "$\phi = \min_\phi L_1(\phi) \;, A \phi=b$ " )
 
 # reconstruction.
 res = scipy.fftpack.idct( bcs, norm = 'ortho' )
-np.savetxt( '_result_tone.dat', res )
+np.savetxt( '_result_tone.dat', np.vstack( (t, res) ).T )
 ax6.plot( t, res )
 
 plt.tight_layout( pad = 2 )

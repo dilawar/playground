@@ -1,4 +1,4 @@
-IMAGES= ./figure_compressend_sensing.pdf ./figure_solution.pdf
+IMAGES= ./figure_compressend_sensing.pdf ./figure_solution.pdf ./figure_compressend_sensing_DCT.pdf
 all : ./compressed_sensing.png ./magic_reconstruction.png  labnote.pdf labnote.html 
 	@echo "All done"
 
