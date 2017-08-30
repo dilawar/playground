@@ -41,48 +41,47 @@ ax4 = plt.subplot2grid( gridSize, (1,1), colspan = 1 )
 ax5 = plt.subplot2grid( gridSize, (2,0), colspan = 1 )
 ax6 = plt.subplot2grid( gridSize, (2,1), colspan = 1 )
 
-N, k = 500, 50
+# For N = 5000, k = 500, it takes ever to solve.
+N, k = 1000, 200
 t = np.arange( 0, 1/8.0, 1.0 / (N * 8.0) )
 atone = np.sin( 1394 * math.pi * t ) + np.sin( 3266 * math.pi * t )
 
 ax1.plot( t, atone )
-ax1.set_title( 'Signal (Tone A)' )
+ax1.set_title( 'Signal x. N = %d' % N )
 
 atoneDct = scipy.fftpack.dct( atone, norm = 'ortho' )
 ax2.plot( atoneDct )
-ax2.set_title( 'DCT' )
-ax2.set_xlim( [0, 600 ])
+ax2.set_title( '$\phi$ = DCT(x)' )
+#  ax2.set_xlim( [0, 600 ])
 
 
 # random sampling
-sampleI = np.random.choice( range( len( atone ) ), k )
-b = atone[ sampleI ]
-dctSamples = atoneDct[ sampleI ]
-
 A = np.random.randn( k, N )
-print( A.shape )
+sampleI = np.random.choice( range( len( atone ) ), k )
+fig = ax3.imshow( A, aspect = 'auto' )
+ax3.set_title( 'Mask A' )
+plt.colorbar( fig, ax = ax3 )
 
-# l2 solution.
-print( 'Solving Ax = b using L2 norm. Moore-Penrose inverse' )
-b1 = np.dot( scipy.linalg.pinv( A ), b )
+# Sample using A
+b = np.dot( A, atoneDct )
+
+ax4.plot( b )
+ax4.set_title(  'b =A $\phi$' )
+ax4.legend(loc='best', framealpha=0.4)
+
 
 print( 'Solving using CS' )
-ax3.plot( b1 )
-ax3.set_xlim( [0, 600 ] )
-ax3.set_title( '$\phi$ = $A^+$ * b, $L_2$ norm' )
-
 # compressed sensing solution.
 print( atoneDct.shape, A.shape, b.shape )
 x0 =  np.dot( A.T, b )
 print( 'Computed x0' )
 bcs = l1eq_pd( x0, A, [ ], b )
 print( 'Error', np.linalg.norm( x0 - bcs ) )
-ax4.plot( bcs )
-ax4.set_xlim( [0, 600 ] )
-ax4.set_title( '$\phi$ = minimize l1(x); $Ax=b$ ' )
+ax5.plot( bcs )
+#  ax4.set_xlim( [0, 600 ] )
+ax5.set_title( "$\phi = \min_\phi L_1(\phi) \;, A \phi=b$ " )
 
 # reconstruction.
-ax5.plot( t, scipy.fftpack.idct( b1, norm = 'ortho' ) )
 ax6.plot( t, scipy.fftpack.idct( bcs, norm = 'ortho' ) )
 
 plt.tight_layout( pad = 2 )
