@@ -19,7 +19,6 @@ given that $A$ (__mesurement matrix__) has following properties:
   change the length of sparse signal $x$ 'very much'. See Restricted Isometric
   Property in @sec:rip .
 
-# A demonstration using Python
 
 Lets there is a sparse signal $x$ of length $N$. Its sparse. We take a
 dot-product of x with a random vector $A_i$ of size N i.e. $b_i = A_i * x$. We
@@ -39,7 +38,11 @@ that $x$ is sparse. Can we recover $x$ (of size N) from b (of size k $<<N$)?
 Figure @fig:system shows a real system. Compressed sensing says that $x$ can be
 recovered by solving the following linear program.
 
-$$\min_x \left\Vert x \right\Vert_1 \; \text{given} \; Ax = b$$
+$$\min_x \left\Vert x \right\Vert_1 \; \text{given} \; Ax = b$$ {#eq:cs_linprog}
+
+# A demonstration using Python
+
+## Sparse in time domain
 
 ![__x__ is the sparse signal of length 256. Using measurements matrix __A__, we
 made 64 random measurements of $x$ namely __b__. The sparse solution of
@@ -49,6 +52,12 @@ made 64 random measurements of $x$ namely __b__. The sparse solution of
 __Solution__
 
 ![Solution by CS and original signal.](./figure_solution.pdf)
+
+## Sparse in Fourier domain
+
+![CS solution when signal is sparse in Forier
+domain](./magic_reconstruction.png)
+
 
 # Mathematical definitions
 

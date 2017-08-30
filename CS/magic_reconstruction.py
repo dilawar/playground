@@ -45,11 +45,13 @@ ax6 = plt.subplot2grid( gridSize, (2,1), colspan = 1 )
 N, k = 1000, 200
 t = np.arange( 0, 1/8.0, 1.0 / (N * 8.0) )
 atone = np.sin( 1394 * math.pi * t ) + np.sin( 3266 * math.pi * t )
+np.savetxt( '_tone.dat', np.vstack((t, atone)).T )
 
 ax1.plot( t, atone )
 ax1.set_title( 'Signal x. N = %d' % N )
 
 atoneDct = scipy.fftpack.dct( atone, norm = 'ortho' )
+np.savetxt( '_tone_dct.dat', atoneDct )
 ax2.plot( atoneDct )
 ax2.set_title( '$\phi$ = DCT(x)' )
 #  ax2.set_xlim( [0, 600 ])
@@ -57,6 +59,7 @@ ax2.set_title( '$\phi$ = DCT(x)' )
 
 # random sampling
 A = np.random.randn( k, N )
+np.savetxt( '_measurement_matrix_dct.dat', A )
 sampleI = np.random.choice( range( len( atone ) ), k )
 fig = ax3.imshow( A, aspect = 'auto' )
 ax3.set_title( 'Mask A' )
@@ -64,6 +67,8 @@ plt.colorbar( fig, ax = ax3 )
 
 # Sample using A
 b = np.dot( A, atoneDct )
+np.savetxt( '_measurements_dct.dat', b )
+
 
 ax4.plot( b )
 ax4.set_title(  'b =A $\phi$' )
@@ -76,13 +81,17 @@ print( atoneDct.shape, A.shape, b.shape )
 x0 =  np.dot( A.T, b )
 print( 'Computed x0' )
 bcs = l1eq_pd( x0, A, [ ], b )
+np.savetxt( '_result_dct.dat', bcs )
 print( 'Error', np.linalg.norm( x0 - bcs ) )
+
 ax5.plot( bcs )
 #  ax4.set_xlim( [0, 600 ] )
 ax5.set_title( "$\phi = \min_\phi L_1(\phi) \;, A \phi=b$ " )
 
 # reconstruction.
-ax6.plot( t, scipy.fftpack.idct( bcs, norm = 'ortho' ) )
+res = scipy.fftpack.idct( bcs, norm = 'ortho' )
+np.savetxt( '_result_tone.dat', res )
+ax6.plot( t, res )
 
 plt.tight_layout( pad = 2 )
 plt.savefig( 'magic_reconstruction.png' )
