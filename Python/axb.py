@@ -14,14 +14,16 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import random
-import tifffile
+
+if not os.path.exists( '_figures' ):
+    os.makedirs( '_figures' )
 
 def sparse_vec( n, p = 0.05 ):
     return np.random.choice( [0,1], n, [p, 1-p ] )
 
 def main( ):
     iterations = 100
-    N = 100
+    N = 200
     imgs = np.ndarray( shape=(iterations, N, N) )
     for i in range( iterations ):
         print( 'Loop %d' % i )
@@ -34,9 +36,10 @@ def main( ):
         si = np.linalg.pinv( np.matrix( s ) )
         a =  ss.T * si.T 
         imgs[i] = a
-
-    tifffile.imsave( '%s.tiff', imgs )
-    print( 'Saved to TiFF files' )
+        plt.imshow( a, interpolation = 'none', aspect = 'auto' )
+        plt.colorbar( )
+        plt.savefig( './_figures/fig%04d.png' % i )
+        plt.close( )
 
     plt.figure( )
     avgImg = np.mean( imgs, axis = 0 ) 
