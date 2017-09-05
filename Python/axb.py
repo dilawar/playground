@@ -14,15 +14,18 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import random
+import tifffile
 
 def sparse_vec( n, p = 0.05 ):
     return np.random.choice( [0,1], n, [p, 1-p ] )
 
 def main( ):
-    imgs = [ ]
-    for i in range( 10000 ):
+    iterations = 100
+    N = 100
+    imgs = np.ndarray( shape=(iterations, N, N) )
+    for i in range( iterations ):
         print( 'Loop %d' % i )
-        s = sparse_vec( 100 )
+        s = sparse_vec( N )
         ss = s[:]
         np.random.shuffle( ss )
         ss = np.matrix( ss )
@@ -30,8 +33,12 @@ def main( ):
         sa = np.matrix( s )
         si = np.linalg.pinv( np.matrix( s ) )
         a =  ss.T * si.T 
-        imgs.append( a )
+        imgs[i] = a
 
+    tifffile.imsave( '%s.tiff', imgs )
+    print( 'Saved to TiFF files' )
+
+    plt.figure( )
     avgImg = np.mean( imgs, axis = 0 ) 
     sumImg = np.sum( imgs, axis = 0 )
     varImg = np.std( imgs, axis = 0 )
