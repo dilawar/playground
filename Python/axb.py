@@ -27,11 +27,11 @@ def main( ):
     plot = False
     imgs = np.ndarray( shape=(iterations, N, N) )
     for i in range( iterations ):
-        print( 'Loop %d' % i )
         s = sparse_vec( N )
         ss = s[:]
         np.random.shuffle( ss )
-        ss = np.matrix( ss )
+        err = 1.0
+        ss = np.matrix( ss + err )
 
         sa = np.matrix( s )
         si = np.linalg.pinv( np.matrix( s ) )
@@ -60,10 +60,11 @@ def main( ):
     ds = [ ]
     for i in range( 1000 ):
         x = sparse_vec( N )
-        y = avgImg.dot( x )
+        a = varImg
+        y = a.dot( x )
         assert x.shape == y.shape
         ds.append( np.linalg.norm( y ) / np.linalg.norm( x ) )
-    print( np.mean( ds ), np.std( ds ) )
+    print( np.mean( ds ), np.std( ds ), np.max( ds ), np.min( ds ) )
 
 if __name__ == '__main__':
     main()
