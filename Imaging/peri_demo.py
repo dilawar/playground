@@ -17,19 +17,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 import peri
 import peri.util
+import peri.runner
 from peri.viz.interaction import OrthoViewer
 from peri.viz.interaction import OrthoPrefeature 
 import peri.comp 
 
 def main( ):
-    tiff = peri.util.RawImage( './small_confocal_image.tif' )
+    im = peri.util.RawImage( sys.argv[1] )
     objs = peri.comp.objs.Slab( zpos = 6 )
-    ppos = np.load( './particle-positions.npy' )
+    ppos = peri.runner.locate_spheres( im, 8 )
     print( ppos )
     prad = 5.0
     particles = peri.comp.objs.PlatonicSpheresCollection( ppos, prad )
-    OrthoPrefeature( tiff.get_image( ), ppos, viewrad = 3 )
-    plt.savefig( 'tmp.png' )
+    OrthoPrefeature( im.get_image( ), ppos, viewrad = 3 )
+    plt.savefig( 'step1.png' )
 
 if __name__ == '__main__':
     main()
