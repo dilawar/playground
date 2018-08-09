@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """download_all_kml.py: 
 Download all kml file.
 
@@ -13,8 +13,11 @@ __status__           = "Development"
 
 import sys
 import os
-import html2text
-baseUrl_ = 'http://egreenwatch.nic.in/Public/Reports/View_Download_KML.aspx'
+import glob
+from bs4 import BeautifulSoup
+import shutil
+import time
+
 
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
@@ -32,44 +35,56 @@ profile.set_preference("browser.helperApps.alwaysAsk.force", False);
 profile.set_preference("browser.download.manager.useWindow", False);
 
 options = Options()
-options.add_argument("--headless")
+#  options.add_argument("--headless")
 driver = webdriver.Firefox(firefox_options=options, firefox_profile=profile)
 
 print("[INFO] Firefox Headless Browser Invoked")
-import time
 
+baseUrl_ = 'http://egreenwatch.nic.in/Public/Reports/View_Download_KML.aspx'
 downloadBtnID = 'ctl00_ctl00_dpPH_dpPH_btnSearch'
 tableId = 'ctl00_ctl00_dpPH_dpPH_gdCALs'
 states_ = []
 current_page_ = 1
+
+dir_  = os.path.join( os.environ['HOME'], 'Downloads' )
+resDir_ = None
 
 def find_select_by_id( id ):
     global driver
     ss = driver.find_element_by_id( id )
     return Select(ss)
 
+def html2text( html ):
+    soup = BeautifulSoup( html )
+    return soup.get_text( ).strip().replace(' ', '_' )
+
+def find_latest_kml_file( ):
+    global dir_
+    files = glob.glob( '%s/*.kml' % dir_ )
+    return max( files, key=os.path.getctime )
+
 def download_from_table( table, download = True ):
     global current_page_
     current_page_ += 1
-    if not download:
-        return 
 
     trs = table.find_elements_by_xpath( './/tr' )
     for tr in trs:
-        trHTML = tr.get_attribute( 'innerHTML')
-        others = [ trHTML for x in tr.find_elements_by_xpath('.//td') ]
-        if not others:
+        tds = tr.find_elements_by_xpath('.//td')
+        if not tds:
             continue
 
-        text = '_'.join( [ x.strip().replace( ' ','') for x in others] )
-        print( '===A', text )
-
-        d = tr.find_element_by_xpath( './td/input')
+        text = ':'.join([ x.text for x in tds[1:] if x.text.strip() ])
+        text = text( r'/', '' )
+        d = tr.find_elements_by_xpath( './/input')[-1]
         try:
             d.click()
             print( 'Downloadin by pressing button ID: %s' % d.get_attribute( 'id' ) )
+            downloadedFiles = find_latest_kml_file( )
+            filename = os.path.join( resDir_, '%s.kml' % text )
+            shutil.move( downloadedFiles, filename )
+            print( '[INFO] Saving to %s' % filename )
         except Exception as e:
-            print( 'Coud not click: %s' % e )
+            print( 'Could not click: \n\t%s' % e )
             pass
 
 
@@ -88,15 +103,14 @@ def download_kmp( state, siteType):
 
     submit = driver.find_element_by_id( 'ctl00_ctl00_dpPH_dpPH_btnSearch')
     submit.click()
-    time.sleep(1)
 
     # now download verything on this page.
     #  pageLink = "javascript:__doPostBack('ctl00$ctl00$dpPH$dpPH$gdCALs','Page$%d')"
     for i in range(30):
         table = driver.find_element_by_xpath( '//table[@id="%s"]' % tableId )
-        download_from_table( table, download = True )
+        download_from_table( table, download = False )
         # refresh the table.
-        pages = table.find_elements_by_xpath( '//td/a' )
+        pages = table.find_elements_by_xpath( './/td/a' )
         for p in pages:
             href = p.get_attribute( 'href')
             if 'Page$%d'% current_page_ in href:
@@ -109,8 +123,13 @@ def download_kmp( state, siteType):
 
 def main( ):
     global driver
+    global resDir_
     state = sys.argv[1]
     siteType = sys.argv[2]
+    resDir_ = os.path.join( state, siteType )
+    if not os.isdir( resDir_ ):
+        os.makedirs( resDir_ )
+
     print( '[INFO]  State: %s, Site Type: %s' % (state, siteType))
     try:
         download_kmp( state, siteType)
