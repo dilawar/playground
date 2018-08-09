@@ -13,6 +13,7 @@ __status__           = "Development"
 
 import sys
 import os
+import html2text
 baseUrl_ = 'http://egreenwatch.nic.in/Public/Reports/View_Download_KML.aspx'
 
 from selenium import webdriver
@@ -47,9 +48,23 @@ def find_select_by_id( id ):
     ss = driver.find_element_by_id( id )
     return Select(ss)
 
-def download_from_table( table ):
-    ds = table.find_elements_by_xpath( '//input[@text="Download"]' )
-    for i, d in enumerate(ds):
+def download_from_table( table, download = True ):
+    global current_page_
+    current_page_ += 1
+    if not download:
+        return 
+
+    trs = table.find_elements_by_xpath( './/tr' )
+    for tr in trs:
+        trHTML = tr.get_attribute( 'innerHTML')
+        others = [ trHTML for x in tr.find_elements_by_xpath('.//td') ]
+        if not others:
+            continue
+
+        text = '_'.join( [ x.strip().replace( ' ','') for x in others] )
+        print( '===A', text )
+
+        d = tr.find_element_by_xpath( './td/input')
         try:
             d.click()
             print( 'Downloadin by pressing button ID: %s' % d.get_attribute( 'id' ) )
@@ -77,27 +92,20 @@ def download_kmp( state, siteType):
 
     # now download verything on this page.
     #  pageLink = "javascript:__doPostBack('ctl00$ctl00$dpPH$dpPH$gdCALs','Page$%d')"
-    table = driver.find_element_by_xpath( '//table[@id="%s"]' % tableId )
-    download_from_table( table )
-
-    return
-
-    assert table, "Table not found"
-    pages = table.find_elements_by_xpath( '//td/a' )
-
-    #  print( table.get_attribute( 'innerHTML' ) )
-    for p in pages:
-        href = p.get_attribute( 'href')
-        if 'Page$' not in href:
-            continue
-        try:
-            print( 'Trying page', p )
-            p.click()
-        except Exception as e:
-            print( e )
-            continue
-
-        continue
+    for i in range(30):
+        table = driver.find_element_by_xpath( '//table[@id="%s"]' % tableId )
+        download_from_table( table, download = True )
+        # refresh the table.
+        pages = table.find_elements_by_xpath( '//td/a' )
+        for p in pages:
+            href = p.get_attribute( 'href')
+            if 'Page$%d'% current_page_ in href:
+                try:
+                    p.click()
+                    print( 'Great next page: %s' % current_page_ )
+                    break
+                except Exception as e:
+                    print( 'Could not load page: %s' % e )
 
 def main( ):
     global driver
