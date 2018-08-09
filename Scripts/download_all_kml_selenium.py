@@ -35,7 +35,7 @@ profile.set_preference("browser.helperApps.alwaysAsk.force", False);
 profile.set_preference("browser.download.manager.useWindow", False);
 
 options = Options()
-#  options.add_argument("--headless")
+options.add_argument("--headless")
 driver = webdriver.Firefox(firefox_options=options, firefox_profile=profile)
 
 print("[INFO] Firefox Headless Browser Invoked")
@@ -74,7 +74,7 @@ def download_from_table( table, download = True ):
             continue
 
         text = ':'.join([ x.text for x in tds[1:] if x.text.strip() ])
-        text = text( r'/', '' )
+        text = text.replace( r'/', '' )
         d = tr.find_elements_by_xpath( './/input')[-1]
         try:
             d.click()
@@ -127,14 +127,14 @@ def main( ):
     state = sys.argv[1]
     siteType = sys.argv[2]
     resDir_ = os.path.join( state, siteType )
-    if not os.isdir( resDir_ ):
+    if not os.path.isdir( resDir_ ):
         os.makedirs( resDir_ )
 
     print( '[INFO]  State: %s, Site Type: %s' % (state, siteType))
     try:
         download_kmp( state, siteType)
     except Exception as e:
-        print( e )
+        print( 'FAILED: %s' % e )
         driver.quit()
 
     driver.quit()
