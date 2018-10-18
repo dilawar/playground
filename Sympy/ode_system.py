@@ -26,7 +26,7 @@ def system( ):
 def main():
     _s.init_printing()
     sys, vs = system()
-    r = _s.dsolve(sys )
+    r = _s.dsolve(sys, vs)
     print( r )
 
 
