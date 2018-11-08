@@ -25,6 +25,7 @@ def construct_Tree(i):
 
 	pos = {1: (30, 50), 2: (35, 50), 3: (40, 50), 4: (45, 50), 5:(50,50),
                 6:(55,50), 7:(60,50), 8:(35,55)} 
+        
 
 	edges = G.edges()
 	colors = [G[u][v]['color'] for u,v in edges]
@@ -39,10 +40,13 @@ def construct_Tree(i):
                 , width=weights
                 )
 
-        plt.xlim( left = 0 )
-        plt.ylim( bottom = 0 )
+        ax = plt.gca()   # (g)get (c)urrent (a)xis.
+        ## You can manually set the left and right limits
+        plt.ylim( bottom = 30, top=60 )
+        ax.set_aspect( 'equal' )
+
         # Uncomment to remove the axis
-        #  plt.axis('off')
+        plt.axis('off')
 
 
 	plt.savefig('Tree_'+ str(i)+'.png')
