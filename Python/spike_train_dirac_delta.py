@@ -15,16 +15,25 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 def dirac_delta(x, a, offset=0):
-    x = x - offset
+    x = (x - offset)/1e-3
     return np.exp(-(x/a)**2) / abs(a) / math.pi**0.5
 
+def compute_approx(ts, spikes):
+    y = np.zeros_like(ts)
+    for spk in spikes:
+        y += dirac_delta(ts, 1, spk)
+    return y
+
 def main():
-    x = np.linspace(-10, 10, 1000)
-    y1 = dirac_delta(x, 1, 1)
-    y2 = dirac_delta(x, 2, 0)
-    plt.plot(x, y1)
-    plt.plot(x, y2)
+    T = np.linspace(0, 20e-3, 100)
+    spikes = [1e-3, 5e-3, 12e-3]
+    v = compute_approx(T, spikes)
+    ax1 = plt.subplot(211)
+
+    ax2 = plt.subplot(212)
+    ax2.plot(T, v)
     plt.show()
 
 if __name__ == '__main__':
