@@ -1,0 +1,57 @@
+% Figure: CS in DCT domain.
+\RequirePackage{luatex85,shellesc}
+\documentclass[tikz,preview,multi=false]{standalone}
+\usepackage{pgfplots,pgfplotstable}
+\usepackage{amsmath,amssymb}
+\pgfplotsset{compat=newest}
+\begin{document}
+
+\edef\WIDTH{5cm}
+\begin{tabular}{c c}
+    \begin{tikzpicture}[scale=1, every node/.style={} ]
+        \begin{axis}[ xlabel=Time,ylabel=, width=\WIDTH,title={x,1000 samples}]
+            \addplot [color=blue] table {_tone.dat};
+        \end{axis}
+    \end{tikzpicture}
+    & 
+    \begin{tikzpicture}[scale=1, every node/.style={}]
+        \begin{axis}[ xlabel=Index,width=\WIDTH
+                , title={$\phi = \text{DCT}(x)$}
+            ]
+            \addplot [color=blue] table[x expr=\coordindex,y index=0] {_tone_dct.dat};
+        \end{axis}
+    \end{tikzpicture} \\
+    \begin{tikzpicture}[scale=1]
+        \begin{axis}[ view = {0}{90}
+        , colorbar, xlabel = Index
+        , title = {A}, width=\WIDTH
+        ]
+        \addplot3 [raw gnuplot,surf,shader=interp,mesh/rows=200] gnuplot {
+            plot "./_measurement_matrix_dct.dat" every 10:1 matrix with image;
+        };
+        \end{axis}
+    \end{tikzpicture} &
+    \begin{tikzpicture}[scale=1, every node/.style={}]
+        \begin{axis}[ xlabel=Index,width=\WIDTH
+                , title={$y = A \phi$,200 measurements} ]
+            \addplot [color=blue] table[x expr=\coordindex,y index=0]
+            {./_measurements_dct.dat};
+        \end{axis}
+    \end{tikzpicture} \\
+    \begin{tikzpicture}[scale=1, every node/.style={} ]
+        \begin{axis}[ xlabel=Index,ylabel=, width=\WIDTH,title={$\phi'$, CS solution}]
+            \addplot [color=blue] table[x expr=\coordindex,y index=0] {_result_dct.dat};
+        \end{axis}
+    \end{tikzpicture}
+    & 
+    \begin{tikzpicture}[scale=1, every node/.style={}]
+        \begin{axis}[ xlabel=Time,width=\WIDTH
+                , title={$x' = \text{DCT}^{-1}(\phi')$}
+            ]
+            \addplot [color=blue] table[] {_result_tone.dat};
+        \end{axis}
+    \end{tikzpicture} \\
+\end{tabular}
+
+
+\end{document}

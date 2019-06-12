@@ -1,0 +1,14 @@
+\RequirePackage{luatex85,shellesc}
+\documentclass[crop,tikz]{standalone}
+\usepackage{pgfplots,pgfplotstable}
+\begin{document}
+
+\begin{tikzpicture}[scale=1]
+    \begin{axis}[ xlabel=Index,ylabel=x ]
+        \addplot [color=blue] table[x expr=\coordindex, y index=0] {./_result.dat};
+        \addplot [color=red] table[x expr=\coordindex, y index=0] {./_signal.dat};
+        \legend{CS solution,Original signal}
+    \end{axis}
+\end{tikzpicture}
+
+\end{document}

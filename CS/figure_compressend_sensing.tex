@@ -1,0 +1,46 @@
+\RequirePackage{luatex85,shellesc}
+\documentclass[tikz,preview,multi=false]{standalone}
+\usepackage{pgfplots}
+\begin{document}
+
+\begin{tabular}{c c c}
+
+\begin{tikzpicture}[scale=1]
+    \begin{axis}[
+    xlabel=Index,ylabel=
+    , grid style={draw=gray!20}, width = 4cm
+    , title={\bf x}
+    ]
+    \addplot [color=blue] gnuplot [ raw gnuplot ] {
+        plot "_signal.dat" using 0:1 with lines
+    };
+    \end{axis}
+\end{tikzpicture} &
+\begin{tikzpicture}[scale=1]
+    \begin{axis}[ view = {0}{90}
+    , xlabel=Index, ylabel=
+    % , colorbar, colorbar style={title=}
+    % , title style={align=right,at={(-0.2,1)}}
+    , title = {\bf A}
+    , width = 4cm
+    ]
+    \addplot3 [raw gnuplot,surf,shader=interp,mesh/rows=64] gnuplot {
+    plot "./_measurement_matrix.dat" matrix with image;
+    };
+    \end{axis}
+\end{tikzpicture} &
+\begin{tikzpicture}[scale=1]
+    \begin{axis}[
+    xlabel=Index,ylabel=
+    , grid style={draw=gray!20}, width=4cm
+    , title = {\bf b}
+    ]
+    \addplot [color=blue] gnuplot [ raw gnuplot ] {
+        plot "./_measurements.dat" using 0:1 with lines
+    };
+    \end{axis}
+\end{tikzpicture}
+\end{tabular}
+
+
+\end{document}

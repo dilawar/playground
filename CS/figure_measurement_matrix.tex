@@ -1,0 +1,19 @@
+\RequirePackage{luatex85,shellesc}
+\documentclass[crop,tikz]{standalone}
+\usepackage{pgfplots}
+\begin{document}
+
+\begin{tikzpicture}[scale=1]
+    \begin{axis}[ view = {0}{90}
+        , xlabel= , ylabel=Measurememnt rows
+        , colorbar, colorbar style={title=}
+        , title style={align=right,at={(-0.2,1)}}
+        , title = {a.}
+    ]
+    \addplot3 [raw gnuplot,surf,shader=interp,mesh/rows=64] gnuplot {
+        plot "./_measurement_matrix.dat" matrix with image;
+    };
+    \end{axis}
+\end{tikzpicture}
+
+\end{document}

@@ -1,0 +1,24 @@
+/* Test */
+ilt2(F,s,t):=block([ff],
+        local(ilt1),
+        ilt1(g):=block([Lf,a],
+            local(f),
+            if freeof(%e,g) then ilt(g,s,t) else
+            (Lf:subst(%e=1,g),
+             ilt(%%,s,t),
+             define(f(t),%%),
+             g/Lf,
+             a:diff(%%,s)/%%,
+             unit_step(t+a)*f(t+a))
+            ),
+        expand(F),
+        ff:map(factor,%%),
+        if atom(ff) or op(ff)#"+" then ilt1(ff)
+        else map(ilt1,ff)
+        )$
+
+lap1 : laplace( exp( t- a) ^ 2 / 0.01, t, s );
+sol : ilt2( lap1, s,t)$
+bfloat( ev( sol, t = 2 ) );
+
+
