@@ -26,7 +26,7 @@ a1 = X;
 a2 = sigmoid(a1 * Theta1(:,2:end)');
 a3 = sigmoid(a2 * Theta2(:, 2:end)');
 
-[r, ri] = max(a3, [], 2);
+[r, ri] = max(sigmoid(a3), [], 2);
 
 p = ri
 
