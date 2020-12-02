@@ -22,12 +22,18 @@ p = zeros(size(X, 1), 1);
 %
 
 
+%a1 = X;
+%a2 = sigmoid(a1 * Theta1(:,2:end)');
+%a3 = sigmoid(a2 * Theta2(:, 2:end)');
+
+X = [ones(size(X, 1), 1 ) X];
 a1 = X;
-a2 = sigmoid(a1 * Theta1(:,2:end)');
-a3 = sigmoid(a2 * Theta2(:, 2:end)');
+a2 = sigmoid(a1 * Theta1');
+a2 = [ones(size(a2, 1), 1 ) a2];
+a3 = sigmoid(a2 * Theta2');
+
 
 [r, ri] = max(sigmoid(a3), [], 2);
-
 p = ri
 
 % =========================================================================
