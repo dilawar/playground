@@ -29,7 +29,11 @@ int main()
 {
     mystruct* a = new mystruct({.a = 1, .b = 1});
     mystruct* b = new mystruct({.a = 2, .b = 2});
+    mystruct* c = new mystruct({.a = 3, .b = 3});
+
     map<size_t, pair<size_t, mystruct*>> map_{ {0, make_pair(1, a)}, {1, make_pair(2, b)}};
+    map_.insert({2, { 1, c }});
+
     for(auto a : map_)
         cout << a.first << " " << a.second.first << endl;
 
