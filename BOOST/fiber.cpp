@@ -11,9 +11,9 @@
 
 #include <boost/fiber/all.hpp>
 #include <chrono>
-#include <thread>
 #include <cstdio>
 #include <iostream>
+#include <thread>
 
 using namespace std;
 
@@ -28,6 +28,8 @@ void
 print_b()
 {
     printf("b");
+    std::thread j([]() { printf("N"); });
+    j.detach();
     boost::this_fiber::yield();
 }
 
@@ -51,9 +53,9 @@ test()
     return 0;
 }
 
-int main()
+int
+main()
 {
-    std::thread f(test);
-    f.detach();
+    test();
     return 0;
 }
