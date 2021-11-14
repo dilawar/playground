@@ -11,51 +11,44 @@
 
 #include <boost/fiber/all.hpp>
 #include <chrono>
-#include <cstdio>
 #include <iostream>
 #include <thread>
 
 using namespace std;
 
-void
-print_a()
+void print_a()
 {
-    printf("a");
+    cout << "a";
     boost::this_fiber::yield();
 }
 
-void
-print_b()
+void print_b()
 {
-    printf("b");
-    std::thread j([]() { printf("N"); });
+    cout << "b";
+    std::thread j([]() { printf("B"); });
     j.detach();
     boost::this_fiber::yield();
 }
 
-int
-test()
+int main()
 {
-    boost::fibers::fiber([]() {
+    int i = 0;
+    boost::fibers::fiber([&]() {
         do {
             print_a();
-        } while (true);
+            i++;
+        }
+        while (i < 20)
+            ;
     }).detach();
 
-    boost::fibers::fiber([]() {
+    boost::fibers::fiber([&]() {
         do {
+            i++;
             print_b();
-        } while (true);
+        } while (i < 20);
     }).detach();
 
-    printf("xxxx");
-
-    return 0;
-}
-
-int
-main()
-{
-    test();
+    printf("X");
     return 0;
 }
