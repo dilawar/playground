@@ -6,4 +6,5 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-fts = "0.3.0"
+anyhow = "1.0.70"
+walkdir = "2"
