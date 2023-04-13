@@ -1,1 +1,1 @@
-Some quick and dirty scripts to validate random thoughts.
+Quick and dirty programs to validate random thoughts.
