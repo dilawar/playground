@@ -1,0 +1,12 @@
+[package]
+name = "geolocation-linux"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.71"
+async-std = { version = "1.12.0", features = ["attributes"] }
+geoclue-zbus = "0.2.2"
+zbus = "2"
