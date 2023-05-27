@@ -1,3 +1,0 @@
-[submodule "SoundDevices/VAD-python"]
-	path = SoundDevices/VAD-python
-	url = https://github.com/marsbroshok/VAD-python.git
