@@ -12,7 +12,7 @@ def run():
         while p2 == p1:
             p2 = random.choice(leftover)
             if len(leftover) == 1:
-                break
+                return -1
         # print(f"{p1} -- {p2}")
         # remove p2 from the list
         leftover.remove(p2)
@@ -34,7 +34,8 @@ def main():
     for i in range(10000):
         print(i, 10000)
         n_pairs = run()
-        runs.append(n_pairs)
+        if n_pairs >= 0:
+            runs.append(n_pairs)
     print(runs)
     print(np.mean(runs))
 
