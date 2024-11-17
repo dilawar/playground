@@ -4,6 +4,8 @@
 # Requires: target_directory for storing the ceremony artifact.
 # Produces: ptau/pot12.ptau - Powers of tau file after Phase 1.
 
+export SNARKJS="npx snarkjs"
+
 set -euo pipefail
 
 if [ "$#" -ne 1 ]; then
@@ -21,8 +23,8 @@ mkdir -p "$TARGET_DIR"
 cd "$TARGET_DIR"
 
 # Initialize and contribute to the "powers of tau" ceremony
-snarkjs powersoftau new bn128 12 pot12_0000.ptau -v
-snarkjs powersoftau contribute pot12_0000.ptau pot12_0001.ptau --name="Foo" -v
+$SNARKJS powersoftau new bn128 12 pot12_0000.ptau -v
+$SNARKJS powersoftau contribute pot12_0000.ptau pot12_0001.ptau --name="Foo" -v
 
 # Store the artifact after Phase 1
 mkdir -p $PROJECT_DIR/ptau
