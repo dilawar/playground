@@ -14,6 +14,7 @@ impl Solution {
             let j = nums2.partition_point(|&x| x <= a);
             for x in nums2.drain(0..j) {
                 nums1.insert(idx, x);
+                idx += 1;
             }
             // eprintln!("handing when a={a}, nums1={nums1:?} idx={idx}");
 
@@ -43,6 +44,12 @@ impl Solution {
 
 fn main() {
     let inst = std::time::Instant::now();
+
+    println!("0. =======");
+    let mut nums1 = vec![4, 5, 6, 0, 0, 0];
+    let mut nums2 = vec![1, 2, 3];
+    Solution::merge_sorted_array(&mut nums1, 3, &mut nums2, 3);
+    assert_eq!(nums1, vec![1, 2, 3, 4, 5, 6]);
 
     println!("1. =======");
     let mut nums1 = vec![1, 2, 3, 0, 0, 0];
