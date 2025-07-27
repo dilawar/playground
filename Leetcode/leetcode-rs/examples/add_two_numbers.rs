@@ -55,4 +55,5 @@ fn main() {
     test(vec![2, 4, 3], vec![5, 6, 4], vec![7, 0, 8]);
     test(vec![0], vec![0], vec![0]);
     test(vec![9; 7], vec![9; 4], vec![8, 9, 9, 9, 0, 0, 0, 1]);
+    test(vec![2, 4, 3], vec![5, 6, 4], vec![7, 0, 8]);
 }
