@@ -22,7 +22,7 @@ impl Solution {
             let a = l1.pop_front().unwrap_or(0);
             let b = l2.pop_front().unwrap_or(0);
             let r = Self::_add(a, b, &mut carry);
-            log::info!("\t a={a:?} b={b:?} r={r}.");
+            log::debug!("\t a={a:?} b={b:?} r={r}.");
             result.push_back(r);
         }
         if carry > 0 {
@@ -41,12 +41,18 @@ impl Solution {
     }
 }
 
-fn main() {
-    env_logger::init();
-    let a = LinkedList::from([2, 4, 3]);
-    let b = LinkedList::from([5, 6, 4]);
+fn test(a: Vec<i32>, b: Vec<i32>, expected: Vec<i32>) {
+    let a = LinkedList::from_iter(a.into_iter());
+    let b = LinkedList::from_iter(b.into_iter());
     assert_eq!(
-        linkedlist_to_list(LinkedList::from([7, 0, 8])),
+        linkedlist_to_list(LinkedList::from_iter(expected.into_iter())),
         Solution::add_two_numbers(linkedlist_to_list(a), linkedlist_to_list(b)),
     );
+}
+
+fn main() {
+    env_logger::init();
+    test(vec![2, 4, 3], vec![5, 6, 4], vec![7, 0, 8]);
+    test(vec![0], vec![0], vec![0]);
+    test(vec![9; 7], vec![9; 4], vec![8, 9, 9, 9, 0, 0, 0, 1]);
 }
