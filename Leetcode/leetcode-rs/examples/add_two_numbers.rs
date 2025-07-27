@@ -1,7 +1,5 @@
 use leetcode_rs::ListNode;
-use leetcode_rs::linkedlist_to_list;
-use leetcode_rs::list_to_linkedlist;
-use std::collections::LinkedList;
+use leetcode_rs::vec_to_listnode;
 
 pub struct Solution;
 
@@ -11,25 +9,26 @@ impl Solution {
         l1: Option<Box<ListNode>>,
         l2: Option<Box<ListNode>>,
     ) -> Option<Box<ListNode>> {
-        let mut l1 = list_to_linkedlist(l1);
-        let mut l2 = list_to_linkedlist(l2);
-
-        let mut result = LinkedList::new();
-
+        let mut result = vec![];
         let mut carry = 0;
 
-        while l1.front().is_some() || l2.front().is_some() {
-            let a = l1.pop_front().unwrap_or(0);
-            let b = l2.pop_front().unwrap_or(0);
+        let mut x = l1;
+        let mut y = l2;
+        while x.is_some() || y.is_some() {
+            let a = x.as_ref().map(|x| x.val).unwrap_or(0);
+            let b = y.as_ref().map(|x| x.val).unwrap_or(0);
             let r = Self::_add(a, b, &mut carry);
-            log::debug!("\t a={a:?} b={b:?} r={r}.");
-            result.push_back(r);
+            result.push(r);
+
+            x = x.and_then(|x| x.next);
+            y = y.and_then(|x| x.next);
+            // log::info!("x={x:?}, y={y:?}");
         }
         if carry > 0 {
-            result.push_back(carry);
+            result.push(carry);
         }
-        log::info!("result={result:?}");
-        linkedlist_to_list(result)
+
+        vec_to_listnode(result)
     }
 
     fn _add(a: i32, b: i32, carry: &mut i32) -> i32 {
@@ -42,11 +41,9 @@ impl Solution {
 }
 
 fn test(a: Vec<i32>, b: Vec<i32>, expected: Vec<i32>) {
-    let a = LinkedList::from_iter(a.into_iter());
-    let b = LinkedList::from_iter(b.into_iter());
     assert_eq!(
-        linkedlist_to_list(LinkedList::from_iter(expected.into_iter())),
-        Solution::add_two_numbers(linkedlist_to_list(a), linkedlist_to_list(b)),
+        vec_to_listnode(expected),
+        Solution::add_two_numbers(vec_to_listnode(a), vec_to_listnode(b)),
     );
 }
 
@@ -55,5 +52,4 @@ fn main() {
     test(vec![2, 4, 3], vec![5, 6, 4], vec![7, 0, 8]);
     test(vec![0], vec![0], vec![0]);
     test(vec![9; 7], vec![9; 4], vec![8, 9, 9, 9, 0, 0, 0, 1]);
-    test(vec![2, 4, 3], vec![5, 6, 4], vec![7, 0, 8]);
 }

@@ -1,4 +1,5 @@
 use std::collections::LinkedList;
+use std::collections::VecDeque;
 
 pub struct Solution;
 
@@ -34,6 +35,16 @@ pub fn linkedlist_to_list(mut ll: LinkedList<i32>) -> Option<Box<ListNode>> {
         let node = ListNode { val: v, next: tail };
         tail = Some(Box::new(node));
         ll.pop_front();
+    }
+
+    tail
+}
+
+pub fn vec_to_listnode(mut ll: Vec<i32>) -> Option<Box<ListNode>> {
+    let mut tail = None;
+    while let Some(v) = ll.pop() {
+        let node = ListNode { val: v, next: tail };
+        tail = Some(Box::new(node));
     }
 
     tail
