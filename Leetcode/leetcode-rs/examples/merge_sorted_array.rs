@@ -2,9 +2,12 @@ pub struct Solution;
 
 impl Solution {
     pub fn merge_sorted_array(nums1: &mut Vec<i32>, m: i32, nums2: &mut Vec<i32>, n: i32) {
+        nums1.drain(m as usize..);
+        nums1.reserve((m + n) as usize);
+
         let mut idx = 0;
 
-        while idx < nums1.len() - 1 {
+        while !nums1.is_empty() && idx < (nums1.len() - 1) {
             let a = nums1[idx];
             let b = nums1[idx + 1];
             eprintln!("idx={idx} a={a} b={b}");
@@ -22,11 +25,12 @@ impl Solution {
                     eprintln!("handing x={x} when a={a}, b={b}, nums1={nums1:?} idx={idx}");
                 }
             }
+
             idx += 1;
         }
 
         // append leftover from nums2 to nums1
-        nums1.splice(idx.., nums2);
+        nums1.extend(nums2.iter());
     }
 }
 
@@ -48,6 +52,6 @@ fn main() {
     nums1 = vec![0];
     nums2 = vec![1];
     Solution::merge_sorted_array(&mut nums1, 0, &mut nums2, 1);
-    assert_eq!(nums1, vec![0, 1]);
+    assert_eq!(nums1, vec![1]);
     println!("Took {:?}", inst.elapsed());
 }
