@@ -2,8 +2,6 @@ pub struct Solution;
 
 impl Solution {
     pub fn merge_sorted_array(nums1: &mut Vec<i32>, m: i32, nums2: &mut Vec<i32>, n: i32) {
-        nums1.reserve((m + n) as usize);
-
         let mut idx = 0;
 
         while idx < nums1.len() - 1 {
@@ -24,39 +22,32 @@ impl Solution {
                     eprintln!("handing x={x} when a={a}, b={b}, nums1={nums1:?} idx={idx}");
                 }
             }
-
             idx += 1;
         }
 
         // append leftover from nums2 to nums1
-        nums1.extend(nums2.iter());
+        nums1.splice(idx.., nums2);
     }
 }
 
 fn main() {
     let inst = std::time::Instant::now();
 
-    let mut nums1 = vec![1, 2, 3];
-    let m = nums1.len();
+    let mut nums1 = vec![1, 2, 3, 0, 0, 0];
     let mut nums2 = vec![2, 5, 6];
-    let n = nums2.len();
-    Solution::merge_sorted_array(&mut nums1, m as i32, &mut nums2, n as i32);
+    Solution::merge_sorted_array(&mut nums1, 3, &mut nums2, 3);
     assert_eq!(nums1, vec![1, 2, 2, 3, 5, 6]);
 
     println!("=======");
     nums1 = vec![1];
-    let m = nums1.len();
     nums2 = vec![];
-    let n = nums2.len();
-    Solution::merge_sorted_array(&mut nums1, m as i32, &mut nums2, n as i32);
+    Solution::merge_sorted_array(&mut nums1, 1, &mut nums2, 0);
     assert_eq!(nums1, vec![1]);
 
     println!("=======");
     nums1 = vec![0];
-    let m = nums1.len();
     nums2 = vec![1];
-    let n = nums2.len();
-    Solution::merge_sorted_array(&mut nums1, m as i32, &mut nums2, n as i32);
+    Solution::merge_sorted_array(&mut nums1, 0, &mut nums2, 1);
     assert_eq!(nums1, vec![0, 1]);
     println!("Took {:?}", inst.elapsed());
 }
