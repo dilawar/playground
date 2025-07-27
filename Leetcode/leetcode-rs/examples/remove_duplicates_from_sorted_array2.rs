@@ -12,30 +12,28 @@ impl Solution {
         while idx < N {
             let a = nums[idx];
             let j = nums.partition_point(|&x| x <= a);
-            eprintln!("a={a}, N={N}, j={j}, {nums:?}");
-            if j != nums.len() {
-                // remove from idx+1 to j but only if more than two duplicates.
-                if (idx + 2) < j {
-                    nums.drain(idx + 2..j);
-                    removed += j - idx - 2;
-                    eprintln!(
-                        " removing range {}..{j}, #removed={removed}\
-                    .",
-                        idx + 2
-                    );
+            // eprintln!("idx={idx}, a={a}, N={N}, j={j}, {nums:?}");
+            if (idx + 2) < j {
+                // eprintln!("range {}..{j}, #removed={removed}", idx + 2);
+                nums.drain(idx + 2..j);
+                removed += j - idx - 2;
 
-                    N = nums.len();
-                    idx += 2;
-                }
+                N = nums.len();
+                idx += 2;
+            } else {
+                idx += 1;
             }
-            idx += 1;
         }
         nums.len() as i32
     }
 }
 
 fn main() {
-    let mut num = vec![1, 1, 1, 2, 2, 3];
+    let mut num = vec![1, 1, 1];
+    assert_eq!(Solution::remove_duplicates(&mut num), 2);
+    assert_eq!(num, vec![1, 1]);
+
+    num = vec![1, 1, 1, 2, 2, 3];
     assert_eq!(Solution::remove_duplicates(&mut num), 5);
     assert_eq!(num, vec![1, 1, 2, 2, 3]);
 
