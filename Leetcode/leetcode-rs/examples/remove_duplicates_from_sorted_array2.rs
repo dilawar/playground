@@ -19,7 +19,7 @@ impl Solution {
                 removed += j - idx - 2;
 
                 N = nums.len();
-                idx += 2;
+                idx += removed;
             } else {
                 idx += 1;
             }
