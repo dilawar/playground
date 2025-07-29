@@ -11,14 +11,15 @@ impl Solution {
                 continue;
             }
 
+            // This should be the last character but it can also occur in between.
             if *c == b'-' {
                 is_neg = true;
                 continue;
             }
 
             let v = *c - b'0';
-            if v > 9 {
-                eprintln!("Not a digit. Reset!");
+            if v > 9 || is_neg {
+                eprintln!("Not a digit or - was already found before. Reset!");
                 result = 0;
                 m = 0;
                 is_neg = false;
@@ -27,7 +28,7 @@ impl Solution {
 
             result += (v as i64 * 10_i64.pow(m));
             result = result.min(i64::MAX);
-            println!(" value = {v}, result= {result}.");
+            eprintln!(" value = {v}, result= {result}.");
             m += 1;
         }
 
