@@ -4,6 +4,7 @@ impl Solution {
     pub fn my_atoi(s: String) -> i32 {
         let mut result = 0i64;
         let mut is_neg = false;
+        let mut is_pos = false;
         let mut m = 0;
 
         for c in s.as_bytes().iter().rev() {
@@ -14,6 +15,10 @@ impl Solution {
             // This should be the last character but it can also occur in between.
             if *c == b'-' {
                 is_neg = true;
+                continue;
+            }
+            if *c == b'+' {
+                is_pos = true;
                 continue;
             }
 
@@ -27,8 +32,8 @@ impl Solution {
             }
 
             // valid digit, check if - came before it. If yes, then ignore it.
-            if (is_neg) {
-                eprintln!("- was seen before. Ignoring previous result.");
+            if (is_neg || is_pos) {
+                eprintln!("-/+ was seen before. Ignoring previous result.");
                 m = 0;
                 result = 0;
                 is_neg = false;
@@ -55,6 +60,9 @@ impl Solution {
 }
 
 fn main() {
+    assert_eq!(Solution::my_atoi("+1".to_string()), 1);
+    assert_eq!(Solution::my_atoi("+1-1".to_string()), 1);
+    assert_eq!(Solution::my_atoi("+1-1-1213daeda".to_string()), 1);
     assert_eq!(Solution::my_atoi("42".to_string()), 42);
     assert_eq!(Solution::my_atoi("-042".to_string()), -42);
     assert_eq!(Solution::my_atoi("1337c0d3".to_string()), 1337);
