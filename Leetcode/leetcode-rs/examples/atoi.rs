@@ -39,8 +39,10 @@ impl Solution {
 
         for (m, v) in digits.iter().rev().enumerate() {
             result += (*v as i64) * 10_i64.pow(m as u32);
-            result = result.min(i64::MAX);
             eprintln!(" v={v} m={m} result = {result}");
+            if result > (i32::MAX as i64) {
+                break;
+            }
         }
 
         if is_neg {
@@ -73,4 +75,5 @@ fn main() {
     assert_eq!(Solution::my_atoi("0-1".to_string()), 0);
     assert_eq!(Solution::my_atoi("19-abcd-1231".to_string()), 19);
     assert_eq!(Solution::my_atoi("-319-abcd-1231".to_string()), -319);
+    assert_eq!(Solution::my_atoi("9223372036854775808"), -21447483647);
 }
