@@ -52,4 +52,5 @@ fn main() {
     assert_eq!(Solution::my_atoi("1337c0d3".to_string()), 1337);
     assert_eq!(Solution::my_atoi("words and 987".to_string()), 0);
     assert_eq!(Solution::my_atoi("0-1".to_string()), 0);
+    assert_eq!(Solution::my_atoi("9-abcd-1231".to_string()), 9);
 }
