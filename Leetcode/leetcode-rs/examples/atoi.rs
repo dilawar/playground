@@ -38,6 +38,10 @@ impl Solution {
         }
 
         for (m, v) in digits.iter().rev().enumerate() {
+            if m > 12 {
+                result = i64::MAX;
+                break;
+            }
             result += (*v as i64) * 10_i64.pow(m as u32);
             eprintln!(" v={v} m={m} result = {result}");
             if result > (i32::MAX as i64) {
@@ -49,7 +53,7 @@ impl Solution {
             result = -result;
         }
 
-        eprintln!("\n=== result is {result}");
+        eprintln!("\n=== result is {result}. Rounding...");
         if result > (i32::MAX as i64) {
             i32::MAX
         } else if result < (i32::MIN as i64) {
@@ -75,5 +79,12 @@ fn main() {
     assert_eq!(Solution::my_atoi("0-1".to_string()), 0);
     assert_eq!(Solution::my_atoi("19-abcd-1231".to_string()), 19);
     assert_eq!(Solution::my_atoi("-319-abcd-1231".to_string()), -319);
-    assert_eq!(Solution::my_atoi("9223372036854775808"), -21447483647);
+    assert_eq!(
+        Solution::my_atoi("9223372036854775808".to_string()),
+        2147483647
+    );
+    assert_eq!(
+        Solution::my_atoi("10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000522545459".to_string()),
+        2147483647
+    );
 }
