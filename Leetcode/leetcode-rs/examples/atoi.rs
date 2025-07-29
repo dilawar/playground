@@ -18,12 +18,20 @@ impl Solution {
             }
 
             let v = *c - b'0';
-            if v > 9 || is_neg {
-                eprintln!("Not a digit or - was already found before. Reset!");
+            if v > 9 {
+                eprintln!("{c} is not a digit. Reset!");
                 result = 0;
                 m = 0;
                 is_neg = false;
                 continue;
+            }
+
+            // valid digit, check if - came before it. If yes, then ignore it.
+            if (is_neg) {
+                eprintln!("- was seen before. Ignoring previous result.");
+                m = 0;
+                result = 0;
+                is_neg = false;
             }
 
             result += (v as i64 * 10_i64.pow(m));
