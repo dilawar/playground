@@ -38,6 +38,9 @@ impl Solution {
         }
 
         for (m, v) in digits.iter().rev().enumerate() {
+            if *v == 0 {
+                continue;
+            }
             if m > 10 {
                 result = i64::MAX;
                 break;
