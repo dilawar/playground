@@ -38,7 +38,7 @@ impl Solution {
         }
 
         for (m, v) in digits.iter().rev().enumerate() {
-            if m > 12 {
+            if m > 10 {
                 result = i64::MAX;
                 break;
             }
