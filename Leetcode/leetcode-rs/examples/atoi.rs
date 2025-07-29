@@ -10,15 +10,26 @@ impl Solution {
         for c in s.as_bytes().iter().rev() {
             if *c == b' ' {
                 continue;
+                if result > 0 {
+                    break;
+                }
             }
 
             // This should be the last character but it can also occur in between.
             if *c == b'-' {
                 is_neg = true;
+                if is_pos {
+                    m = 0;
+                    result = 0;
+                }
                 continue;
             }
             if *c == b'+' {
                 is_pos = true;
+                if is_neg {
+                    m = 0;
+                    result = 0;
+                }
                 continue;
             }
 
@@ -37,6 +48,7 @@ impl Solution {
                 m = 0;
                 result = 0;
                 is_neg = false;
+                is_pos = false;
             }
 
             result += (v as i64 * 10_i64.pow(m));
@@ -60,9 +72,13 @@ impl Solution {
 }
 
 fn main() {
+    assert_eq!(Solution::my_atoi("  +0 123".to_string()), 0);
+    assert_eq!(Solution::my_atoi("+-12".to_string()), 0);
+    assert_eq!(Solution::my_atoi("-+12".to_string()), 0);
     assert_eq!(Solution::my_atoi("+1".to_string()), 1);
     assert_eq!(Solution::my_atoi("+1-1".to_string()), 1);
-    assert_eq!(Solution::my_atoi("+1-1-1213daeda".to_string()), 1);
+    assert_eq!(Solution::my_atoi("+199-1-1213daeda".to_string()), 199);
+    assert_eq!(Solution::my_atoi("-199+1-1213daeda".to_string()), -199);
     assert_eq!(Solution::my_atoi("42".to_string()), 42);
     assert_eq!(Solution::my_atoi("-042".to_string()), -42);
     assert_eq!(Solution::my_atoi("1337c0d3".to_string()), 1337);
