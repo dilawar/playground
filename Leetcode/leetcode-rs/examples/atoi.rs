@@ -21,7 +21,7 @@ impl Solution {
                 if v <= 9 {
                     digits.push_back(v);
                 } else {
-                    eprintln!("invalid digit or sign {sign_byte}");
+                    // eprintln!("invalid digit or sign {sign_byte}");
                     return result as i32;
                 }
             }
@@ -29,11 +29,11 @@ impl Solution {
 
         while let Some(c) = s.next() {
             if *c < b'0' || *c > b'9' {
-                eprintln!("{c} is not a valid digit...");
+                // eprintln!("{c} is not a valid digit...");
                 break;
             }
             let v = *c - b'0';
-            eprintln!(" c={c} v={v} ");
+            // eprintln!(" c={c} v={v} ");
             digits.push_back(v);
         }
 
@@ -46,7 +46,7 @@ impl Solution {
                 break;
             }
             result += (*v as i64) * 10_i64.pow(m as u32);
-            eprintln!(" v={v} m={m} result = {result}");
+            // eprintln!(" v={v} m={m} result = {result}");
             if result > (i32::MAX as i64) {
                 break;
             }
@@ -56,7 +56,7 @@ impl Solution {
             result = -result;
         }
 
-        eprintln!("\n=== result is {result}. Rounding...");
+        // eprintln!("\n=== result is {result}. Rounding...");
         if result > (i32::MAX as i64) {
             i32::MAX
         } else if result < (i32::MIN as i64) {
