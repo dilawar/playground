@@ -30,7 +30,7 @@ impl Solution {
         let mut i = m / 2;
         let mut j = i;
         if m % 2 == 0 {
-            i = i - 1;
+            i -= 1;
             j = i + 1;
         }
 

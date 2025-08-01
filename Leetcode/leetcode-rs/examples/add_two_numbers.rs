@@ -34,7 +34,7 @@ impl Solution {
     fn _add(a: i32, b: i32, carry: &mut i32) -> i32 {
         let mut c = *carry + a + b;
         *carry = c / 10;
-        c = c % 10;
+        c %= 10;
         log::info!("carry={carry} a={a} b={b} c={c}.");
         c
     }

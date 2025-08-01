@@ -27,7 +27,7 @@ impl Solution {
             }
         }
 
-        while let Some(c) = s.next() {
+        for c in s {
             if *c < b'0' || *c > b'9' {
                 // eprintln!("{c} is not a valid digit...");
                 break;
