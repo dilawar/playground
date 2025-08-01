@@ -4,6 +4,7 @@ impl Solution {
     pub fn find_median_sorted_arrays(mut nums1: Vec<i32>, mut nums2: Vec<i32>) -> f64 {
         // eprintln!("0.0 {nums1:?}");
         // eprintln!("0.1 {nums2:?}");
+        let total = nums1.len() + nums2.len();
 
         nums2.reserve_exact(nums1.len());
         let mut i1 = 0;
@@ -11,16 +12,19 @@ impl Solution {
             let b = nums1[i1];
             let i2 = nums2.partition_point(|&x| x <= b);
             nums1.splice(i1..i1, nums2.drain(0..i2));
-            eprintln!(" {nums1:?}");
+            // eprintln!(" {nums1:?}");
             i1 += i2 + 1;
             // skip all index that ==b.
+            while nums1.get(i1) == Some(&b) {
+                i1 += 1;
+            }
         }
 
         // left-over must be added.
         nums1.extend(nums2);
 
         // do the median.
-        eprintln!("Final array {nums1:?}");
+        // eprintln!("Final array {nums1:?}");
         let m = nums1.len();
 
         let mut i = m / 2;
