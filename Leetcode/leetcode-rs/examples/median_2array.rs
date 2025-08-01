@@ -2,9 +2,10 @@ pub struct Solution;
 
 impl Solution {
     pub fn find_median_sorted_arrays(mut nums1: Vec<i32>, mut nums2: Vec<i32>) -> f64 {
-        eprintln!("0.0 {nums1:?}");
-        eprintln!("0.1 {nums2:?}");
+        // eprintln!("0.0 {nums1:?}");
+        // eprintln!("0.1 {nums2:?}");
 
+        nums2.reserve_exact(nums1.len());
         let mut i1 = 0;
         while !nums2.is_empty() && i1 < nums1.len() {
             let b = nums1[i1];
@@ -12,6 +13,7 @@ impl Solution {
             nums1.splice(i1..i1, nums2.drain(0..i2));
             eprintln!(" {nums1:?}");
             i1 += i2 + 1;
+            // skip all index that ==b.
         }
 
         // left-over must be added.
