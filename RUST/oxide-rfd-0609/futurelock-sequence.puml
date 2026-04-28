@@ -1,0 +1,67 @@
+@startuml
+title Futurelock deadlock sequence from RFD 0609
+
+participant "Background task" as BG
+participant "Main task" as MT
+participant "tokio::select!" as SEL
+participant "future1\n(op1)" as F1
+participant "future2\n(sleep 500ms)" as F2
+participant "future3\n(op2)" as F3
+participant "Mutex" as M
+
+BG -> M: lock()
+M --> BG: acquired
+BG -> BG: sleep(5s)
+
+MT -> SEL: enter select!
+SEL -> F1: poll
+F1 -> M: lock()
+M --> F1: queued\nPending
+
+SEL -> F2: poll
+F2 --> SEL: Pending
+
+== 500ms later ==
+
+F2 --> MT: wake main task
+MT -> SEL: poll branches again
+SEL -> F1: poll
+F1 --> SEL: still Pending
+SEL -> F2: poll
+F2 --> SEL: Ready
+
+SEL --> MT: choose sleep branch
+note over SEL,F1
+The branch using &mut future1 ends,
+but future1 itself is not dropped.
+end note
+
+MT -> F3: start op2
+F3 -> M: lock()
+M --> F3: queued behind future1\nPending
+
+== ~4.5s later ==
+
+BG -> M: unlock()
+M --> F1: grant lock (fair/FIFO)
+M --> MT: wake task responsible for future1
+
+note over MT,F3
+Main task is no longer polling future1;
+it is only awaiting future3.
+end note
+
+F3 --> MT: still Pending\n(waiting for mutex)
+
+note over F1,M
+future1 now owns the mutex
+but never runs again.
+end note
+
+note over MT,M
+Deadlock / futurelock:
+future3 waits on a mutex held by future1,
+and future1 waits for the main task to poll it (never happens).
+end note
+
+@enduml

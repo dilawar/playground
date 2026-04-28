@@ -1,0 +1,20 @@
+set shell := ["bash", "-euo", "pipefail", "-c"]
+
+default:
+    @just --list
+
+# Render a PlantUML diagram to PNG.
+render-png source="futurelock-sequence.puml":
+    @if command -v plantuml >/dev/null 2>&1; then \
+        plantuml -tpng "{{source}}"; \
+    elif command -v docker >/dev/null 2>&1; then \
+        docker run --rm \
+            -u "$(id -u):$(id -g)" \
+            -v "$PWD:/work" \
+            -w /work \
+            plantuml/plantuml \
+            -tpng "{{source}}"; \
+    else \
+        echo "error: neither plantuml nor docker is available" >&2; \
+        exit 1; \
+    fi

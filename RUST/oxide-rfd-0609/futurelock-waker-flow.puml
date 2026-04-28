@@ -1,0 +1,55 @@
+@startuml
+title How a Waker wakes the task (not a specific child future)
+
+participant "Executor" as EX
+participant "Main task T" as T
+participant "future1\n(lock waiter)" as F1
+participant "future3\n(other branch)" as F3
+participant "Mutex" as M
+participant "Wait queue" as Q
+participant "Stored Waker\n(for task T)" as W
+participant "Background task" as BG
+
+EX -> T: poll task
+T -> F1: poll(cx)
+note right of F1
+cx contains a Waker for task T.
+end note
+
+F1 -> M: try lock
+M -> Q: enqueue waiter for future1
+Q -> W: store clone(cx.waker())
+M --> F1: Pending
+F1 --> T: Pending
+T --> EX: task yields
+
+== Later ==
+
+BG -> M: unlock()
+M -> Q: pop next waiter
+Q -> W: wake()
+W -> EX: mark task T runnable
+
+EX -> T: poll task again
+
+alt task polls future1 again
+    T -> F1: poll(cx)
+    F1 -> M: complete lock acquisition
+    M --> F1: Ready(guard)
+    F1 --> T: can make progress
+else task has moved on and polls future3 only
+    T -> F3: poll(cx)
+    F3 --> T: Pending on same mutex
+    note over T,F1
+    The wake was correct: it woke task T.
+    But T did not poll future1, so future1 stays stuck.
+    end note
+end
+
+note over EX,T
+The Future is the state machine.
+The Waker is the notification handle that tells the executor
+"please schedule this task to be polled again."
+end note
+
+@enduml
