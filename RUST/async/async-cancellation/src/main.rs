@@ -3,9 +3,6 @@ use tokio_util::sync::CancellationToken;
 
 #[tokio::main]
 async fn main() {
-    let a = Arc::new(Mutex::new(0));
-    let a1 = a.clone();
-
     let cancellation_token = CancellationToken::new();
     let token = cancellation_token.clone();
 
@@ -14,11 +11,13 @@ async fn main() {
         token.cancel();
     });
 
+    let a = Arc::new(Mutex::new(0));
+
     tokio::select! {
         _ = task => {
             println!("cancelled");
         }
-        _ = long_task(a1) => {
+        _ = long_task(a.clone()) => {
             println!("long task over");
         }
     };
@@ -39,8 +38,8 @@ async fn long_task(state: Arc<Mutex<i32>>) {
     tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
 
     {
+        // clean up (reset to 0)
         let mut lock = state.lock().unwrap();
-        *lock += 1;
+        *lock = 0;
     }
-    tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
 }
