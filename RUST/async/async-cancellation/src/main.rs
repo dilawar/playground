@@ -15,16 +15,16 @@ async fn main() {
 
     tokio::select! {
         _ = task => {
-            println!("cancelled");
+            println!("cancellation token is set.");
         }
         _ = long_task(a.clone()) => {
-            println!("long task over");
         }
     };
     println!("a ={}", a.lock().unwrap());
 }
 
 async fn long_task(state: Arc<Mutex<i32>>) {
+    println!("long task started...");
     {
         let mut lock = state.lock().unwrap();
         *lock += 1;
@@ -42,4 +42,5 @@ async fn long_task(state: Arc<Mutex<i32>>) {
         let mut lock = state.lock().unwrap();
         *lock = 0;
     }
+    println!("long_task has ended.");
 }
